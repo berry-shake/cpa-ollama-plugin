@@ -291,7 +291,10 @@ header.hero { display: flex; flex-direction: column; align-items: stretch; gap: 
 .cred-body { display: grid; gap: 12px; min-width: 0; }
 .meters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; gap: 10px 12px; padding-top: 12px; border-top: 1px solid var(--border-subtle); }
 @container (min-width: 340px) {
-  .cred-body { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 14px; }
+  /* The figures take only the width they need, flush with the right padding, and the facts the
+     rest, so the content lines up with the card's padding on both sides. */
+  .cred-body { grid-template-columns: minmax(0, 1fr) fit-content(50%); column-gap: 14px; }
+  .cred-body > .meters { grid-template-columns: repeat(2, auto); column-gap: 24px; }
   .cred-body > .cap, .cred-body > .usage-note { grid-column: 1 / -1; }
   .cred-body > .meters, .cred-body > .usage-state { padding: 0 0 0 14px; border-top: none; border-left: 1px solid var(--border-subtle); }
   .cred-body > .usage-state { align-content: flex-start; }
@@ -301,7 +304,6 @@ header.hero { display: flex; flex-direction: column; align-items: stretch; gap: 
 .meter-label { font-size: 11px; color: var(--text-muted); }
 .meter-value { margin-top: 2px; font-size: 15px; font-weight: 650; line-height: 1.3; font-variant-numeric: tabular-nums; }
 .meter-value.text { font-size: 13px; font-weight: 500; line-height: 19.5px; }
-.meter-note { margin-top: 1px; font-size: 11px; color: var(--text-muted); overflow-wrap: anywhere; }
 .cap-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--text-muted); }
 .cap-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cap-left { flex: none; white-space: nowrap; }

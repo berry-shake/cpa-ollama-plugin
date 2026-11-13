@@ -290,6 +290,7 @@
   "usage.limit.session": "Session limit",
   "usage.limit.weekly": "Weekly limit",
   "usage.resets": "resets {time}",
+  "usage.balanceError": "Balance: {msg}",
   "usage.usageError": "Usage: {msg}",
   "usage.notLoaded": "Balance not checked yet.",
   "usage.disabled": "Disabled; balance not checked.",

@@ -69,13 +69,12 @@ function modelsTip(t: T, models: ModelUsage[] | undefined): string {
   })).join("\n");
 }
 
-// One figure of a card's usage grid: label, value, optional note below.
-function Meter({ label, value, note, noteClass, tip }: { label: string; value: string; note?: string; noteClass?: string; tip?: string }) {
+// One figure of a card's usage grid: label over value, details in the tooltip.
+function Meter({ label, value, tip }: { label: string; value: string; tip?: string }) {
   return (
     <div className="meter">
       <div className="meter-label" title={tip ? label + " · " + tip : label}>{label}</div>
       <div className="meter-value" title={tip ? value + " · " + tip : value}>{value}</div>
-      {note ? <div className={"meter-note" + (noteClass ? " " + noteClass : "")} title={note}>{note}</div> : null}
     </div>
   );
 }
@@ -173,12 +172,13 @@ function UsageParts({ t, cred, q, locale }: { t: T; cred: CredentialView; q: Quo
       <div className="meters">
         {available !== null
           ? <Meter label={t("usage.balance")} value={fmtUSD(available)} tip={balanceTip} />
-          : <Meter label={t("usage.balance")} value="—" note={d.balance_error || ""} noteClass="danger-text" />}
+          : <Meter label={t("usage.balance")} value="—" tip={d.balance_error || ""} />}
         <Meter label={t("usage.spent24h")} value={usageValue(t, u && u.day)} tip={usageTip(t, u && u.day)} />
         <Meter label={t("usage.spent7d")} value={usageValue(t, u && u.week)} tip={usageTip(t, u && u.week)} />
         <Meter label={t("usage.spent30d")} value={usageValue(t, u && u.month)} tip={monthTip} />
       </div>
       <PlanBars t={t} d={d} locale={locale} />
+      {d.balance_error ? <div className="usage-note danger-text">{t("usage.balanceError", { msg: d.balance_error })}</div> : null}
       {d.usage_error ? <div className="usage-note danger-text">{t("usage.usageError", { msg: d.usage_error })}</div> : null}
       {q && q.state === "error" ? <div className="usage-note danger-text">{t("usage.failed", { msg: q.error })}</div> : null}
     </>

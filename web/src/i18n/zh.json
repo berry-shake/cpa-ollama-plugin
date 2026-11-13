@@ -290,6 +290,7 @@
   "usage.limit.session": "会话限额",
   "usage.limit.weekly": "每周限额",
   "usage.resets": "{time} 重置",
+  "usage.balanceError": "余额查询失败：{msg}",
   "usage.usageError": "用量查询失败：{msg}",
   "usage.notLoaded": "还没有查询余额。",
   "usage.disabled": "已停用，未查询余额。",
