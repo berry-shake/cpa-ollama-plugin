@@ -1,22 +1,19 @@
 import type { ReactNode } from "react";
 import type { CredentialView, ModelUsage, QuotaView, UsageWindow } from "../../api/types";
 import type { T } from "../../i18n";
-import { availableUSD, barView, credState, credSubline, displayName, isDirect, type BarView, type QuotaEntry } from "../../lib/credentials";
+import { availableUSD, barView, credState, credSubline, displayName, isDirect, type QuotaEntry } from "../../lib/credentials";
 import { fmtCount, fmtTokens, fmtUSD, formatShort, formatTime } from "../../lib/format";
 import { store } from "../../state/store";
 
-// The text colour of a figure that goes with a bar of this level.
-function levelText(level: BarView["level"]): string {
-  return level === " bad" ? "danger-text" : level === " warn" ? "warn-text" : "";
-}
-
-// A remaining-credit bar under the figures; what is left is one of the figures.
-function Bar({ label, left, total }: { label: string; left: number; total: number }) {
+// A remaining-credit bar: what it is and when it resets on the left, what is
+// left on the right, coloured like the bar.
+function Bar({ t, label, left, total, value }: { t: T; label: string; left: number; total: number; value: string }) {
   const bar = barView(left, total);
   return (
     <div className={"cap" + bar.level}>
       <div className="cap-head">
-        <span>{label}</span>
+        <span className="cap-label" title={label}>{label}</span>
+        <span className="cap-left">{t("usage.left")} <strong>{value}</strong></span>
       </div>
       <div className="track" role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(bar.fraction * 100)}>
         <span className="fill" style={{ width: bar.width }}></span>
@@ -33,46 +30,14 @@ function PlanBars({ t, d, locale }: { t: T; d: QuotaView; locale: string }) {
   if (b.included) {
     const inc = b.included;
     const label = t("usage.included") + (inc.period_until ? " · " + t("usage.resets", { time: formatShort(inc.period_until, locale) }) : "");
-    bars.push(<Bar key="included" label={label} left={inc.balance_usd} total={inc.allowance_usd} />);
+    bars.push(<Bar key="included" t={t} label={label} left={inc.balance_usd} total={inc.allowance_usd} value={fmtUSD(inc.balance_usd) + " / " + fmtUSD(inc.allowance_usd)} />);
   }
   for (const [key, limit] of [["session", b.session], ["weekly", b.weekly]] as const) {
     if (!limit) continue;
     const label = t("usage.limit." + key) + (limit.resets_at ? " · " + t("usage.resets", { time: formatShort(limit.resets_at, locale) }) : "");
-    bars.push(<Bar key={key} label={label} left={limit.remaining_percent} total={100} />);
+    bars.push(<Bar key={key} t={t} label={label} left={limit.remaining_percent} total={100} value={Math.round(Number(limit.remaining_percent) || 0) + "%"} />);
   }
   return <>{bars}</>;
-}
-
-// What is left of the plan, as figures beside the usage: the plan credit
-// (two columns wide), or a legacy plan's session and weekly limits.
-function PlanMeters({ t, d }: { t: T; d: QuotaView }) {
-  const b = d.balance;
-  if (!b) return null;
-  const meters: ReactNode[] = [];
-  if (b.included) {
-    const inc = b.included;
-    meters.push(
-      <Meter
-        key="included"
-        wide
-        label={t("usage.includedLeft")}
-        value={fmtUSD(inc.balance_usd) + " / " + fmtUSD(inc.allowance_usd)}
-        valueClass={levelText(barView(inc.balance_usd, inc.allowance_usd).level)}
-      />,
-    );
-  }
-  for (const [key, limit] of [["session", b.session], ["weekly", b.weekly]] as const) {
-    if (!limit) continue;
-    meters.push(
-      <Meter
-        key={key}
-        label={t("usage.left." + key)}
-        value={Math.round(Number(limit.remaining_percent) || 0) + "%"}
-        valueClass={levelText(barView(limit.remaining_percent, 100).level)}
-      />,
-    );
-  }
-  return <>{meters}</>;
 }
 
 /** A usage figure: USD when Ollama reports cost, else the request count. */
@@ -104,21 +69,12 @@ function modelsTip(t: T, models: ModelUsage[] | undefined): string {
   })).join("\n");
 }
 
-// One figure of a card's usage grid: label, value, optional note below. A
-// wide figure takes two columns.
-function Meter({ label, value, note, noteClass, tip, valueClass, wide }: {
-  label: string;
-  value: string;
-  note?: string;
-  noteClass?: string;
-  tip?: string;
-  valueClass?: string;
-  wide?: boolean;
-}) {
+// One figure of a card's usage grid: label, value, optional note below.
+function Meter({ label, value, note, noteClass, tip }: { label: string; value: string; note?: string; noteClass?: string; tip?: string }) {
   return (
-    <div className={"meter" + (wide ? " wide" : "")}>
+    <div className="meter">
       <div className="meter-label" title={tip ? label + " · " + tip : label}>{label}</div>
-      <div className={"meter-value" + (valueClass ? " " + valueClass : "")} title={tip ? value + " · " + tip : value}>{value}</div>
+      <div className="meter-value" title={tip ? value + " · " + tip : value}>{value}</div>
       {note ? <div className={"meter-note" + (noteClass ? " " + noteClass : "")} title={note}>{note}</div> : null}
     </div>
   );
@@ -221,7 +177,6 @@ function UsageParts({ t, cred, q, locale }: { t: T; cred: CredentialView; q: Quo
         <Meter label={t("usage.spent24h")} value={usageValue(t, u && u.day)} tip={usageTip(t, u && u.day)} />
         <Meter label={t("usage.spent7d")} value={usageValue(t, u && u.week)} tip={usageTip(t, u && u.week)} />
         <Meter label={t("usage.spent30d")} value={usageValue(t, u && u.month)} tip={monthTip} />
-        <PlanMeters t={t} d={d} />
       </div>
       <PlanBars t={t} d={d} locale={locale} />
       {d.usage_error ? <div className="usage-note danger-text">{t("usage.usageError", { msg: d.usage_error })}</div> : null}
