@@ -281,6 +281,7 @@
   "usage.spent7d": "7 天用量",
   "usage.spent30d": "30 天用量",
   "usage.requests": "{n} 次请求",
+  "usage.requestsShort": "{n} 次",
   "usage.tip": "{requests} 次请求 · 输入 {input}（缓存 {cached}）· 输出 {output}",
   "usage.topModels": "近 30 天按模型：",
   "usage.otherModels": "其他模型",

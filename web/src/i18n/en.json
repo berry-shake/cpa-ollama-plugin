@@ -281,6 +281,7 @@
   "usage.spent7d": "Usage 7d",
   "usage.spent30d": "Usage 30d",
   "usage.requests": "{n} requests",
+  "usage.requestsShort": "{n} req",
   "usage.tip": "{requests} requests · in {input} (cached {cached}) · out {output}",
   "usage.topModels": "By model, 30 days:",
   "usage.otherModels": "Other models",

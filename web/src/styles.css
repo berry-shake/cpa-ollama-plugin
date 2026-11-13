@@ -287,14 +287,19 @@ header.hero { display: flex; flex-direction: column; align-items: stretch; gap: 
   border-top: 1px solid var(--border-subtle);
 }
 .cred-foot .row-actions { margin-left: auto; }
-/* Facts with usage below; a wide card puts the usage figures beside the facts. */
+/* Facts with usage below (three columns); a wider card puts the usage figures beside the facts. */
 .cred-body { display: grid; gap: 12px; min-width: 0; }
 .meters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-content: start; gap: 10px 12px; padding-top: 12px; border-top: 1px solid var(--border-subtle); }
 @container (min-width: 340px) {
   .cred-body { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 14px; }
   .cred-body > .cap, .cred-body > .usage-note { grid-column: 1 / -1; }
   .cred-body > .meters, .cred-body > .usage-state { padding: 0 0 0 14px; border-top: none; border-left: 1px solid var(--border-subtle); }
+  /* Half a card is too narrow for three columns of figures: two, with the plan credit on a row of its own. */
+  .cred-body > .meters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cred-body > .usage-state { align-content: flex-start; }
+}
+@container (min-width: 620px) {
+  .cred-body > .meters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 .meter { min-width: 0; }
 .meter.wide { grid-column: span 2; }

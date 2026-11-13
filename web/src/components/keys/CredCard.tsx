@@ -79,7 +79,8 @@ function PlanMeters({ t, d }: { t: T; d: QuotaView }) {
 export function usageValue(t: T, w: UsageWindow | undefined): string {
   if (!w) return "—";
   if (w.usd !== undefined && w.usd !== null) return fmtUSD(w.usd);
-  return t("usage.requests", { n: fmtCount(w.requests) });
+  // Short, so a legacy plan's request count fits a figure column.
+  return t("usage.requestsShort", { n: fmtCount(w.requests) });
 }
 
 /** Requests and tokens of a usage window, for its tooltip. */
