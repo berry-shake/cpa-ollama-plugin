@@ -291,12 +291,18 @@ header.hero { display: flex; flex-direction: column; align-items: stretch; gap: 
 .cred-body { display: grid; gap: 12px; min-width: 0; }
 .meters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; gap: 10px 12px; padding-top: 12px; border-top: 1px solid var(--border-subtle); }
 @container (min-width: 340px) {
-  /* The figures take only the width they need, flush with the right padding, and the facts the
-     rest, so the content lines up with the card's padding on both sides. */
-  .cred-body { grid-template-columns: minmax(0, 1fr) fit-content(50%); column-gap: 14px; }
-  .cred-body > .meters { grid-template-columns: repeat(2, auto); column-gap: 24px; }
+  /* Four columns of content (two of facts, then two of figures), each as wide as what it shows,
+     with the spare width shared out evenly between them: the first column is flush left, the
+     last flush right, and the three spaces between are the same. Odd tracks hold content, even
+     tracks are the spaces. The facts and the figures are subgrids of the body, so their columns
+     are these tracks; without subgrid support each keeps its own two even columns. */
+  .cred-body { grid-template-columns: auto minmax(12px, 1fr) auto minmax(12px, 1fr) auto minmax(12px, 1fr) auto; column-gap: 0; }
+  .cred-body > .facts { grid-column: 1 / 4; }
+  .cred-body > .meters, .cred-body > .usage-state { grid-column: 5 / 8; padding: 0 0 0 14px; border-top: none; border-left: 1px solid var(--border-subtle); }
+  .cred-body > .facts, .cred-body > .meters { grid-template-columns: subgrid; column-gap: 0; }
+  .cred-body > .facts > :nth-child(odd), .cred-body > .meters > :nth-child(odd) { grid-column: 1; }
+  .cred-body > .facts > :nth-child(even), .cred-body > .meters > :nth-child(even) { grid-column: 3; }
   .cred-body > .cap, .cred-body > .usage-note { grid-column: 1 / -1; }
-  .cred-body > .meters, .cred-body > .usage-state { padding: 0 0 0 14px; border-top: none; border-left: 1px solid var(--border-subtle); }
   .cred-body > .usage-state { align-content: flex-start; }
 }
 .meter { min-width: 0; }
