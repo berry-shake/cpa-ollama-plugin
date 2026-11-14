@@ -1,9 +1,7 @@
-// Package ollama holds what the plugin knows about the Ollama cloud API
-// itself: endpoints, error mapping, egress (proxies and HTTP clients) and the
-// balance and usage data it reports.
+// Package ollama is the Ollama adapter of cpa-provider-core: what the plugin
+// knows about the Ollama cloud API itself — endpoints, the model catalog and
+// the balance and usage data it reports.
 package ollama
-
-import "strings"
 
 // ProviderID is the CPA provider key and the auth file type.
 const ProviderID = "ollama"
@@ -30,17 +28,3 @@ const (
 	// EndpointUsage reports the account's usage over 24h, 7d or 30d.
 	EndpointUsage = "/api/usage"
 )
-
-// EndpointForFormat maps a CPA executor format to the Ollama endpoint.
-func EndpointForFormat(format string) (string, bool) {
-	switch strings.ToLower(strings.TrimSpace(format)) {
-	case "openai", "chat-completions", "chat_completions", "openai-chat-completions":
-		return EndpointChat, true
-	case "openai-response", "openai-responses", "responses":
-		return EndpointResponses, true
-	case "claude", "anthropic":
-		return EndpointMessages, true
-	default:
-		return "", false
-	}
-}

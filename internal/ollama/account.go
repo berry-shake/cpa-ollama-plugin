@@ -1,19 +1,14 @@
 package ollama
 
 import (
-	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-	"io"
 	"math"
-	"net/http"
-	"strconv"
-	"strings"
 	"time"
 
-	"github.com/berry-shake/cpa-ollama-plugin/internal/jsonfield"
-	"github.com/router-for-me/CLIProxyAPI/v8/sdk/pluginabi"
+	"github.com/berry-shake/cpa-provider-core/jsonfield"
+	"github.com/berry-shake/cpa-provider-core/upstream"
 	"github.com/router-for-me/CLIProxyAPI/v8/sdk/pluginapi"
 )
 
@@ -92,35 +87,6 @@ type UsageInfo struct {
 	Models []ModelUsage `json:"models,omitempty"`
 }
 
-// GetJSON GETs a JSON object from Ollama with a bearer token. path names the
-// endpoint in errors.
-func GetJSON(ctx context.Context, client *http.Client, target, token, userAgent, path string) (map[string]any, *pluginabi.Error) {
-	req, errReq := http.NewRequestWithContext(ctx, http.MethodGet, target, nil)
-	if errReq != nil {
-		return nil, TransportError(errReq)
-	}
-	req.Header.Set("Authorization", "Bearer "+token)
-	req.Header.Set("Accept", "application/json")
-	req.Header.Set("User-Agent", userAgent)
-	resp, errDo := client.Do(req)
-	if errDo != nil {
-		return nil, TransportError(errDo)
-	}
-	defer func() { _ = resp.Body.Close() }()
-	body, errRead := io.ReadAll(io.LimitReader(resp.Body, 1<<20))
-	if errRead != nil {
-		return nil, TransportError(errRead)
-	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, UpstreamError(resp.StatusCode, resp.Header, body, path)
-	}
-	var out map[string]any
-	if errUnmarshal := json.Unmarshal(body, &out); errUnmarshal != nil {
-		return nil, &pluginabi.Error{Code: "invalid_upstream_response", Message: "ollama: decode " + path + ": " + errUnmarshal.Error(), HTTPStatus: http.StatusBadGateway}
-	}
-	return out, nil
-}
-
 // BalanceFrom reads a GET /api/balance response:
 // {"included":{"balance_usd","allowance_usd","period":{"from","until"}} or
 // {"session":{...},"weekly":{...}},"purchased":{"balance_usd"}}.
@@ -131,8 +97,8 @@ func BalanceFrom(raw map[string]any) *BalanceInfo {
 		_, hasAllowance := included["allowance_usd"]
 		if hasBalance || hasAllowance {
 			credits := &IncludedCredits{
-				BalanceUSD:   numberField(included, "balance_usd"),
-				AllowanceUSD: numberField(included, "allowance_usd"),
+				BalanceUSD:   upstream.NumberField(included, "balance_usd"),
+				AllowanceUSD: upstream.NumberField(included, "allowance_usd"),
 			}
 			if period, okPeriod := included["period"].(map[string]any); okPeriod {
 				credits.PeriodFrom = jsonfield.String(period, "from")
@@ -144,7 +110,7 @@ func BalanceFrom(raw map[string]any) *BalanceInfo {
 		info.Weekly = planLimitFrom(included["weekly"])
 	}
 	if purchased, ok := raw["purchased"].(map[string]any); ok {
-		info.PurchasedUSD = numberField(purchased, "balance_usd")
+		info.PurchasedUSD = upstream.NumberField(purchased, "balance_usd")
 	}
 	return info
 }
@@ -155,7 +121,7 @@ func planLimitFrom(raw any) *PlanLimit {
 		return nil
 	}
 	return &PlanLimit{
-		RemainingPercent: math.Max(0, math.Min(100, numberField(fields, "remaining_percent"))),
+		RemainingPercent: math.Max(0, math.Min(100, upstream.NumberField(fields, "remaining_percent"))),
 		ResetsAt:         jsonfield.String(fields, "resets_at"),
 	}
 }
@@ -233,12 +199,12 @@ func ModelUsageFrom(raw map[string]any) []ModelUsage {
 // usageMetricsFrom reads the metrics shared by totals, buckets and groups.
 func usageMetricsFrom(fields map[string]any) UsageWindow {
 	window := UsageWindow{
-		Requests:     int64(numberField(fields, "request_count")),
-		InputTokens:  int64(numberField(fields, "input_tokens")),
-		CachedTokens: int64(numberField(fields, "cached_input_tokens")),
-		OutputTokens: int64(numberField(fields, "output_tokens")),
+		Requests:     int64(upstream.NumberField(fields, "request_count")),
+		InputTokens:  int64(upstream.NumberField(fields, "input_tokens")),
+		CachedTokens: int64(upstream.NumberField(fields, "cached_input_tokens")),
+		OutputTokens: int64(upstream.NumberField(fields, "output_tokens")),
 	}
-	if usd, ok := optionalNumber(fields["usage_usd"]); ok {
+	if usd, ok := upstream.OptionalNumber(fields["usage_usd"]); ok {
 		window.USD = &usd
 	}
 	return window
@@ -310,42 +276,4 @@ func QuotaFromAccount(info AccountInfo) pluginapi.QuotaFetchResponse {
 		out.Groups = []pluginapi.QuotaGroup{{DisplayName: "Ollama", Buckets: buckets}}
 	}
 	return out
-}
-
-func numberField(fields map[string]any, keys ...string) float64 {
-	for _, key := range keys {
-		if value, ok := optionalNumber(fields[key]); ok {
-			return value
-		}
-	}
-	return 0
-}
-
-// optionalNumber accepts JSON numbers and decimal strings; null is absent.
-func optionalNumber(raw any) (float64, bool) {
-	var parsed float64
-	switch value := raw.(type) {
-	case float64:
-		parsed = value
-	case string:
-		number, errParse := strconv.ParseFloat(strings.TrimSpace(value), 64)
-		if errParse != nil {
-			return 0, false
-		}
-		parsed = number
-	case json.Number:
-		number, errParse := value.Float64()
-		if errParse != nil {
-			return 0, false
-		}
-		parsed = number
-	default:
-		return 0, false
-	}
-	// ParseFloat reads "NaN" and "Infinity"; they are no amount, and JSON
-	// cannot carry them to the page or CPA's quota panel.
-	if math.IsNaN(parsed) || math.IsInf(parsed, 0) {
-		return 0, false
-	}
-	return parsed, true
 }
