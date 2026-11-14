@@ -1,6 +1,6 @@
 {
   "case": "quota_fetch_partial",
-  "description": "Usage failing next to a good balance still answers (not cached); balance failing with 500 still reads usage",
+  "description": "Usage failing next to a good balance still answers (not cached); balance failing with 500 still reads usage but fails the fetch with balance_unavailable",
   "setup": {
     "version": "9.9.9-snapshot",
     "config": {
@@ -291,8 +291,12 @@
         ],
         "host_calls": [],
         "response": {
-          "ok": true,
-          "result": {}
+          "ok": false,
+          "error": {
+            "code": "balance_unavailable",
+            "message": "ollama: read balance: balance unavailable",
+            "http_status": 502
+          }
         }
       }
     }

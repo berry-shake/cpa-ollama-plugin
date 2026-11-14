@@ -1,0 +1,347 @@
+{
+  "case": "quota_fetch_balance_error",
+  "description": "Balance failing with 500 next to good usage: quota.fetch fails with balance_unavailable instead of an empty card; the management page still shows the usage and the balance error",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": [
+      {
+        "name": "k1.json",
+        "fields": {
+          "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+          "type": "ollama"
+        }
+      }
+    ]
+  },
+  "upstream_script": [
+    {
+      "method": "GET",
+      "path": "/api/balance",
+      "status": 500,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"error\":\"balance unavailable\"}",
+      "chunks": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/usage",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"from\":\"2026-10-15T00:00:00Z\",\"until\":\"2026-11-14T08:00:00Z\",\"totals\":{\"request_count\":120,\"input_tokens\":50000,\"cached_input_tokens\":10000,\"output_tokens\":8000,\"usage_usd\":4.2,\"groups\":[{\"model\":\"gpt-oss:120b\",\"request_count\":100,\"usage_usd\":3.5},{\"model\":\"qwen3-vl:235b\",\"request_count\":15,\"usage_usd\":0.5}],\"remainder\":{\"request_count\":5,\"usage_usd\":0.2}},\"buckets\":[{\"from\":\"2026-10-20T00:00:00Z\",\"request_count\":60,\"input_tokens\":30000,\"output_tokens\":5000,\"usage_usd\":2.0},{\"from\":\"2026-11-08T00:00:00Z\",\"request_count\":40,\"input_tokens\":15000,\"cached_input_tokens\":8000,\"output_tokens\":2000,\"usage_usd\":1.5},{\"from\":\"2026-11-14T00:00:00Z\",\"request_count\":20,\"input_tokens\":5000,\"cached_input_tokens\":2000,\"output_tokens\":1000,\"usage_usd\":0.7}]}",
+      "chunks": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/usage",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"from\":\"2026-11-13T08:00:00Z\",\"until\":\"2026-11-14T08:00:00Z\",\"totals\":{\"request_count\":20,\"input_tokens\":5000,\"cached_input_tokens\":2000,\"output_tokens\":1000,\"usage_usd\":0.7}}",
+      "chunks": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/balance",
+      "status": 500,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"error\":\"balance unavailable\"}",
+      "chunks": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/usage",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"from\":\"2026-10-15T00:00:00Z\",\"until\":\"2026-11-14T08:00:00Z\",\"totals\":{\"request_count\":120,\"input_tokens\":50000,\"cached_input_tokens\":10000,\"output_tokens\":8000,\"usage_usd\":4.2,\"groups\":[{\"model\":\"gpt-oss:120b\",\"request_count\":100,\"usage_usd\":3.5},{\"model\":\"qwen3-vl:235b\",\"request_count\":15,\"usage_usd\":0.5}],\"remainder\":{\"request_count\":5,\"usage_usd\":0.2}},\"buckets\":[{\"from\":\"2026-10-20T00:00:00Z\",\"request_count\":60,\"input_tokens\":30000,\"output_tokens\":5000,\"usage_usd\":2.0},{\"from\":\"2026-11-08T00:00:00Z\",\"request_count\":40,\"input_tokens\":15000,\"cached_input_tokens\":8000,\"output_tokens\":2000,\"usage_usd\":1.5},{\"from\":\"2026-11-14T00:00:00Z\",\"request_count\":20,\"input_tokens\":5000,\"cached_input_tokens\":2000,\"output_tokens\":1000,\"usage_usd\":0.7}]}",
+      "chunks": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/usage",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"from\":\"2026-11-13T08:00:00Z\",\"until\":\"2026-11-14T08:00:00Z\",\"totals\":{\"request_count\":20,\"input_tokens\":5000,\"cached_input_tokens\":2000,\"output_tokens\":1000,\"usage_usd\":0.7}}",
+      "chunks": []
+    }
+  ],
+  "steps": [
+    {
+      "rpc": {
+        "method": "quota.fetch",
+        "request": {
+          "auth_index": "idx-1",
+          "auth_id": "k1.json",
+          "provider": "ollama",
+          "storage_json": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
+          "metadata": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
+          "host": {
+            "AuthDir": "",
+            "ProxyURL": "",
+            "ForceModelPrefix": false,
+            "OAuthModelAlias": null,
+            "ExcludedModels": null
+          },
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "GET",
+            "path": "/api/balance",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          },
+          {
+            "method": "GET",
+            "path": "/api/usage",
+            "query": "range=30d&group_by=model",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          },
+          {
+            "method": "GET",
+            "path": "/api/usage",
+            "query": "range=24h",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          }
+        ],
+        "host_calls": [],
+        "response": {
+          "ok": false,
+          "error": {
+            "code": "balance_unavailable",
+            "message": "ollama: read balance: balance unavailable",
+            "http_status": 502
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/credentials/quota",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": {
+            "auth_index": [
+              "idx-1"
+            ]
+          },
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "GET",
+            "path": "/api/balance",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          },
+          {
+            "method": "GET",
+            "path": "/api/usage",
+            "query": "range=30d&group_by=model",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          },
+          {
+            "method": "GET",
+            "path": "/api/usage",
+            "query": "range=24h",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          }
+        ],
+        "host_calls": [
+          {
+            "method": "host.auth.get",
+            "request": {
+              "auth_index": "idx-1"
+            }
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": {
+              "balance_error": "ollama: balance unavailable",
+              "usage": {
+                "day": {
+                  "requests": 20,
+                  "usd": 0.7,
+                  "input_tokens": 5000,
+                  "cached_input_tokens": 2000,
+                  "output_tokens": 1000
+                },
+                "week": {
+                  "requests": 60,
+                  "usd": 2.2,
+                  "input_tokens": 20000,
+                  "cached_input_tokens": 10000,
+                  "output_tokens": 3000
+                },
+                "month": {
+                  "requests": 120,
+                  "usd": 4.2,
+                  "input_tokens": 50000,
+                  "cached_input_tokens": 10000,
+                  "output_tokens": 8000
+                },
+                "models": [
+                  {
+                    "model": "gpt-oss:120b",
+                    "requests": 100,
+                    "usd": 3.5
+                  },
+                  {
+                    "model": "qwen3-vl:235b",
+                    "requests": 15,
+                    "usd": 0.5
+                  },
+                  {
+                    "model": "",
+                    "requests": 5,
+                    "usd": 0.2
+                  }
+                ]
+              },
+              "fetched_at": "2026-01-02T03:04:05Z"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

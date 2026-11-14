@@ -40,3 +40,19 @@ func TestQuotaFromAccountNamesWindows(t *testing.T) {
 		}
 	}
 }
+
+// Without the balance there is nothing to draw: quota.fetch fails with the
+// balance call's reason, without repeating the prefix.
+func TestQuotaError(t *testing.T) {
+	a := New()
+	if qerr := a.QuotaError(AccountInfo{BalanceError: "ollama: balance unavailable"}); qerr == nil || qerr.Code != "balance_unavailable" ||
+		qerr.HTTPStatus != 502 || qerr.Message != "ollama: read balance: balance unavailable" {
+		t.Fatalf("no balance = %+v", qerr)
+	}
+	if qerr := a.QuotaError(AccountInfo{}); qerr == nil || qerr.Message != "ollama: read balance: no answer" {
+		t.Fatalf("no reason = %+v", qerr)
+	}
+	if qerr := a.QuotaError(AccountInfo{Balance: &BalanceInfo{}, UsageError: "ollama: usage down"}); qerr != nil {
+		t.Fatalf("balance without usage = %+v", qerr)
+	}
+}

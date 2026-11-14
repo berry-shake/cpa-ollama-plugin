@@ -32,7 +32,10 @@ func New() *Adapter {
 	return &Adapter{catalog: NewCatalog()}
 }
 
-var _ provider.Adapter = (*Adapter)(nil)
+var (
+	_ provider.Adapter      = (*Adapter)(nil)
+	_ provider.QuotaChecker = (*Adapter)(nil)
+)
 
 // Spec describes the plugin.
 func (a *Adapter) Spec() provider.Spec {
@@ -162,6 +165,21 @@ func skipsUsage(perr *pluginabi.Error) bool {
 		return true
 	}
 	return false
+}
+
+// QuotaError refuses an answer without the balance: CPA's bars are drawn
+// from it, so a failed balance call fails quota.fetch with its reason
+// instead of an empty card. The usage stays on the plugin's own page.
+func (a *Adapter) QuotaError(info any) *pluginabi.Error {
+	account, _ := info.(AccountInfo)
+	if account.Balance != nil {
+		return nil
+	}
+	reason := strings.TrimSpace(strings.TrimPrefix(account.BalanceError, ProviderID+": "))
+	if reason == "" {
+		reason = "no answer"
+	}
+	return &pluginabi.Error{Code: "balance_unavailable", Message: ProviderID + ": read balance: " + reason, HTTPStatus: http.StatusBadGateway}
 }
 
 // Quota turns an account answer into CPA's quota panel response.
