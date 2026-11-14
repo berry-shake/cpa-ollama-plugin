@@ -271,63 +271,43 @@ func AccountFingerprint(balance, month map[string]any) string {
 	return hex.EncodeToString(sum[:])[:16]
 }
 
-// QuotaFromAccount renders account info for CPA's quota panel: a bar for the
-// plan credit left this period (or the legacy session and weekly limits),
-// then the purchased credit and the 24h / 7d / 30d usage as figures. Usage is
-// shown in USD, or as a request count when Ollama reports no cost.
+// QuotaFromAccount renders account info for CPA's quota panel: one Ollama
+// group with a bar for the plan credit left this period (monthly), or a
+// legacy plan's session and 7d limits. The purchased credit and the usage
+// stay on the plugin's own page.
 func QuotaFromAccount(info AccountInfo) pluginapi.QuotaFetchResponse {
 	var out pluginapi.QuotaFetchResponse
-	if balance := info.Balance; balance != nil {
-		if included := balance.Included; included != nil {
-			fraction := 0.0
-			if included.AllowanceUSD > 0 {
-				fraction = math.Max(0, math.Min(1, included.BalanceUSD/included.AllowanceUSD))
-			}
-			out.Groups = append(out.Groups, pluginapi.QuotaGroup{
-				DisplayName: "Included credits",
-				Buckets: []pluginapi.QuotaBucket{{
-					Window:            "monthly",
-					RemainingFraction: fraction,
-					ResetTime:         included.PeriodUntil,
-				}},
-			})
-		}
-		var limits []pluginapi.QuotaBucket
-		for _, limit := range []struct {
-			window string
-			value  *PlanLimit
-		}{{"session", balance.Session}, {"7d", balance.Weekly}} {
-			if limit.value == nil {
-				continue
-			}
-			limits = append(limits, pluginapi.QuotaBucket{
-				Window:            limit.window,
-				RemainingFraction: limit.value.RemainingPercent / 100,
-				ResetTime:         limit.value.ResetsAt,
-			})
-		}
-		if len(limits) > 0 {
-			out.Groups = append(out.Groups, pluginapi.QuotaGroup{DisplayName: "Plan limits", Buckets: limits})
-		}
-		out.Summary = append(out.Summary, pluginapi.QuotaMetric{Key: "purchased", Label: "Purchased credits", Value: balance.PurchasedUSD, Format: "currency", Currency: "USD"})
+	balance := info.Balance
+	if balance == nil {
+		return out
 	}
-	if usage := info.Usage; usage != nil {
-		for _, window := range []struct {
-			key, label string
-			value      *UsageWindow
-		}{
-			{"usage_24h", "24h", usage.Day},
-			{"usage_7d", "7d", usage.Week},
-			{"usage_30d", "30d", usage.Month},
-		} {
-			switch {
-			case window.value == nil:
-			case window.value.USD != nil:
-				out.Summary = append(out.Summary, pluginapi.QuotaMetric{Key: window.key, Label: "Usage " + window.label, Value: *window.value.USD, Format: "currency", Currency: "USD"})
-			default:
-				out.Summary = append(out.Summary, pluginapi.QuotaMetric{Key: window.key + "_requests", Label: "Requests " + window.label, Value: float64(window.value.Requests), Format: "number"})
-			}
+	var buckets []pluginapi.QuotaBucket
+	if included := balance.Included; included != nil {
+		fraction := 0.0
+		if included.AllowanceUSD > 0 {
+			fraction = math.Max(0, math.Min(1, included.BalanceUSD/included.AllowanceUSD))
 		}
+		buckets = append(buckets, pluginapi.QuotaBucket{
+			Window:            "monthly",
+			RemainingFraction: fraction,
+			ResetTime:         included.PeriodUntil,
+		})
+	}
+	for _, limit := range []struct {
+		window string
+		value  *PlanLimit
+	}{{"session", balance.Session}, {"7d", balance.Weekly}} {
+		if limit.value == nil {
+			continue
+		}
+		buckets = append(buckets, pluginapi.QuotaBucket{
+			Window:            limit.window,
+			RemainingFraction: limit.value.RemainingPercent / 100,
+			ResetTime:         limit.value.ResetsAt,
+		})
+	}
+	if len(buckets) > 0 {
+		out.Groups = []pluginapi.QuotaGroup{{DisplayName: "Ollama", Buckets: buckets}}
 	}
 	return out
 }
