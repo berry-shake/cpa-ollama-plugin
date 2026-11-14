@@ -3,7 +3,7 @@ module github.com/berry-shake/cpa-ollama-plugin
 go 1.26.10
 
 require (
-	github.com/berry-shake/cpa-provider-core v0.1.0
+	github.com/berry-shake/cpa-provider-core v0.1.1
 	github.com/router-for-me/CLIProxyAPI/v8 v8.0.58
 )
 
