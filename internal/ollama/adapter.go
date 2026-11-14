@@ -61,7 +61,6 @@ func (a *Adapter) Spec() provider.Spec {
 			EditCredentialRoute: `Edit an Ollama credential. Body: {"auth_index","label","note","models","prefix","proxy_url"|"proxy_id","priority"}.`,
 			QuotaRoute:          "Balance and 24h / 7d / 30d usage of the Ollama account behind one credential (?auth_index=).",
 		},
-		StreamErrors: provider.StreamErrorsBase,
 	}
 }
 
