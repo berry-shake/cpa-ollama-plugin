@@ -1,0 +1,45 @@
+{
+  "case": "count_tokens_undecodable",
+  "description": "executor.count_tokens is refused with 501 before the request is decoded, even when it does not decode",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": [
+      {
+        "name": "k1.json",
+        "fields": {
+          "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+          "type": "ollama"
+        }
+      }
+    ]
+  },
+  "upstream_script": [],
+  "steps": [
+    {
+      "rpc": {
+        "method": "executor.count_tokens",
+        "request": {
+          "Model": 5,
+          "Format": "claude"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": false,
+          "error": {
+            "code": "unsupported_operation",
+            "message": "ollama: count_tokens is not supported by Ollama",
+            "http_status": 501
+          }
+        }
+      }
+    }
+  ]
+}
