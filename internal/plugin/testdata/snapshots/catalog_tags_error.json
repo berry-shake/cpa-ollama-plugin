@@ -115,7 +115,10 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJlcnJvciI6ImNhdGFsb2dfdW5hdmFpbGFibGUiLCJtZXNzYWdlIjoiR0VUIC9hcGkvdGFncyByZXR1cm5lZCA1MDM6IHtcImVycm9yXCI6XCJzZXJ2aWNlIHVuYXZhaWxhYmxlXCJ9In0="
+            "Body": {
+              "error": "catalog_unavailable",
+              "message": "GET /api/tags returned 503: {\"error\":\"service unavailable\"}"
+            }
           }
         }
       }
@@ -134,7 +137,10 @@
           },
           "AuthID": "k1.json",
           "AuthProvider": "ollama",
-          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "StorageJSON": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
           "Metadata": {
             "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
             "type": "ollama"
@@ -250,7 +256,44 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJwbHVnaW4iOiJvbGxhbWEiLCJ2ZXJzaW9uIjoiOS45Ljktc25hcHNob3QiLCJub3ciOiIyMDI2LTExLTE0VDA4OjAwOjAwWiIsImNvbmZpZyI6eyJiYXNlX3VybCI6Int7VVBTVFJFQU19fSIsImRlZmF1bHRfcHJlZml4Ijoib2xsYW1hIiwiZm9yY2VfbW9kZWxfcHJlZml4IjpmYWxzZSwibW9kZWxzX3JlZnJlc2hfbWludXRlcyI6MCwicmVxdWVzdF90aW1lb3V0X3NlY29uZHMiOjYwMCwic3RyZWFtX2lkbGVfdGltZW91dF9zZWNvbmRzIjozMDB9LCJjYXRhbG9nIjp7ImNvdW50IjowLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJsYXN0X2Vycm9yIjoiL2FwaS90YWdzIHJldHVybmVkIG5vIG1vZGVscyJ9LCJjcmVkZW50aWFscyI6W3siYXV0aF9pbmRleCI6ImlkeC0xIiwiaWQiOiJrMS5qc29uIiwibmFtZSI6ImsxLmpzb24iLCJsYWJlbCI6IiIsImtleV9tYXNrZWQiOiJvbGxhbWHigKZhYWFhIiwiZGlzYWJsZWQiOmZhbHNlLCJ1bmF2YWlsYWJsZSI6ZmFsc2UsInByaW9yaXR5IjowLCJwcmVmaXgiOm51bGwsImVmZmVjdGl2ZV9wcmVmaXgiOiJvbGxhbWEiLCJhbGxfbW9kZWxzIjp0cnVlLCJtb2RlbHMiOltdLCJyZWdpc3RlcmVkX21vZGVscyI6MCwicmVnaXN0ZXJlZF9rbm93biI6dHJ1ZSwic3VjY2VzcyI6MCwiZmFpbGVkIjowfV19"
+            "Body": {
+              "plugin": "ollama",
+              "version": "9.9.9-snapshot",
+              "now": "2026-01-02T03:04:05Z",
+              "config": {
+                "base_url": "{{UPSTREAM}}",
+                "default_prefix": "ollama",
+                "force_model_prefix": false,
+                "models_refresh_minutes": 0,
+                "request_timeout_seconds": 600,
+                "stream_idle_timeout_seconds": 300
+              },
+              "catalog": {
+                "count": 0,
+                "checked_at": "2026-01-02T03:04:05Z",
+                "last_error": "/api/tags returned no models"
+              },
+              "credentials": [
+                {
+                  "auth_index": "idx-1",
+                  "id": "k1.json",
+                  "name": "k1.json",
+                  "label": "",
+                  "key_masked": "ollama…aaaa",
+                  "disabled": false,
+                  "unavailable": false,
+                  "priority": 0,
+                  "prefix": null,
+                  "effective_prefix": "ollama",
+                  "all_models": true,
+                  "models": [],
+                  "registered_models": 0,
+                  "registered_known": true,
+                  "success": 0,
+                  "failed": 0
+                }
+              ]
+            }
           }
         }
       }

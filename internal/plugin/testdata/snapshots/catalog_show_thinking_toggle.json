@@ -150,7 +150,33 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJjYXRhbG9nIjp7ImNvdW50IjoxLCJyZXZpc2lvbiI6ImMzZWRhYTFlOWY1NDUwZTIiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoifSwibW9kZWxzIjpbeyJpZCI6ImdwdC1vc3M6MTIwYiIsImNhcGFiaWxpdGllcyI6WyJjb21wbGV0aW9uIiwidGhpbmtpbmciLCJ2aXNpb24iXSwiY2hhdCI6dHJ1ZSwiY29udGV4dF9sZW5ndGgiOjQwOTYwLCJmYW1pbHkiOiJxd2VuMyIsInBhcmFtZXRlcl9zaXplIjoiOC4wQiIsInF1YW50aXphdGlvbiI6IlE0X0tfTSIsInNpemUiOjY1MzY5ODE4OTQxLCJtb2RpZmllZF9hdCI6IjIwMjUtMDgtMDVUMTI6MDA6MDBaIiwidGhpbmtpbmdfdG9nZ2xlIjp0cnVlLCJ0aGlua2luZ19kZWZhdWx0IjoiZmFsc2UifV19"
+            "Body": {
+              "catalog": {
+                "count": 1,
+                "revision": "c3edaa1e9f5450e2",
+                "fetched_at": "2026-01-02T03:04:05Z",
+                "checked_at": "2026-01-02T03:04:05Z"
+              },
+              "models": [
+                {
+                  "id": "gpt-oss:120b",
+                  "capabilities": [
+                    "completion",
+                    "thinking",
+                    "vision"
+                  ],
+                  "chat": true,
+                  "context_length": 40960,
+                  "family": "qwen3",
+                  "parameter_size": "8.0B",
+                  "quantization": "Q4_K_M",
+                  "size": 65369818941,
+                  "modified_at": "2025-08-05T12:00:00Z",
+                  "thinking_toggle": true,
+                  "thinking_default": "false"
+                }
+              ]
+            }
           }
         }
       }
@@ -169,7 +195,10 @@
           },
           "AuthID": "k1.json",
           "AuthProvider": "ollama",
-          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "StorageJSON": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
           "Metadata": {
             "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
             "type": "ollama"

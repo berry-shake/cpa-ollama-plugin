@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"testing"
 
 	"github.com/router-for-me/CLIProxyAPI/v8/sdk/pluginabi"
 	"github.com/router-for-me/CLIProxyAPI/v8/sdk/pluginapi"
@@ -231,6 +232,13 @@ func step(method string, request any) snapshotStep {
 	return snapshotStep{RPC: snapshotRPC{Method: method, Request: snapJSON(request)}}
 }
 
+// holdRefresh marks a case whose plugin.register / plugin.reconfigure steps
+// must not run the catalog refresh they queue.
+func holdRefresh(fixture snapshotFixture) snapshotFixture {
+	fixture.Setup.DropQueuedRefresh = true
+	return fixture
+}
+
 // snapExec describes one executor call as CPA makes it.
 type snapExec struct {
 	cred      snapCred
@@ -358,13 +366,25 @@ func interceptStep(authID, traceID string) snapshotStep {
 }
 
 func registerStep(method string, config json.RawMessage, schema uint32) snapshotStep {
-	return step(method, snapshotLifecycleRequest{ConfigYAML: config, SchemaVersion: schema, MultiAuthProviders: true})
+	return step(method, cpaLifecycleRequest{ConfigYAML: config, SchemaVersion: schema, MultiAuthProviders: true})
 }
 
 // ---------------------------------------------------------------------------
 // Cases
 
-func snapshotCases() []snapshotFixture {
+// snapshotCases returns the case table with the byte fields of every step
+// request decoded, as fixtures show them.
+func snapshotCases(t *testing.T) []snapshotFixture {
+	cases := snapshotCaseTable()
+	for i := range cases {
+		for j := range cases[i].Steps {
+			cases[i].Steps[j].RPC.Request = snapshotCaseJSON(t, cases[i].Steps[j].RPC.Request)
+		}
+	}
+	return cases
+}
+
+func snapshotCaseTable() []snapshotFixture {
 	var cases []snapshotFixture
 	// Every executor case ends with the request log, which records what the
 	// plugin read from the exchange (usage, finish reason, frames, errors).
@@ -531,12 +551,12 @@ func catalogCases() []snapshotFixture {
 			mgmtStep(http.MethodPost, mgmtPrefix+"/models/refresh", nil, ""),
 			mgmtStep(http.MethodPost, mgmtPrefix+"/models/refresh", nil, ""),
 			mgmtStep(http.MethodGet, mgmtPrefix+"/status", nil, "")),
-		snapFixture("catalog_reconfigure_resync", "Changing model-prefix by plugin.reconfigure marks registered credentials stale, so the next refresh re-saves them", nil,
+		holdRefresh(snapFixture("catalog_reconfigure_resync", "Changing model-prefix by plugin.reconfigure marks registered credentials stale, so the next refresh re-saves them", nil,
 			creds(credA), concat(catalogOne(showLevels), catalogOne(showLevels), catalogOne(showLevels)),
 			mgmtStep(http.MethodPost, mgmtPrefix+"/models/refresh", nil, ""),
 			registerStep(pluginabi.MethodPluginReconfigure, snapConfig(map[string]any{"model-prefix": "ol2/"}), pluginabi.SchemaVersion),
 			mgmtStep(http.MethodPost, mgmtPrefix+"/models/refresh", nil, ""),
-			mgmtStep(http.MethodPost, mgmtPrefix+"/models/refresh", nil, "")),
+			mgmtStep(http.MethodPost, mgmtPrefix+"/models/refresh", nil, ""))),
 	}
 }
 
@@ -742,11 +762,11 @@ func managementCases() []snapshotFixture {
 
 func lifecycleCases() []snapshotFixture {
 	return []snapshotFixture{
-		snapFixture("lifecycle_register", "plugin.register / plugin.reconfigure: schema negotiation (interceptor only from schema 7), metadata, config fields, config warnings", nil, nil, nil,
+		holdRefresh(snapFixture("lifecycle_register", "plugin.register / plugin.reconfigure: schema negotiation (interceptor only from schema 7), metadata, config fields, config warnings", nil, nil, nil,
 			registerStep(pluginabi.MethodPluginRegister, snapConfig(nil), pluginabi.SchemaVersion),
 			registerStep(pluginabi.MethodPluginReconfigure, snapConfig(map[string]any{"models-refresh-minutes": -5, "request-timeout-seconds": 0, "log-retention": -1}), 5),
 			registerStep(pluginabi.MethodPluginReconfigure, snapConfig(map[string]any{"base-url": "ftp://bad"}), 0),
-			mgmtStep(http.MethodGet, mgmtPrefix+"/status", nil, "")),
+			mgmtStep(http.MethodGet, mgmtPrefix+"/status", nil, ""))),
 		snapFixture("lifecycle_identifiers", "Identifier and describe RPCs, unsupported operations, unknown method, shutdown", nil, nil, nil,
 			step(pluginabi.MethodAuthIdentifier, nil),
 			step(pluginabi.MethodExecutorIdentifier, nil),
@@ -760,4 +780,43 @@ func lifecycleCases() []snapshotFixture {
 			step("model.register", nil),
 			step(pluginabi.MethodPluginShutdown, nil)),
 	}
+}
+
+// CPA's RPC request shapes (internal/pluginhost/rpc_schema.go in CPA v8).
+
+type snapshotExecutorRequest struct {
+	pluginapi.ExecutorRequest
+	StreamID       string `json:"stream_id,omitempty"`
+	HostCallbackID string `json:"host_callback_id,omitempty"`
+}
+
+type snapshotAuthModelRequest = cpaAuthModelRequest
+
+type snapshotAuthRefreshRequest struct {
+	pluginapi.AuthRefreshRequest
+	HostCallbackID string `json:"host_callback_id,omitempty"`
+}
+
+type snapshotManagementRequest struct {
+	pluginapi.ManagementRequest
+	HostCallbackID string `json:"host_callback_id,omitempty"`
+}
+
+type snapshotQuotaFetchRequest struct {
+	pluginapi.QuotaFetchRequest
+	HostCallbackID string `json:"host_callback_id,omitempty"`
+}
+
+type snapshotInterceptRequest struct {
+	pluginapi.RequestInterceptRequest
+	HostCallbackID string `json:"host_callback_id,omitempty"`
+}
+
+// snapshotQuery builds url.Values from key/value pairs.
+func snapshotQuery(pairs ...string) url.Values {
+	values := url.Values{}
+	for i := 0; i+1 < len(pairs); i += 2 {
+		values.Add(pairs[i], pairs[i+1])
+	}
+	return values
 }

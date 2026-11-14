@@ -160,7 +160,59 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJhY2NvdW50IjoiMTAzNTA3NzBmMDkzNjhhNyIsImJhbGFuY2UiOnsiaW5jbHVkZWQiOnsiYmFsYW5jZV91c2QiOjEyLjUsImFsbG93YW5jZV91c2QiOjIwLCJwZXJpb2RfZnJvbSI6IjIwMjYtMTEtMDFUMDA6MDA6MDBaIiwicGVyaW9kX3VudGlsIjoiMjAyNi0xMi0wMVQwMDowMDowMFoifSwicHVyY2hhc2VkX3VzZCI6My4yNX0sInVzYWdlIjp7ImRheSI6eyJyZXF1ZXN0cyI6MjAsInVzZCI6MC43LCJpbnB1dF90b2tlbnMiOjUwMDAsImNhY2hlZF9pbnB1dF90b2tlbnMiOjIwMDAsIm91dHB1dF90b2tlbnMiOjEwMDB9LCJ3ZWVrIjp7InJlcXVlc3RzIjo2MCwidXNkIjoyLjIsImlucHV0X3Rva2VucyI6MjAwMDAsImNhY2hlZF9pbnB1dF90b2tlbnMiOjEwMDAwLCJvdXRwdXRfdG9rZW5zIjozMDAwfSwibW9udGgiOnsicmVxdWVzdHMiOjEyMCwidXNkIjo0LjIsImlucHV0X3Rva2VucyI6NTAwMDAsImNhY2hlZF9pbnB1dF90b2tlbnMiOjEwMDAwLCJvdXRwdXRfdG9rZW5zIjo4MDAwfSwibW9kZWxzIjpbeyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsInJlcXVlc3RzIjoxMDAsInVzZCI6My41fSx7Im1vZGVsIjoicXdlbjMtdmw6MjM1YiIsInJlcXVlc3RzIjoxNSwidXNkIjowLjV9LHsibW9kZWwiOiIiLCJyZXF1ZXN0cyI6NSwidXNkIjowLjJ9XX0sImZldGNoZWRfYXQiOiIyMDI2LTExLTE0VDA4OjAwOjAwWiJ9"
+            "Body": {
+              "account": "10350770f09368a7",
+              "balance": {
+                "included": {
+                  "balance_usd": 12.5,
+                  "allowance_usd": 20,
+                  "period_from": "2026-11-01T00:00:00Z",
+                  "period_until": "2026-12-01T00:00:00Z"
+                },
+                "purchased_usd": 3.25
+              },
+              "usage": {
+                "day": {
+                  "requests": 20,
+                  "usd": 0.7,
+                  "input_tokens": 5000,
+                  "cached_input_tokens": 2000,
+                  "output_tokens": 1000
+                },
+                "week": {
+                  "requests": 60,
+                  "usd": 2.2,
+                  "input_tokens": 20000,
+                  "cached_input_tokens": 10000,
+                  "output_tokens": 3000
+                },
+                "month": {
+                  "requests": 120,
+                  "usd": 4.2,
+                  "input_tokens": 50000,
+                  "cached_input_tokens": 10000,
+                  "output_tokens": 8000
+                },
+                "models": [
+                  {
+                    "model": "gpt-oss:120b",
+                    "requests": 100,
+                    "usd": 3.5
+                  },
+                  {
+                    "model": "qwen3-vl:235b",
+                    "requests": 15,
+                    "usd": 0.5
+                  },
+                  {
+                    "model": "",
+                    "requests": 5,
+                    "usd": 0.2
+                  }
+                ]
+              },
+              "fetched_at": "2026-01-02T03:04:05Z"
+            }
           }
         }
       }
@@ -207,7 +259,10 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJlcnJvciI6ImNyZWRlbnRpYWxfbm90X2ZvdW5kIiwibWVzc2FnZSI6Im5vIE9sbGFtYSBjcmVkZW50aWFsIG1hdGNoZXMgYXV0aF9pbmRleCJ9"
+            "Body": {
+              "error": "credential_not_found",
+              "message": "no Ollama credential matches auth_index"
+            }
           }
         }
       }

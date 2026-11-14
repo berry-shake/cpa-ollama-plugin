@@ -70,16 +70,39 @@
             ]
           },
           "Query": null,
-          "OriginalRequest": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1lc3NhZ2VzIjpbeyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJIaSJ9XSwicmVhc29uaW5nX2VmZm9ydCI6ImhpZ2giLCJ0ZW1wZXJhdHVyZSI6MC4yfQ==",
+          "OriginalRequest": {
+            "model": "gpt-oss:120b",
+            "messages": [
+              {
+                "role": "user",
+                "content": "Hi"
+              }
+            ],
+            "reasoning_effort": "high",
+            "temperature": 0.2
+          },
           "SourceFormat": "openai",
-          "Payload": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1lc3NhZ2VzIjpbeyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJIaSJ9XSwicmVhc29uaW5nX2VmZm9ydCI6ImhpZ2giLCJ0ZW1wZXJhdHVyZSI6MC4yfQ==",
+          "Payload": {
+            "model": "gpt-oss:120b",
+            "messages": [
+              {
+                "role": "user",
+                "content": "Hi"
+              }
+            ],
+            "reasoning_effort": "high",
+            "temperature": 0.2
+          },
           "Metadata": {
             "request_path": "/v1/chat/completions",
             "requested_model": "ollama/gpt-oss:120b",
             "selected_auth_id": "k1.json",
             "selected_auth_index": "idx-1"
           },
-          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "StorageJSON": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
           "AuthMetadata": {
             "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
             "type": "ollama"
@@ -121,7 +144,31 @@
         "response": {
           "ok": true,
           "result": {
-            "Payload": "eyJpZCI6ImNoYXRjbXBsLXNuYXAxIiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uIiwiY3JlYXRlZCI6MTc2MzEwNzIwMCwibW9kZWwiOiJncHQtb3NzOjEyMGIiLCJjaG9pY2VzIjpbeyJpbmRleCI6MCwibWVzc2FnZSI6eyJyb2xlIjoiYXNzaXN0YW50IiwiY29udGVudCI6IkhlbGxvISIsInJlYXNvbmluZyI6InRoaW5raW5nIn0sImZpbmlzaF9yZWFzb24iOiJzdG9wIn1dLCJ1c2FnZSI6eyJwcm9tcHRfdG9rZW5zIjoxMiwiY29tcGxldGlvbl90b2tlbnMiOjUsInRvdGFsX3Rva2VucyI6MTcsImNvbXBsZXRpb25fdG9rZW5zX2RldGFpbHMiOnsicmVhc29uaW5nX3Rva2VucyI6Mn19fQ==",
+            "Payload": {
+              "id": "chatcmpl-snap1",
+              "object": "chat.completion",
+              "created": 1763107200,
+              "model": "gpt-oss:120b",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "Hello!",
+                    "reasoning": "thinking"
+                  },
+                  "finish_reason": "stop"
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 12,
+                "completion_tokens": 5,
+                "total_tokens": 17,
+                "completion_tokens_details": {
+                  "reasoning_tokens": 2
+                }
+              }
+            },
             "Headers": {
               "Content-Type": [
                 "application/json; charset=utf-8"
@@ -166,7 +213,54 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJpdGVtcyI6W3siaWQiOiIxIiwicmVxdWVzdF9pZCI6InRyYWNlLWNoYXQtMSIsInRpbWUiOiI8dm9sYXRpbGU+IiwiZW5kcG9pbnQiOiIvdjEvY2hhdC9jb21wbGV0aW9ucyIsIm1vZGVsIjoib2xsYW1hL2dwdC1vc3M6MTIwYiIsInVwc3RyZWFtX21vZGVsIjoiZ3B0LW9zczoxMjBiIiwic2VydmVkX21vZGVsIjoiZ3B0LW9zczoxMjBiIiwicmVhc29uaW5nX2VmZm9ydCI6ImhpZ2giLCJzdHJlYW0iOmZhbHNlLCJzdGF0dXMiOiJzdWNjZXNzIiwiaHR0cF9zdGF0dXMiOjIwMCwiY3JlZGVudGlhbCI6Im9sbGFtYeKApmFhYWEiLCJhdXRoX2lkIjoiazEuanNvbiIsImR1cmF0aW9uX21zIjoiPHZvbGF0aWxlPiIsImlucHV0X3Rva2VucyI6MTIsIm91dHB1dF90b2tlbnMiOjUsImNhY2hlZF90b2tlbnMiOjAsInJlYXNvbmluZ190b2tlbnMiOjIsImNsaWVudF9wYXRoIjoiL3YxL2NoYXQvY29tcGxldGlvbnMiLCJ1c2VyX2FnZW50Ijoic25hcHNob3QtY2xpZW50LzEuMCIsImF1dGhfaW5kZXgiOiJpZHgtMSIsImVncmVzcyI6ImVudiIsInVwc3RyZWFtX3N0YXR1cyI6MjAwLCJ1cHN0cmVhbV9yZXF1ZXN0X2lkIjoidXAtcmVxLTEiLCJmaW5pc2hfcmVhc29uIjoic3RvcCIsInVzYWdlX3JlcG9ydGVkIjp0cnVlLCJhdHRlbXB0cyI6MX1dLCJ0b3RhbCI6MSwib2Zmc2V0IjowLCJyZXRlbnRpb24iOjEwMDAwMCwicmV0ZW50aW9uX2RheXMiOjMwLCJzdW1tYXJ5Ijp7InJlcXVlc3RzIjoxLCJzdWNjZXNzIjoxLCJmYWlsZWQiOjAsImlucHV0X3Rva2VucyI6MTIsIm91dHB1dF90b2tlbnMiOjUsImNhY2hlZF90b2tlbnMiOjAsImNhY2hlX2hpdF9yYXRlIjowLCJvdXRwdXRfdG9rZW5zX3Blcl9zZWNvbmQiOiI8dm9sYXRpbGU+IiwiZTJlX3Rva2Vuc19wZXJfc2Vjb25kIjoiPHZvbGF0aWxlPiJ9fQ=="
+            "Body": {
+              "items": [
+                {
+                  "id": "1",
+                  "request_id": "trace-chat-1",
+                  "time": "<volatile>",
+                  "endpoint": "/v1/chat/completions",
+                  "model": "ollama/gpt-oss:120b",
+                  "upstream_model": "gpt-oss:120b",
+                  "served_model": "gpt-oss:120b",
+                  "reasoning_effort": "high",
+                  "stream": false,
+                  "status": "success",
+                  "http_status": 200,
+                  "credential": "ollama…aaaa",
+                  "auth_id": "k1.json",
+                  "duration_ms": "<volatile>",
+                  "input_tokens": 12,
+                  "output_tokens": 5,
+                  "cached_tokens": 0,
+                  "reasoning_tokens": 2,
+                  "client_path": "/v1/chat/completions",
+                  "user_agent": "snapshot-client/1.0",
+                  "auth_index": "idx-1",
+                  "egress": "env",
+                  "upstream_status": 200,
+                  "upstream_request_id": "up-req-1",
+                  "finish_reason": "stop",
+                  "usage_reported": true,
+                  "attempts": 1
+                }
+              ],
+              "total": 1,
+              "offset": 0,
+              "retention": 100000,
+              "retention_days": 30,
+              "summary": {
+                "requests": 1,
+                "success": 1,
+                "failed": 0,
+                "input_tokens": 12,
+                "output_tokens": 5,
+                "cached_tokens": 0,
+                "cache_hit_rate": 0,
+                "output_tokens_per_second": "<volatile>",
+                "e2e_tokens_per_second": "<volatile>"
+              }
+            }
           }
         }
       }

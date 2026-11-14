@@ -99,16 +99,39 @@
             ]
           },
           "Query": null,
-          "OriginalRequest": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1lc3NhZ2VzIjpbeyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJIaSJ9XSwicmVhc29uaW5nX2VmZm9ydCI6ImhpZ2giLCJ0ZW1wZXJhdHVyZSI6MC4yfQ==",
+          "OriginalRequest": {
+            "model": "gpt-oss:120b",
+            "messages": [
+              {
+                "role": "user",
+                "content": "Hi"
+              }
+            ],
+            "reasoning_effort": "high",
+            "temperature": 0.2
+          },
           "SourceFormat": "openai",
-          "Payload": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1lc3NhZ2VzIjpbeyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJIaSJ9XSwicmVhc29uaW5nX2VmZm9ydCI6ImhpZ2giLCJ0ZW1wZXJhdHVyZSI6MC4yfQ==",
+          "Payload": {
+            "model": "gpt-oss:120b",
+            "messages": [
+              {
+                "role": "user",
+                "content": "Hi"
+              }
+            ],
+            "reasoning_effort": "high",
+            "temperature": 0.2
+          },
           "Metadata": {
             "request_path": "/v1/chat/completions",
             "requested_model": "ollama/gpt-oss:120b",
             "selected_auth_id": "k1.json",
             "selected_auth_index": "idx-1"
           },
-          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "StorageJSON": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
           "AuthMetadata": {
             "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
             "type": "ollama"
@@ -150,7 +173,31 @@
         "response": {
           "ok": true,
           "result": {
-            "Payload": "eyJpZCI6ImNoYXRjbXBsLXNuYXAxIiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uIiwiY3JlYXRlZCI6MTc2MzEwNzIwMCwibW9kZWwiOiJncHQtb3NzOjEyMGIiLCJjaG9pY2VzIjpbeyJpbmRleCI6MCwibWVzc2FnZSI6eyJyb2xlIjoiYXNzaXN0YW50IiwiY29udGVudCI6IkhlbGxvISIsInJlYXNvbmluZyI6InRoaW5raW5nIn0sImZpbmlzaF9yZWFzb24iOiJzdG9wIn1dLCJ1c2FnZSI6eyJwcm9tcHRfdG9rZW5zIjoxMiwiY29tcGxldGlvbl90b2tlbnMiOjUsInRvdGFsX3Rva2VucyI6MTcsImNvbXBsZXRpb25fdG9rZW5zX2RldGFpbHMiOnsicmVhc29uaW5nX3Rva2VucyI6Mn19fQ==",
+            "Payload": {
+              "id": "chatcmpl-snap1",
+              "object": "chat.completion",
+              "created": 1763107200,
+              "model": "gpt-oss:120b",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "Hello!",
+                    "reasoning": "thinking"
+                  },
+                  "finish_reason": "stop"
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 12,
+                "completion_tokens": 5,
+                "total_tokens": 17,
+                "completion_tokens_details": {
+                  "reasoning_tokens": 2
+                }
+              }
+            },
             "Headers": {
               "Content-Type": [
                 "application/json; charset=utf-8"
@@ -189,16 +236,39 @@
             ]
           },
           "Query": null,
-          "OriginalRequest": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1lc3NhZ2VzIjpbeyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJIaSJ9XSwicmVhc29uaW5nX2VmZm9ydCI6ImhpZ2giLCJ0ZW1wZXJhdHVyZSI6MC4yfQ==",
+          "OriginalRequest": {
+            "model": "gpt-oss:120b",
+            "messages": [
+              {
+                "role": "user",
+                "content": "Hi"
+              }
+            ],
+            "reasoning_effort": "high",
+            "temperature": 0.2
+          },
           "SourceFormat": "openai",
-          "Payload": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1lc3NhZ2VzIjpbeyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJIaSJ9XSwicmVhc29uaW5nX2VmZm9ydCI6ImhpZ2giLCJ0ZW1wZXJhdHVyZSI6MC4yfQ==",
+          "Payload": {
+            "model": "gpt-oss:120b",
+            "messages": [
+              {
+                "role": "user",
+                "content": "Hi"
+              }
+            ],
+            "reasoning_effort": "high",
+            "temperature": 0.2
+          },
           "Metadata": {
             "request_path": "/v1/chat/completions",
             "requested_model": "ollama/gpt-oss:120b",
             "selected_auth_id": "k1.json",
             "selected_auth_index": "idx-1"
           },
-          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "StorageJSON": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
           "AuthMetadata": {
             "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
             "type": "ollama"
@@ -274,16 +344,45 @@
             ]
           },
           "Query": null,
-          "OriginalRequest": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1heF90b2tlbnMiOjI1NiwibWVzc2FnZXMiOlt7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6IkhpIn1dLCJ0aGlua2luZyI6eyJ0eXBlIjoiZW5hYmxlZCIsImJ1ZGdldF90b2tlbnMiOjEwMjR9fQ==",
+          "OriginalRequest": {
+            "model": "gpt-oss:120b",
+            "max_tokens": 256,
+            "messages": [
+              {
+                "role": "user",
+                "content": "Hi"
+              }
+            ],
+            "thinking": {
+              "type": "enabled",
+              "budget_tokens": 1024
+            }
+          },
           "SourceFormat": "claude",
-          "Payload": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1heF90b2tlbnMiOjI1NiwibWVzc2FnZXMiOlt7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6IkhpIn1dLCJ0aGlua2luZyI6eyJ0eXBlIjoiZW5hYmxlZCIsImJ1ZGdldF90b2tlbnMiOjEwMjR9fQ==",
+          "Payload": {
+            "model": "gpt-oss:120b",
+            "max_tokens": 256,
+            "messages": [
+              {
+                "role": "user",
+                "content": "Hi"
+              }
+            ],
+            "thinking": {
+              "type": "enabled",
+              "budget_tokens": 1024
+            }
+          },
           "Metadata": {
             "request_path": "/v1/messages",
             "requested_model": "ollama/gpt-oss:120b",
             "selected_auth_id": "k1.json",
             "selected_auth_index": "idx-1"
           },
-          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "StorageJSON": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
           "AuthMetadata": {
             "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
             "type": "ollama"
@@ -330,49 +429,49 @@
             "method": "host.stream.emit",
             "request": {
               "stream_id": "stream-log-1",
-              "payload": "ZXZlbnQ6IG1lc3NhZ2Vfc3RhcnQKZGF0YTogeyJ0eXBlIjoibWVzc2FnZV9zdGFydCIsIm1lc3NhZ2UiOnsiaWQiOiJtc2dfc25hcDIiLCJ0eXBlIjoibWVzc2FnZSIsInJvbGUiOiJhc3Npc3RhbnQiLCJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsImNvbnRlbnQiOltdLCJzdG9wX3JlYXNvbiI6bnVsbCwidXNhZ2UiOnsiaW5wdXRfdG9rZW5zIjoyMCwib3V0cHV0X3Rva2VucyI6MX19fQoK"
+              "payload": "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"id\":\"msg_snap2\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"gpt-oss:120b\",\"content\":[],\"stop_reason\":null,\"usage\":{\"input_tokens\":20,\"output_tokens\":1}}}\n\n"
             }
           },
           {
             "method": "host.stream.emit",
             "request": {
               "stream_id": "stream-log-1",
-              "payload": "ZXZlbnQ6IHBpbmcKZGF0YTogeyJ0eXBlIjoicGluZyJ9Cgo="
+              "payload": "event: ping\ndata: {\"type\":\"ping\"}\n\n"
             }
           },
           {
             "method": "host.stream.emit",
             "request": {
               "stream_id": "stream-log-1",
-              "payload": "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RhcnQKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19zdGFydCIsImluZGV4IjowLCJjb250ZW50X2Jsb2NrIjp7InR5cGUiOiJ0ZXh0IiwidGV4dCI6IiJ9fQoK"
+              "payload": "event: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"text\",\"text\":\"\"}}\n\n"
             }
           },
           {
             "method": "host.stream.emit",
             "request": {
               "stream_id": "stream-log-1",
-              "payload": "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfZGVsdGEKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19kZWx0YSIsImluZGV4IjowLCJkZWx0YSI6eyJ0eXBlIjoidGV4dF9kZWx0YSIsInRleHQiOiJIZWxsbyJ9fQoK"
+              "payload": "event: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"Hello\"}}\n\n"
             }
           },
           {
             "method": "host.stream.emit",
             "request": {
               "stream_id": "stream-log-1",
-              "payload": "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RvcApkYXRhOiB7InR5cGUiOiJjb250ZW50X2Jsb2NrX3N0b3AiLCJpbmRleCI6MH0KCg=="
+              "payload": "event: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":0}\n\n"
             }
           },
           {
             "method": "host.stream.emit",
             "request": {
               "stream_id": "stream-log-1",
-              "payload": "ZXZlbnQ6IG1lc3NhZ2VfZGVsdGEKZGF0YTogeyJ0eXBlIjoibWVzc2FnZV9kZWx0YSIsImRlbHRhIjp7InN0b3BfcmVhc29uIjoiZW5kX3R1cm4iLCJzdG9wX3NlcXVlbmNlIjpudWxsfSwidXNhZ2UiOnsib3V0cHV0X3Rva2VucyI6M319Cgo="
+              "payload": "event: message_delta\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"end_turn\",\"stop_sequence\":null},\"usage\":{\"output_tokens\":3}}\n\n"
             }
           },
           {
             "method": "host.stream.emit",
             "request": {
               "stream_id": "stream-log-1",
-              "payload": "ZXZlbnQ6IG1lc3NhZ2Vfc3RvcApkYXRhOiB7InR5cGUiOiJtZXNzYWdlX3N0b3AifQoK"
+              "payload": "event: message_stop\ndata: {\"type\":\"message_stop\"}\n\n"
             }
           },
           {
@@ -422,15 +521,22 @@
             ]
           },
           "Query": null,
-          "OriginalRequest": "eyJtZXNzYWdlcyI6W119",
+          "OriginalRequest": {
+            "messages": []
+          },
           "SourceFormat": "openai",
-          "Payload": "eyJtZXNzYWdlcyI6W119",
+          "Payload": {
+            "messages": []
+          },
           "Metadata": {
             "request_path": "/v1/chat/completions",
             "selected_auth_id": "k1.json",
             "selected_auth_index": "idx-1"
           },
-          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "StorageJSON": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
           "AuthMetadata": {
             "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
             "type": "ollama"
@@ -483,7 +589,135 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJpdGVtcyI6W3siaWQiOiI0IiwicmVxdWVzdF9pZCI6InRyYWNlLWxvZy00IiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9jaGF0L2NvbXBsZXRpb25zIiwibW9kZWwiOiIiLCJzdHJlYW0iOmZhbHNlLCJzdGF0dXMiOiJlcnJvciIsImh0dHBfc3RhdHVzIjo0MDAsImF1dGhfaWQiOiJrMS5qc29uIiwiZHVyYXRpb25fbXMiOiI8dm9sYXRpbGU+IiwiaW5wdXRfdG9rZW5zIjowLCJvdXRwdXRfdG9rZW5zIjowLCJjYWNoZWRfdG9rZW5zIjowLCJlcnJvcl9jb2RlIjoiaW52YWxpZF9yZXF1ZXN0IiwiZXJyb3IiOiJvbGxhbWE6IHJlcXVlc3QgaGFzIG5vIG1vZGVsIiwiZXJyb3JfcGhhc2UiOiJyZXF1ZXN0IiwiY2xpZW50X3BhdGgiOiIvdjEvY2hhdC9jb21wbGV0aW9ucyIsInVzZXJfYWdlbnQiOiJzbmFwc2hvdC1jbGllbnQvMS4wIiwiYXV0aF9pbmRleCI6ImlkeC0xIiwiYXR0ZW1wdHMiOjF9LHsiaWQiOiIzIiwicmVxdWVzdF9pZCI6InRyYWNlLWxvZy0zIiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9tZXNzYWdlcyIsIm1vZGVsIjoib2xsYW1hL2dwdC1vc3M6MTIwYiIsInVwc3RyZWFtX21vZGVsIjoiZ3B0LW9zczoxMjBiIiwic2VydmVkX21vZGVsIjoiZ3B0LW9zczoxMjBiIiwicmVhc29uaW5nX2VmZm9ydCI6ImJ1ZGdldCAxMDI0Iiwic3RyZWFtIjp0cnVlLCJzdGF0dXMiOiJzdWNjZXNzIiwiaHR0cF9zdGF0dXMiOjIwMCwiY3JlZGVudGlhbCI6Im9sbGFtYeKApmFhYWEiLCJhdXRoX2lkIjoiazEuanNvbiIsImR1cmF0aW9uX21zIjoiPHZvbGF0aWxlPiIsInR0ZnRfbXMiOiI8dm9sYXRpbGU+IiwiaW5wdXRfdG9rZW5zIjoyMCwib3V0cHV0X3Rva2VucyI6MywiY2FjaGVkX3Rva2VucyI6MCwiY2xpZW50X3BhdGgiOiIvdjEvbWVzc2FnZXMiLCJ1c2VyX2FnZW50Ijoic25hcHNob3QtY2xpZW50LzEuMCIsImF1dGhfaW5kZXgiOiJpZHgtMSIsImVncmVzcyI6ImVudiIsInVwc3RyZWFtX3N0YXR1cyI6MjAwLCJ1cHN0cmVhbV9yZXF1ZXN0X2lkIjoidXAtc3RyZWFtLTEiLCJmaW5pc2hfcmVhc29uIjoiZW5kX3R1cm4iLCJmcmFtZXMiOjIsImxhc3RfZnJhbWVfbXMiOiI8dm9sYXRpbGU+IiwidXNhZ2VfcmVwb3J0ZWQiOnRydWUsImF0dGVtcHRzIjoxfSx7ImlkIjoiMiIsInJlcXVlc3RfaWQiOiJ0cmFjZS1sb2ctMiIsInRpbWUiOiI8dm9sYXRpbGU+IiwiZW5kcG9pbnQiOiIvdjEvY2hhdC9jb21wbGV0aW9ucyIsIm1vZGVsIjoib2xsYW1hL2dwdC1vc3M6MTIwYiIsInVwc3RyZWFtX21vZGVsIjoiZ3B0LW9zczoxMjBiIiwicmVhc29uaW5nX2VmZm9ydCI6ImhpZ2giLCJzdHJlYW0iOmZhbHNlLCJzdGF0dXMiOiJlcnJvciIsImh0dHBfc3RhdHVzIjo0MjksImNyZWRlbnRpYWwiOiJvbGxhbWHigKZhYWFhIiwiYXV0aF9pZCI6ImsxLmpzb24iLCJkdXJhdGlvbl9tcyI6Ijx2b2xhdGlsZT4iLCJpbnB1dF90b2tlbnMiOjAsIm91dHB1dF90b2tlbnMiOjAsImNhY2hlZF90b2tlbnMiOjAsImVycm9yX2NvZGUiOiJyYXRlX2xpbWl0X2Vycm9yIiwiZXJyb3IiOiJvbGxhbWE6IHNsb3cgZG93biIsImVycm9yX3BoYXNlIjoicmVxdWVzdCIsImNsaWVudF9wYXRoIjoiL3YxL2NoYXQvY29tcGxldGlvbnMiLCJ1c2VyX2FnZW50Ijoic25hcHNob3QtY2xpZW50LzEuMCIsImF1dGhfaW5kZXgiOiJpZHgtMSIsImVncmVzcyI6ImVudiIsInVwc3RyZWFtX3N0YXR1cyI6NDI5LCJyZXRyeV9hZnRlciI6NywiYXR0ZW1wdHMiOjF9LHsiaWQiOiIxIiwicmVxdWVzdF9pZCI6InRyYWNlLWxvZy0xIiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9jaGF0L2NvbXBsZXRpb25zIiwibW9kZWwiOiJvbGxhbWEvZ3B0LW9zczoxMjBiIiwidXBzdHJlYW1fbW9kZWwiOiJncHQtb3NzOjEyMGIiLCJzZXJ2ZWRfbW9kZWwiOiJncHQtb3NzOjEyMGIiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsInN0cmVhbSI6ZmFsc2UsInN0YXR1cyI6InN1Y2Nlc3MiLCJodHRwX3N0YXR1cyI6MjAwLCJjcmVkZW50aWFsIjoib2xsYW1h4oCmYWFhYSIsImF1dGhfaWQiOiJrMS5qc29uIiwiZHVyYXRpb25fbXMiOiI8dm9sYXRpbGU+IiwiaW5wdXRfdG9rZW5zIjoxMiwib3V0cHV0X3Rva2VucyI6NSwiY2FjaGVkX3Rva2VucyI6MCwicmVhc29uaW5nX3Rva2VucyI6MiwiY2xpZW50X3BhdGgiOiIvdjEvY2hhdC9jb21wbGV0aW9ucyIsInVzZXJfYWdlbnQiOiJzbmFwc2hvdC1jbGllbnQvMS4wIiwiYXV0aF9pbmRleCI6ImlkeC0xIiwiZWdyZXNzIjoiZW52IiwidXBzdHJlYW1fc3RhdHVzIjoyMDAsInVwc3RyZWFtX3JlcXVlc3RfaWQiOiJ1cC1sb2ctMSIsImZpbmlzaF9yZWFzb24iOiJzdG9wIiwidXNhZ2VfcmVwb3J0ZWQiOnRydWUsImF0dGVtcHRzIjoxfV0sInRvdGFsIjo0LCJvZmZzZXQiOjAsInJldGVudGlvbiI6MTAwMDAwLCJyZXRlbnRpb25fZGF5cyI6MzAsInN1bW1hcnkiOnsicmVxdWVzdHMiOjQsInN1Y2Nlc3MiOjIsImZhaWxlZCI6MiwiaW5wdXRfdG9rZW5zIjozMiwib3V0cHV0X3Rva2VucyI6OCwiY2FjaGVkX3Rva2VucyI6MCwiY2FjaGVfaGl0X3JhdGUiOjAsIm91dHB1dF90b2tlbnNfcGVyX3NlY29uZCI6Ijx2b2xhdGlsZT4iLCJlMmVfdG9rZW5zX3Blcl9zZWNvbmQiOiI8dm9sYXRpbGU+In19"
+            "Body": {
+              "items": [
+                {
+                  "id": "4",
+                  "request_id": "trace-log-4",
+                  "time": "<volatile>",
+                  "endpoint": "/v1/chat/completions",
+                  "model": "",
+                  "stream": false,
+                  "status": "error",
+                  "http_status": 400,
+                  "auth_id": "k1.json",
+                  "duration_ms": "<volatile>",
+                  "input_tokens": 0,
+                  "output_tokens": 0,
+                  "cached_tokens": 0,
+                  "error_code": "invalid_request",
+                  "error": "ollama: request has no model",
+                  "error_phase": "request",
+                  "client_path": "/v1/chat/completions",
+                  "user_agent": "snapshot-client/1.0",
+                  "auth_index": "idx-1",
+                  "attempts": 1
+                },
+                {
+                  "id": "3",
+                  "request_id": "trace-log-3",
+                  "time": "<volatile>",
+                  "endpoint": "/v1/messages",
+                  "model": "ollama/gpt-oss:120b",
+                  "upstream_model": "gpt-oss:120b",
+                  "served_model": "gpt-oss:120b",
+                  "reasoning_effort": "budget 1024",
+                  "stream": true,
+                  "status": "success",
+                  "http_status": 200,
+                  "credential": "ollama…aaaa",
+                  "auth_id": "k1.json",
+                  "duration_ms": "<volatile>",
+                  "ttft_ms": "<volatile>",
+                  "input_tokens": 20,
+                  "output_tokens": 3,
+                  "cached_tokens": 0,
+                  "client_path": "/v1/messages",
+                  "user_agent": "snapshot-client/1.0",
+                  "auth_index": "idx-1",
+                  "egress": "env",
+                  "upstream_status": 200,
+                  "upstream_request_id": "up-stream-1",
+                  "finish_reason": "end_turn",
+                  "frames": 2,
+                  "last_frame_ms": "<volatile>",
+                  "usage_reported": true,
+                  "attempts": 1
+                },
+                {
+                  "id": "2",
+                  "request_id": "trace-log-2",
+                  "time": "<volatile>",
+                  "endpoint": "/v1/chat/completions",
+                  "model": "ollama/gpt-oss:120b",
+                  "upstream_model": "gpt-oss:120b",
+                  "reasoning_effort": "high",
+                  "stream": false,
+                  "status": "error",
+                  "http_status": 429,
+                  "credential": "ollama…aaaa",
+                  "auth_id": "k1.json",
+                  "duration_ms": "<volatile>",
+                  "input_tokens": 0,
+                  "output_tokens": 0,
+                  "cached_tokens": 0,
+                  "error_code": "rate_limit_error",
+                  "error": "ollama: slow down",
+                  "error_phase": "request",
+                  "client_path": "/v1/chat/completions",
+                  "user_agent": "snapshot-client/1.0",
+                  "auth_index": "idx-1",
+                  "egress": "env",
+                  "upstream_status": 429,
+                  "retry_after": 7,
+                  "attempts": 1
+                },
+                {
+                  "id": "1",
+                  "request_id": "trace-log-1",
+                  "time": "<volatile>",
+                  "endpoint": "/v1/chat/completions",
+                  "model": "ollama/gpt-oss:120b",
+                  "upstream_model": "gpt-oss:120b",
+                  "served_model": "gpt-oss:120b",
+                  "reasoning_effort": "high",
+                  "stream": false,
+                  "status": "success",
+                  "http_status": 200,
+                  "credential": "ollama…aaaa",
+                  "auth_id": "k1.json",
+                  "duration_ms": "<volatile>",
+                  "input_tokens": 12,
+                  "output_tokens": 5,
+                  "cached_tokens": 0,
+                  "reasoning_tokens": 2,
+                  "client_path": "/v1/chat/completions",
+                  "user_agent": "snapshot-client/1.0",
+                  "auth_index": "idx-1",
+                  "egress": "env",
+                  "upstream_status": 200,
+                  "upstream_request_id": "up-log-1",
+                  "finish_reason": "stop",
+                  "usage_reported": true,
+                  "attempts": 1
+                }
+              ],
+              "total": 4,
+              "offset": 0,
+              "retention": 100000,
+              "retention_days": 30,
+              "summary": {
+                "requests": 4,
+                "success": 2,
+                "failed": 2,
+                "input_tokens": 32,
+                "output_tokens": 8,
+                "cached_tokens": 0,
+                "cache_hit_rate": 0,
+                "output_tokens_per_second": "<volatile>",
+                "e2e_tokens_per_second": "<volatile>"
+              }
+            }
           }
         }
       }
@@ -523,7 +757,75 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJpdGVtcyI6W3siaWQiOiI0IiwicmVxdWVzdF9pZCI6InRyYWNlLWxvZy00IiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9jaGF0L2NvbXBsZXRpb25zIiwibW9kZWwiOiIiLCJzdHJlYW0iOmZhbHNlLCJzdGF0dXMiOiJlcnJvciIsImh0dHBfc3RhdHVzIjo0MDAsImF1dGhfaWQiOiJrMS5qc29uIiwiZHVyYXRpb25fbXMiOiI8dm9sYXRpbGU+IiwiaW5wdXRfdG9rZW5zIjowLCJvdXRwdXRfdG9rZW5zIjowLCJjYWNoZWRfdG9rZW5zIjowLCJlcnJvcl9jb2RlIjoiaW52YWxpZF9yZXF1ZXN0IiwiZXJyb3IiOiJvbGxhbWE6IHJlcXVlc3QgaGFzIG5vIG1vZGVsIiwiZXJyb3JfcGhhc2UiOiJyZXF1ZXN0IiwiY2xpZW50X3BhdGgiOiIvdjEvY2hhdC9jb21wbGV0aW9ucyIsInVzZXJfYWdlbnQiOiJzbmFwc2hvdC1jbGllbnQvMS4wIiwiYXV0aF9pbmRleCI6ImlkeC0xIiwiYXR0ZW1wdHMiOjF9LHsiaWQiOiIyIiwicmVxdWVzdF9pZCI6InRyYWNlLWxvZy0yIiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9jaGF0L2NvbXBsZXRpb25zIiwibW9kZWwiOiJvbGxhbWEvZ3B0LW9zczoxMjBiIiwidXBzdHJlYW1fbW9kZWwiOiJncHQtb3NzOjEyMGIiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsInN0cmVhbSI6ZmFsc2UsInN0YXR1cyI6ImVycm9yIiwiaHR0cF9zdGF0dXMiOjQyOSwiY3JlZGVudGlhbCI6Im9sbGFtYeKApmFhYWEiLCJhdXRoX2lkIjoiazEuanNvbiIsImR1cmF0aW9uX21zIjoiPHZvbGF0aWxlPiIsImlucHV0X3Rva2VucyI6MCwib3V0cHV0X3Rva2VucyI6MCwiY2FjaGVkX3Rva2VucyI6MCwiZXJyb3JfY29kZSI6InJhdGVfbGltaXRfZXJyb3IiLCJlcnJvciI6Im9sbGFtYTogc2xvdyBkb3duIiwiZXJyb3JfcGhhc2UiOiJyZXF1ZXN0IiwiY2xpZW50X3BhdGgiOiIvdjEvY2hhdC9jb21wbGV0aW9ucyIsInVzZXJfYWdlbnQiOiJzbmFwc2hvdC1jbGllbnQvMS4wIiwiYXV0aF9pbmRleCI6ImlkeC0xIiwiZWdyZXNzIjoiZW52IiwidXBzdHJlYW1fc3RhdHVzIjo0MjksInJldHJ5X2FmdGVyIjo3LCJhdHRlbXB0cyI6MX1dLCJ0b3RhbCI6Miwib2Zmc2V0IjowLCJyZXRlbnRpb24iOjEwMDAwMCwicmV0ZW50aW9uX2RheXMiOjMwLCJzdW1tYXJ5Ijp7InJlcXVlc3RzIjoyLCJzdWNjZXNzIjowLCJmYWlsZWQiOjIsImlucHV0X3Rva2VucyI6MCwib3V0cHV0X3Rva2VucyI6MCwiY2FjaGVkX3Rva2VucyI6MCwiY2FjaGVfaGl0X3JhdGUiOm51bGwsIm91dHB1dF90b2tlbnNfcGVyX3NlY29uZCI6Ijx2b2xhdGlsZT4iLCJlMmVfdG9rZW5zX3Blcl9zZWNvbmQiOiI8dm9sYXRpbGU+In19"
+            "Body": {
+              "items": [
+                {
+                  "id": "4",
+                  "request_id": "trace-log-4",
+                  "time": "<volatile>",
+                  "endpoint": "/v1/chat/completions",
+                  "model": "",
+                  "stream": false,
+                  "status": "error",
+                  "http_status": 400,
+                  "auth_id": "k1.json",
+                  "duration_ms": "<volatile>",
+                  "input_tokens": 0,
+                  "output_tokens": 0,
+                  "cached_tokens": 0,
+                  "error_code": "invalid_request",
+                  "error": "ollama: request has no model",
+                  "error_phase": "request",
+                  "client_path": "/v1/chat/completions",
+                  "user_agent": "snapshot-client/1.0",
+                  "auth_index": "idx-1",
+                  "attempts": 1
+                },
+                {
+                  "id": "2",
+                  "request_id": "trace-log-2",
+                  "time": "<volatile>",
+                  "endpoint": "/v1/chat/completions",
+                  "model": "ollama/gpt-oss:120b",
+                  "upstream_model": "gpt-oss:120b",
+                  "reasoning_effort": "high",
+                  "stream": false,
+                  "status": "error",
+                  "http_status": 429,
+                  "credential": "ollama…aaaa",
+                  "auth_id": "k1.json",
+                  "duration_ms": "<volatile>",
+                  "input_tokens": 0,
+                  "output_tokens": 0,
+                  "cached_tokens": 0,
+                  "error_code": "rate_limit_error",
+                  "error": "ollama: slow down",
+                  "error_phase": "request",
+                  "client_path": "/v1/chat/completions",
+                  "user_agent": "snapshot-client/1.0",
+                  "auth_index": "idx-1",
+                  "egress": "env",
+                  "upstream_status": 429,
+                  "retry_after": 7,
+                  "attempts": 1
+                }
+              ],
+              "total": 2,
+              "offset": 0,
+              "retention": 100000,
+              "retention_days": 30,
+              "summary": {
+                "requests": 2,
+                "success": 0,
+                "failed": 2,
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "cached_tokens": 0,
+                "cache_hit_rate": null,
+                "output_tokens_per_second": "<volatile>",
+                "e2e_tokens_per_second": "<volatile>"
+              }
+            }
           }
         }
       }
@@ -563,7 +865,56 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJpdGVtcyI6W3siaWQiOiIzIiwicmVxdWVzdF9pZCI6InRyYWNlLWxvZy0zIiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9tZXNzYWdlcyIsIm1vZGVsIjoib2xsYW1hL2dwdC1vc3M6MTIwYiIsInVwc3RyZWFtX21vZGVsIjoiZ3B0LW9zczoxMjBiIiwic2VydmVkX21vZGVsIjoiZ3B0LW9zczoxMjBiIiwicmVhc29uaW5nX2VmZm9ydCI6ImJ1ZGdldCAxMDI0Iiwic3RyZWFtIjp0cnVlLCJzdGF0dXMiOiJzdWNjZXNzIiwiaHR0cF9zdGF0dXMiOjIwMCwiY3JlZGVudGlhbCI6Im9sbGFtYeKApmFhYWEiLCJhdXRoX2lkIjoiazEuanNvbiIsImR1cmF0aW9uX21zIjoiPHZvbGF0aWxlPiIsInR0ZnRfbXMiOiI8dm9sYXRpbGU+IiwiaW5wdXRfdG9rZW5zIjoyMCwib3V0cHV0X3Rva2VucyI6MywiY2FjaGVkX3Rva2VucyI6MCwiY2xpZW50X3BhdGgiOiIvdjEvbWVzc2FnZXMiLCJ1c2VyX2FnZW50Ijoic25hcHNob3QtY2xpZW50LzEuMCIsImF1dGhfaW5kZXgiOiJpZHgtMSIsImVncmVzcyI6ImVudiIsInVwc3RyZWFtX3N0YXR1cyI6MjAwLCJ1cHN0cmVhbV9yZXF1ZXN0X2lkIjoidXAtc3RyZWFtLTEiLCJmaW5pc2hfcmVhc29uIjoiZW5kX3R1cm4iLCJmcmFtZXMiOjIsImxhc3RfZnJhbWVfbXMiOiI8dm9sYXRpbGU+IiwidXNhZ2VfcmVwb3J0ZWQiOnRydWUsImF0dGVtcHRzIjoxfV0sInRvdGFsIjoxLCJvZmZzZXQiOjAsInJldGVudGlvbiI6MTAwMDAwLCJyZXRlbnRpb25fZGF5cyI6MzAsInN1bW1hcnkiOnsicmVxdWVzdHMiOjEsInN1Y2Nlc3MiOjEsImZhaWxlZCI6MCwiaW5wdXRfdG9rZW5zIjoyMCwib3V0cHV0X3Rva2VucyI6MywiY2FjaGVkX3Rva2VucyI6MCwiY2FjaGVfaGl0X3JhdGUiOjAsIm91dHB1dF90b2tlbnNfcGVyX3NlY29uZCI6Ijx2b2xhdGlsZT4iLCJlMmVfdG9rZW5zX3Blcl9zZWNvbmQiOiI8dm9sYXRpbGU+In19"
+            "Body": {
+              "items": [
+                {
+                  "id": "3",
+                  "request_id": "trace-log-3",
+                  "time": "<volatile>",
+                  "endpoint": "/v1/messages",
+                  "model": "ollama/gpt-oss:120b",
+                  "upstream_model": "gpt-oss:120b",
+                  "served_model": "gpt-oss:120b",
+                  "reasoning_effort": "budget 1024",
+                  "stream": true,
+                  "status": "success",
+                  "http_status": 200,
+                  "credential": "ollama…aaaa",
+                  "auth_id": "k1.json",
+                  "duration_ms": "<volatile>",
+                  "ttft_ms": "<volatile>",
+                  "input_tokens": 20,
+                  "output_tokens": 3,
+                  "cached_tokens": 0,
+                  "client_path": "/v1/messages",
+                  "user_agent": "snapshot-client/1.0",
+                  "auth_index": "idx-1",
+                  "egress": "env",
+                  "upstream_status": 200,
+                  "upstream_request_id": "up-stream-1",
+                  "finish_reason": "end_turn",
+                  "frames": 2,
+                  "last_frame_ms": "<volatile>",
+                  "usage_reported": true,
+                  "attempts": 1
+                }
+              ],
+              "total": 1,
+              "offset": 0,
+              "retention": 100000,
+              "retention_days": 30,
+              "summary": {
+                "requests": 1,
+                "success": 1,
+                "failed": 0,
+                "input_tokens": 20,
+                "output_tokens": 3,
+                "cached_tokens": 0,
+                "cache_hit_rate": 0,
+                "output_tokens_per_second": "<volatile>",
+                "e2e_tokens_per_second": "<volatile>"
+              }
+            }
           }
         }
       }
@@ -606,7 +957,56 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJpdGVtcyI6W3siaWQiOiIzIiwicmVxdWVzdF9pZCI6InRyYWNlLWxvZy0zIiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9tZXNzYWdlcyIsIm1vZGVsIjoib2xsYW1hL2dwdC1vc3M6MTIwYiIsInVwc3RyZWFtX21vZGVsIjoiZ3B0LW9zczoxMjBiIiwic2VydmVkX21vZGVsIjoiZ3B0LW9zczoxMjBiIiwicmVhc29uaW5nX2VmZm9ydCI6ImJ1ZGdldCAxMDI0Iiwic3RyZWFtIjp0cnVlLCJzdGF0dXMiOiJzdWNjZXNzIiwiaHR0cF9zdGF0dXMiOjIwMCwiY3JlZGVudGlhbCI6Im9sbGFtYeKApmFhYWEiLCJhdXRoX2lkIjoiazEuanNvbiIsImR1cmF0aW9uX21zIjoiPHZvbGF0aWxlPiIsInR0ZnRfbXMiOiI8dm9sYXRpbGU+IiwiaW5wdXRfdG9rZW5zIjoyMCwib3V0cHV0X3Rva2VucyI6MywiY2FjaGVkX3Rva2VucyI6MCwiY2xpZW50X3BhdGgiOiIvdjEvbWVzc2FnZXMiLCJ1c2VyX2FnZW50Ijoic25hcHNob3QtY2xpZW50LzEuMCIsImF1dGhfaW5kZXgiOiJpZHgtMSIsImVncmVzcyI6ImVudiIsInVwc3RyZWFtX3N0YXR1cyI6MjAwLCJ1cHN0cmVhbV9yZXF1ZXN0X2lkIjoidXAtc3RyZWFtLTEiLCJmaW5pc2hfcmVhc29uIjoiZW5kX3R1cm4iLCJmcmFtZXMiOjIsImxhc3RfZnJhbWVfbXMiOiI8dm9sYXRpbGU+IiwidXNhZ2VfcmVwb3J0ZWQiOnRydWUsImF0dGVtcHRzIjoxfV0sInRvdGFsIjo0LCJvZmZzZXQiOjEsInJldGVudGlvbiI6MTAwMDAwLCJyZXRlbnRpb25fZGF5cyI6MzAsInN1bW1hcnkiOnsicmVxdWVzdHMiOjQsInN1Y2Nlc3MiOjIsImZhaWxlZCI6MiwiaW5wdXRfdG9rZW5zIjozMiwib3V0cHV0X3Rva2VucyI6OCwiY2FjaGVkX3Rva2VucyI6MCwiY2FjaGVfaGl0X3JhdGUiOjAsIm91dHB1dF90b2tlbnNfcGVyX3NlY29uZCI6Ijx2b2xhdGlsZT4iLCJlMmVfdG9rZW5zX3Blcl9zZWNvbmQiOiI8dm9sYXRpbGU+In19"
+            "Body": {
+              "items": [
+                {
+                  "id": "3",
+                  "request_id": "trace-log-3",
+                  "time": "<volatile>",
+                  "endpoint": "/v1/messages",
+                  "model": "ollama/gpt-oss:120b",
+                  "upstream_model": "gpt-oss:120b",
+                  "served_model": "gpt-oss:120b",
+                  "reasoning_effort": "budget 1024",
+                  "stream": true,
+                  "status": "success",
+                  "http_status": 200,
+                  "credential": "ollama…aaaa",
+                  "auth_id": "k1.json",
+                  "duration_ms": "<volatile>",
+                  "ttft_ms": "<volatile>",
+                  "input_tokens": 20,
+                  "output_tokens": 3,
+                  "cached_tokens": 0,
+                  "client_path": "/v1/messages",
+                  "user_agent": "snapshot-client/1.0",
+                  "auth_index": "idx-1",
+                  "egress": "env",
+                  "upstream_status": 200,
+                  "upstream_request_id": "up-stream-1",
+                  "finish_reason": "end_turn",
+                  "frames": 2,
+                  "last_frame_ms": "<volatile>",
+                  "usage_reported": true,
+                  "attempts": 1
+                }
+              ],
+              "total": 4,
+              "offset": 1,
+              "retention": 100000,
+              "retention_days": 30,
+              "summary": {
+                "requests": 4,
+                "success": 2,
+                "failed": 2,
+                "input_tokens": 32,
+                "output_tokens": 8,
+                "cached_tokens": 0,
+                "cache_hit_rate": 0,
+                "output_tokens_per_second": "<volatile>",
+                "e2e_tokens_per_second": "<volatile>"
+              }
+            }
           }
         }
       }
@@ -646,7 +1046,54 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJpdGVtcyI6W3siaWQiOiIxIiwicmVxdWVzdF9pZCI6InRyYWNlLWxvZy0xIiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9jaGF0L2NvbXBsZXRpb25zIiwibW9kZWwiOiJvbGxhbWEvZ3B0LW9zczoxMjBiIiwidXBzdHJlYW1fbW9kZWwiOiJncHQtb3NzOjEyMGIiLCJzZXJ2ZWRfbW9kZWwiOiJncHQtb3NzOjEyMGIiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsInN0cmVhbSI6ZmFsc2UsInN0YXR1cyI6InN1Y2Nlc3MiLCJodHRwX3N0YXR1cyI6MjAwLCJjcmVkZW50aWFsIjoib2xsYW1h4oCmYWFhYSIsImF1dGhfaWQiOiJrMS5qc29uIiwiZHVyYXRpb25fbXMiOiI8dm9sYXRpbGU+IiwiaW5wdXRfdG9rZW5zIjoxMiwib3V0cHV0X3Rva2VucyI6NSwiY2FjaGVkX3Rva2VucyI6MCwicmVhc29uaW5nX3Rva2VucyI6MiwiY2xpZW50X3BhdGgiOiIvdjEvY2hhdC9jb21wbGV0aW9ucyIsInVzZXJfYWdlbnQiOiJzbmFwc2hvdC1jbGllbnQvMS4wIiwiYXV0aF9pbmRleCI6ImlkeC0xIiwiZWdyZXNzIjoiZW52IiwidXBzdHJlYW1fc3RhdHVzIjoyMDAsInVwc3RyZWFtX3JlcXVlc3RfaWQiOiJ1cC1sb2ctMSIsImZpbmlzaF9yZWFzb24iOiJzdG9wIiwidXNhZ2VfcmVwb3J0ZWQiOnRydWUsImF0dGVtcHRzIjoxfV0sInRvdGFsIjoxLCJvZmZzZXQiOjAsInJldGVudGlvbiI6MTAwMDAwLCJyZXRlbnRpb25fZGF5cyI6MzAsInN1bW1hcnkiOnsicmVxdWVzdHMiOjEsInN1Y2Nlc3MiOjEsImZhaWxlZCI6MCwiaW5wdXRfdG9rZW5zIjoxMiwib3V0cHV0X3Rva2VucyI6NSwiY2FjaGVkX3Rva2VucyI6MCwiY2FjaGVfaGl0X3JhdGUiOjAsIm91dHB1dF90b2tlbnNfcGVyX3NlY29uZCI6Ijx2b2xhdGlsZT4iLCJlMmVfdG9rZW5zX3Blcl9zZWNvbmQiOiI8dm9sYXRpbGU+In19"
+            "Body": {
+              "items": [
+                {
+                  "id": "1",
+                  "request_id": "trace-log-1",
+                  "time": "<volatile>",
+                  "endpoint": "/v1/chat/completions",
+                  "model": "ollama/gpt-oss:120b",
+                  "upstream_model": "gpt-oss:120b",
+                  "served_model": "gpt-oss:120b",
+                  "reasoning_effort": "high",
+                  "stream": false,
+                  "status": "success",
+                  "http_status": 200,
+                  "credential": "ollama…aaaa",
+                  "auth_id": "k1.json",
+                  "duration_ms": "<volatile>",
+                  "input_tokens": 12,
+                  "output_tokens": 5,
+                  "cached_tokens": 0,
+                  "reasoning_tokens": 2,
+                  "client_path": "/v1/chat/completions",
+                  "user_agent": "snapshot-client/1.0",
+                  "auth_index": "idx-1",
+                  "egress": "env",
+                  "upstream_status": 200,
+                  "upstream_request_id": "up-log-1",
+                  "finish_reason": "stop",
+                  "usage_reported": true,
+                  "attempts": 1
+                }
+              ],
+              "total": 1,
+              "offset": 0,
+              "retention": 100000,
+              "retention_days": 30,
+              "summary": {
+                "requests": 1,
+                "success": 1,
+                "failed": 0,
+                "input_tokens": 12,
+                "output_tokens": 5,
+                "cached_tokens": 0,
+                "cache_hit_rate": 0,
+                "output_tokens_per_second": "<volatile>",
+                "e2e_tokens_per_second": "<volatile>"
+              }
+            }
           }
         }
       }
@@ -686,7 +1133,10 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJlcnJvciI6ImludmFsaWRfcmFuZ2UiLCJtZXNzYWdlIjoiZnJvbSBhbmQgdG8gbXVzdCBiZSBSRkMgMzMzOSB0aW1lcyJ9"
+            "Body": {
+              "error": "invalid_range",
+              "message": "from and to must be RFC 3339 times"
+            }
           }
         }
       }
@@ -722,7 +1172,9 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJvayI6dHJ1ZX0="
+            "Body": {
+              "ok": true
+            }
           }
         }
       }
@@ -758,7 +1210,24 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJpdGVtcyI6W10sInRvdGFsIjowLCJvZmZzZXQiOjAsInJldGVudGlvbiI6MTAwMDAwLCJyZXRlbnRpb25fZGF5cyI6MzAsInN1bW1hcnkiOnsicmVxdWVzdHMiOjAsInN1Y2Nlc3MiOjAsImZhaWxlZCI6MCwiaW5wdXRfdG9rZW5zIjowLCJvdXRwdXRfdG9rZW5zIjowLCJjYWNoZWRfdG9rZW5zIjowLCJjYWNoZV9oaXRfcmF0ZSI6bnVsbCwib3V0cHV0X3Rva2Vuc19wZXJfc2Vjb25kIjoiPHZvbGF0aWxlPiIsImUyZV90b2tlbnNfcGVyX3NlY29uZCI6Ijx2b2xhdGlsZT4ifX0="
+            "Body": {
+              "items": [],
+              "total": 0,
+              "offset": 0,
+              "retention": 100000,
+              "retention_days": 30,
+              "summary": {
+                "requests": 0,
+                "success": 0,
+                "failed": 0,
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "cached_tokens": 0,
+                "cache_hit_rate": null,
+                "output_tokens_per_second": "<volatile>",
+                "e2e_tokens_per_second": "<volatile>"
+              }
+            }
           }
         }
       }

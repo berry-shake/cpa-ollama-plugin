@@ -55,16 +55,45 @@
             ]
           },
           "Query": null,
-          "OriginalRequest": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1heF90b2tlbnMiOjI1NiwibWVzc2FnZXMiOlt7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6IkhpIn1dLCJ0aGlua2luZyI6eyJ0eXBlIjoiZW5hYmxlZCIsImJ1ZGdldF90b2tlbnMiOjEwMjR9fQ==",
+          "OriginalRequest": {
+            "model": "gpt-oss:120b",
+            "max_tokens": 256,
+            "messages": [
+              {
+                "role": "user",
+                "content": "Hi"
+              }
+            ],
+            "thinking": {
+              "type": "enabled",
+              "budget_tokens": 1024
+            }
+          },
           "SourceFormat": "claude",
-          "Payload": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1heF90b2tlbnMiOjI1NiwibWVzc2FnZXMiOlt7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6IkhpIn1dLCJ0aGlua2luZyI6eyJ0eXBlIjoiZW5hYmxlZCIsImJ1ZGdldF90b2tlbnMiOjEwMjR9fQ==",
+          "Payload": {
+            "model": "gpt-oss:120b",
+            "max_tokens": 256,
+            "messages": [
+              {
+                "role": "user",
+                "content": "Hi"
+              }
+            ],
+            "thinking": {
+              "type": "enabled",
+              "budget_tokens": 1024
+            }
+          },
           "Metadata": {
             "request_path": "/v1/messages",
             "requested_model": "ollama/gpt-oss:120b",
             "selected_auth_id": "k1.json",
             "selected_auth_index": "idx-1"
           },
-          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "StorageJSON": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
           "AuthMetadata": {
             "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
             "type": "ollama"
@@ -147,7 +176,51 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJpdGVtcyI6W3siaWQiOiIxIiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9tZXNzYWdlcyIsIm1vZGVsIjoib2xsYW1hL2dwdC1vc3M6MTIwYiIsInVwc3RyZWFtX21vZGVsIjoiZ3B0LW9zczoxMjBiIiwicmVhc29uaW5nX2VmZm9ydCI6ImJ1ZGdldCAxMDI0Iiwic3RyZWFtIjpmYWxzZSwic3RhdHVzIjoiZXJyb3IiLCJodHRwX3N0YXR1cyI6NDAzLCJjcmVkZW50aWFsIjoib2xsYW1h4oCmYWFhYSIsImF1dGhfaWQiOiJrMS5qc29uIiwiZHVyYXRpb25fbXMiOiI8dm9sYXRpbGU+IiwiaW5wdXRfdG9rZW5zIjowLCJvdXRwdXRfdG9rZW5zIjowLCJjYWNoZWRfdG9rZW5zIjowLCJlcnJvcl9jb2RlIjoicGVybWlzc2lvbl9lcnJvciIsImVycm9yIjoib2xsYW1hOiBhY2NvdW50IHN1c3BlbmRlZCIsImVycm9yX3BoYXNlIjoicmVxdWVzdCIsImNsaWVudF9wYXRoIjoiL3YxL21lc3NhZ2VzIiwidXNlcl9hZ2VudCI6InNuYXBzaG90LWNsaWVudC8xLjAiLCJhdXRoX2luZGV4IjoiaWR4LTEiLCJlZ3Jlc3MiOiJlbnYiLCJ1cHN0cmVhbV9zdGF0dXMiOjQwMywiYXR0ZW1wdHMiOjF9XSwidG90YWwiOjEsIm9mZnNldCI6MCwicmV0ZW50aW9uIjoxMDAwMDAsInJldGVudGlvbl9kYXlzIjozMCwic3VtbWFyeSI6eyJyZXF1ZXN0cyI6MSwic3VjY2VzcyI6MCwiZmFpbGVkIjoxLCJpbnB1dF90b2tlbnMiOjAsIm91dHB1dF90b2tlbnMiOjAsImNhY2hlZF90b2tlbnMiOjAsImNhY2hlX2hpdF9yYXRlIjpudWxsLCJvdXRwdXRfdG9rZW5zX3Blcl9zZWNvbmQiOiI8dm9sYXRpbGU+IiwiZTJlX3Rva2Vuc19wZXJfc2Vjb25kIjoiPHZvbGF0aWxlPiJ9fQ=="
+            "Body": {
+              "items": [
+                {
+                  "id": "1",
+                  "time": "<volatile>",
+                  "endpoint": "/v1/messages",
+                  "model": "ollama/gpt-oss:120b",
+                  "upstream_model": "gpt-oss:120b",
+                  "reasoning_effort": "budget 1024",
+                  "stream": false,
+                  "status": "error",
+                  "http_status": 403,
+                  "credential": "ollama…aaaa",
+                  "auth_id": "k1.json",
+                  "duration_ms": "<volatile>",
+                  "input_tokens": 0,
+                  "output_tokens": 0,
+                  "cached_tokens": 0,
+                  "error_code": "permission_error",
+                  "error": "ollama: account suspended",
+                  "error_phase": "request",
+                  "client_path": "/v1/messages",
+                  "user_agent": "snapshot-client/1.0",
+                  "auth_index": "idx-1",
+                  "egress": "env",
+                  "upstream_status": 403,
+                  "attempts": 1
+                }
+              ],
+              "total": 1,
+              "offset": 0,
+              "retention": 100000,
+              "retention_days": 30,
+              "summary": {
+                "requests": 1,
+                "success": 0,
+                "failed": 1,
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "cached_tokens": 0,
+                "cache_hit_rate": null,
+                "output_tokens_per_second": "<volatile>",
+                "e2e_tokens_per_second": "<volatile>"
+              }
+            }
           }
         }
       }

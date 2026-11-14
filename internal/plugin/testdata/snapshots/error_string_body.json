@@ -58,16 +58,39 @@
             ]
           },
           "Query": null,
-          "OriginalRequest": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1lc3NhZ2VzIjpbeyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJIaSJ9XSwicmVhc29uaW5nX2VmZm9ydCI6ImhpZ2giLCJ0ZW1wZXJhdHVyZSI6MC4yfQ==",
+          "OriginalRequest": {
+            "model": "gpt-oss:120b",
+            "messages": [
+              {
+                "role": "user",
+                "content": "Hi"
+              }
+            ],
+            "reasoning_effort": "high",
+            "temperature": 0.2
+          },
           "SourceFormat": "openai",
-          "Payload": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1lc3NhZ2VzIjpbeyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJIaSJ9XSwicmVhc29uaW5nX2VmZm9ydCI6ImhpZ2giLCJ0ZW1wZXJhdHVyZSI6MC4yfQ==",
+          "Payload": {
+            "model": "gpt-oss:120b",
+            "messages": [
+              {
+                "role": "user",
+                "content": "Hi"
+              }
+            ],
+            "reasoning_effort": "high",
+            "temperature": 0.2
+          },
           "Metadata": {
             "request_path": "/v1/chat/completions",
             "requested_model": "ollama/gpt-oss:120b",
             "selected_auth_id": "k1.json",
             "selected_auth_index": "idx-1"
           },
-          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "StorageJSON": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
           "AuthMetadata": {
             "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
             "type": "ollama"
@@ -147,7 +170,52 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJpdGVtcyI6W3siaWQiOiIxIiwicmVxdWVzdF9pZCI6InRyYWNlLWVycm9yX3N0cmluZ19ib2R5IiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9jaGF0L2NvbXBsZXRpb25zIiwibW9kZWwiOiJvbGxhbWEvZ3B0LW9zczoxMjBiIiwidXBzdHJlYW1fbW9kZWwiOiJncHQtb3NzOjEyMGIiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsInN0cmVhbSI6ZmFsc2UsInN0YXR1cyI6ImVycm9yIiwiaHR0cF9zdGF0dXMiOjQwMCwiY3JlZGVudGlhbCI6Im9sbGFtYeKApmFhYWEiLCJhdXRoX2lkIjoiazEuanNvbiIsImR1cmF0aW9uX21zIjoiPHZvbGF0aWxlPiIsImlucHV0X3Rva2VucyI6MCwib3V0cHV0X3Rva2VucyI6MCwiY2FjaGVkX3Rva2VucyI6MCwiZXJyb3JfY29kZSI6InVwc3RyZWFtXzQwMCIsImVycm9yIjoib2xsYW1hOiBtZXNzYWdlcyBtdXN0IG5vdCBiZSBlbXB0eSIsImVycm9yX3BoYXNlIjoicmVxdWVzdCIsImNsaWVudF9wYXRoIjoiL3YxL2NoYXQvY29tcGxldGlvbnMiLCJ1c2VyX2FnZW50Ijoic25hcHNob3QtY2xpZW50LzEuMCIsImF1dGhfaW5kZXgiOiJpZHgtMSIsImVncmVzcyI6ImVudiIsInVwc3RyZWFtX3N0YXR1cyI6NDAwLCJhdHRlbXB0cyI6MX1dLCJ0b3RhbCI6MSwib2Zmc2V0IjowLCJyZXRlbnRpb24iOjEwMDAwMCwicmV0ZW50aW9uX2RheXMiOjMwLCJzdW1tYXJ5Ijp7InJlcXVlc3RzIjoxLCJzdWNjZXNzIjowLCJmYWlsZWQiOjEsImlucHV0X3Rva2VucyI6MCwib3V0cHV0X3Rva2VucyI6MCwiY2FjaGVkX3Rva2VucyI6MCwiY2FjaGVfaGl0X3JhdGUiOm51bGwsIm91dHB1dF90b2tlbnNfcGVyX3NlY29uZCI6Ijx2b2xhdGlsZT4iLCJlMmVfdG9rZW5zX3Blcl9zZWNvbmQiOiI8dm9sYXRpbGU+In19"
+            "Body": {
+              "items": [
+                {
+                  "id": "1",
+                  "request_id": "trace-error_string_body",
+                  "time": "<volatile>",
+                  "endpoint": "/v1/chat/completions",
+                  "model": "ollama/gpt-oss:120b",
+                  "upstream_model": "gpt-oss:120b",
+                  "reasoning_effort": "high",
+                  "stream": false,
+                  "status": "error",
+                  "http_status": 400,
+                  "credential": "ollama…aaaa",
+                  "auth_id": "k1.json",
+                  "duration_ms": "<volatile>",
+                  "input_tokens": 0,
+                  "output_tokens": 0,
+                  "cached_tokens": 0,
+                  "error_code": "upstream_400",
+                  "error": "ollama: messages must not be empty",
+                  "error_phase": "request",
+                  "client_path": "/v1/chat/completions",
+                  "user_agent": "snapshot-client/1.0",
+                  "auth_index": "idx-1",
+                  "egress": "env",
+                  "upstream_status": 400,
+                  "attempts": 1
+                }
+              ],
+              "total": 1,
+              "offset": 0,
+              "retention": 100000,
+              "retention_days": 30,
+              "summary": {
+                "requests": 1,
+                "success": 0,
+                "failed": 1,
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "cached_tokens": 0,
+                "cache_hit_rate": null,
+                "output_tokens_per_second": "<volatile>",
+                "e2e_tokens_per_second": "<volatile>"
+              }
+            }
           }
         }
       }

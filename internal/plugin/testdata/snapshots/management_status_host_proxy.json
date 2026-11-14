@@ -60,7 +60,11 @@
           },
           "AuthID": "k1.json",
           "AuthProvider": "ollama",
-          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJwcm94eV91cmwiOiJkaXJlY3QiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "StorageJSON": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "proxy_url": "direct",
+            "type": "ollama"
+          },
           "Metadata": {
             "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
             "proxy_url": "direct",
@@ -218,7 +222,47 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJwbHVnaW4iOiJvbGxhbWEiLCJ2ZXJzaW9uIjoiOS45Ljktc25hcHNob3QiLCJub3ciOiIyMDI2LTExLTE0VDA4OjAwOjAwWiIsImNvbmZpZyI6eyJiYXNlX3VybCI6Int7VVBTVFJFQU19fSIsImRlZmF1bHRfcHJlZml4Ijoib2xsYW1hIiwiZm9yY2VfbW9kZWxfcHJlZml4Ijp0cnVlLCJtb2RlbHNfcmVmcmVzaF9taW51dGVzIjowLCJyZXF1ZXN0X3RpbWVvdXRfc2Vjb25kcyI6NjAwLCJzdHJlYW1faWRsZV90aW1lb3V0X3NlY29uZHMiOjMwMCwiZ2xvYmFsX3Byb3h5IjoiaHR0cDovL2FkbWluOnh4eHh4QHByb3h5LmV4YW1wbGU6MzEyOCJ9LCJjYXRhbG9nIjp7ImNvdW50IjoxLCJyZXZpc2lvbiI6ImY2ZDZiMDAxMjdlZThiODUiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoifSwiY3JlZGVudGlhbHMiOlt7ImF1dGhfaW5kZXgiOiJpZHgtMSIsImlkIjoiazEuanNvbiIsIm5hbWUiOiJrMS5qc29uIiwibGFiZWwiOiIiLCJrZXlfbWFza2VkIjoib2xsYW1h4oCmYWFhYSIsImRpc2FibGVkIjpmYWxzZSwidW5hdmFpbGFibGUiOmZhbHNlLCJwcmlvcml0eSI6MCwicHJveHlfdXJsIjoiZGlyZWN0IiwicHJlZml4IjpudWxsLCJlZmZlY3RpdmVfcHJlZml4Ijoib2xsYW1hIiwiYWxsX21vZGVscyI6dHJ1ZSwibW9kZWxzIjpbXSwicmVnaXN0ZXJlZF9tb2RlbHMiOjAsInJlZ2lzdGVyZWRfa25vd24iOnRydWUsInN1Y2Nlc3MiOjAsImZhaWxlZCI6MH1dfQ=="
+            "Body": {
+              "plugin": "ollama",
+              "version": "9.9.9-snapshot",
+              "now": "2026-01-02T03:04:05Z",
+              "config": {
+                "base_url": "{{UPSTREAM}}",
+                "default_prefix": "ollama",
+                "force_model_prefix": true,
+                "models_refresh_minutes": 0,
+                "request_timeout_seconds": 600,
+                "stream_idle_timeout_seconds": 300,
+                "global_proxy": "http://admin:xxxxx@proxy.example:3128"
+              },
+              "catalog": {
+                "count": 1,
+                "revision": "f6d6b00127ee8b85",
+                "fetched_at": "2026-01-02T03:04:05Z",
+                "checked_at": "2026-01-02T03:04:05Z"
+              },
+              "credentials": [
+                {
+                  "auth_index": "idx-1",
+                  "id": "k1.json",
+                  "name": "k1.json",
+                  "label": "",
+                  "key_masked": "ollama…aaaa",
+                  "disabled": false,
+                  "unavailable": false,
+                  "priority": 0,
+                  "proxy_url": "direct",
+                  "prefix": null,
+                  "effective_prefix": "ollama",
+                  "all_models": true,
+                  "models": [],
+                  "registered_models": 0,
+                  "registered_known": true,
+                  "success": 0,
+                  "failed": 0
+                }
+              ]
+            }
           }
         }
       }
@@ -254,7 +298,10 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJwcm94aWVzIjpbXSwiZ2xvYmFsX3Byb3h5IjoiaHR0cDovL2FkbWluOnh4eHh4QHByb3h5LmV4YW1wbGU6MzEyOCJ9"
+            "Body": {
+              "proxies": [],
+              "global_proxy": "http://admin:xxxxx@proxy.example:3128"
+            }
           }
         }
       }

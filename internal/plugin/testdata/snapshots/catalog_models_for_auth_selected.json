@@ -88,7 +88,15 @@
           },
           "AuthID": "k1.json",
           "AuthProvider": "ollama",
-          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJtb2RlbHMiOlsicXdlbjMtdmw6MjM1YiIsInJldGlyZWQ6N2IiXSwicHJlZml4Ijoib2MiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "StorageJSON": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "models": [
+              "qwen3-vl:235b",
+              "retired:7b"
+            ],
+            "prefix": "oc",
+            "type": "ollama"
+          },
           "Metadata": {
             "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
             "models": [
@@ -319,7 +327,51 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJwbHVnaW4iOiJvbGxhbWEiLCJ2ZXJzaW9uIjoiOS45Ljktc25hcHNob3QiLCJub3ciOiIyMDI2LTExLTE0VDA4OjAwOjAwWiIsImNvbmZpZyI6eyJiYXNlX3VybCI6Int7VVBTVFJFQU19fSIsImRlZmF1bHRfcHJlZml4Ijoib2xsYW1hIiwiZm9yY2VfbW9kZWxfcHJlZml4IjpmYWxzZSwibW9kZWxzX3JlZnJlc2hfbWludXRlcyI6MCwicmVxdWVzdF90aW1lb3V0X3NlY29uZHMiOjYwMCwic3RyZWFtX2lkbGVfdGltZW91dF9zZWNvbmRzIjozMDB9LCJjYXRhbG9nIjp7ImNvdW50IjozLCJyZXZpc2lvbiI6IjlkMmQ0ZDc3ODUwMTA3M2UiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoifSwiY3JlZGVudGlhbHMiOlt7ImF1dGhfaW5kZXgiOiJpZHgtMSIsImlkIjoiazEuanNvbiIsIm5hbWUiOiJrMS5qc29uIiwibGFiZWwiOiIiLCJrZXlfbWFza2VkIjoib2xsYW1h4oCmYWFhYSIsImRpc2FibGVkIjpmYWxzZSwidW5hdmFpbGFibGUiOmZhbHNlLCJwcmlvcml0eSI6MCwicHJlZml4Ijoib2MiLCJlZmZlY3RpdmVfcHJlZml4Ijoib2MiLCJhbGxfbW9kZWxzIjpmYWxzZSwibW9kZWxzIjpbInF3ZW4zLXZsOjIzNWIiLCJyZXRpcmVkOjdiIl0sIm1pc3NpbmdfbW9kZWxzIjpbInJldGlyZWQ6N2IiXSwicmVnaXN0ZXJlZF9tb2RlbHMiOjAsInJlZ2lzdGVyZWRfa25vd24iOnRydWUsInN1Y2Nlc3MiOjAsImZhaWxlZCI6MH1dfQ=="
+            "Body": {
+              "plugin": "ollama",
+              "version": "9.9.9-snapshot",
+              "now": "2026-01-02T03:04:05Z",
+              "config": {
+                "base_url": "{{UPSTREAM}}",
+                "default_prefix": "ollama",
+                "force_model_prefix": false,
+                "models_refresh_minutes": 0,
+                "request_timeout_seconds": 600,
+                "stream_idle_timeout_seconds": 300
+              },
+              "catalog": {
+                "count": 3,
+                "revision": "9d2d4d778501073e",
+                "fetched_at": "2026-01-02T03:04:05Z",
+                "checked_at": "2026-01-02T03:04:05Z"
+              },
+              "credentials": [
+                {
+                  "auth_index": "idx-1",
+                  "id": "k1.json",
+                  "name": "k1.json",
+                  "label": "",
+                  "key_masked": "ollama…aaaa",
+                  "disabled": false,
+                  "unavailable": false,
+                  "priority": 0,
+                  "prefix": "oc",
+                  "effective_prefix": "oc",
+                  "all_models": false,
+                  "models": [
+                    "qwen3-vl:235b",
+                    "retired:7b"
+                  ],
+                  "missing_models": [
+                    "retired:7b"
+                  ],
+                  "registered_models": 0,
+                  "registered_known": true,
+                  "success": 0,
+                  "failed": 0
+                }
+              ]
+            }
           }
         }
       }

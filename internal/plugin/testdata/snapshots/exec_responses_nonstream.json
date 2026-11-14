@@ -58,16 +58,33 @@
             ]
           },
           "Query": null,
-          "OriginalRequest": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsImlucHV0IjoiSGkiLCJyZWFzb25pbmciOnsiZWZmb3J0IjoibG93In0sInN0b3JlIjpmYWxzZX0=",
+          "OriginalRequest": {
+            "model": "gpt-oss:120b",
+            "input": "Hi",
+            "reasoning": {
+              "effort": "low"
+            },
+            "store": false
+          },
           "SourceFormat": "openai-response",
-          "Payload": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsImlucHV0IjoiSGkiLCJyZWFzb25pbmciOnsiZWZmb3J0IjoibG93In0sInN0b3JlIjpmYWxzZX0=",
+          "Payload": {
+            "model": "gpt-oss:120b",
+            "input": "Hi",
+            "reasoning": {
+              "effort": "low"
+            },
+            "store": false
+          },
           "Metadata": {
             "request_path": "/v1/responses",
             "requested_model": "ollama/gpt-oss:120b",
             "selected_auth_id": "k1.json",
             "selected_auth_index": "idx-1"
           },
-          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "StorageJSON": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
           "AuthMetadata": {
             "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
             "type": "ollama"
@@ -109,7 +126,39 @@
         "response": {
           "ok": true,
           "result": {
-            "Payload": "eyJpZCI6InJlc3Bfc25hcDEiLCJvYmplY3QiOiJyZXNwb25zZSIsImNyZWF0ZWRfYXQiOjE3NjMxMDcyMDAsInN0YXR1cyI6ImNvbXBsZXRlZCIsIm1vZGVsIjoiZ3B0LW9zczoxMjBiIiwib3V0cHV0IjpbeyJ0eXBlIjoibWVzc2FnZSIsImlkIjoibXNnXzEiLCJzdGF0dXMiOiJjb21wbGV0ZWQiLCJyb2xlIjoiYXNzaXN0YW50IiwiY29udGVudCI6W3sidHlwZSI6Im91dHB1dF90ZXh0IiwidGV4dCI6IkhlbGxvISIsImFubm90YXRpb25zIjpbXX1dfV0sInVzYWdlIjp7ImlucHV0X3Rva2VucyI6MTAsIm91dHB1dF90b2tlbnMiOjYsInRvdGFsX3Rva2VucyI6MTYsImlucHV0X3Rva2Vuc19kZXRhaWxzIjp7ImNhY2hlZF90b2tlbnMiOjR9LCJvdXRwdXRfdG9rZW5zX2RldGFpbHMiOnsicmVhc29uaW5nX3Rva2VucyI6M319fQ==",
+            "Payload": {
+              "id": "resp_snap1",
+              "object": "response",
+              "created_at": 1763107200,
+              "status": "completed",
+              "model": "gpt-oss:120b",
+              "output": [
+                {
+                  "type": "message",
+                  "id": "msg_1",
+                  "status": "completed",
+                  "role": "assistant",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "text": "Hello!",
+                      "annotations": []
+                    }
+                  ]
+                }
+              ],
+              "usage": {
+                "input_tokens": 10,
+                "output_tokens": 6,
+                "total_tokens": 16,
+                "input_tokens_details": {
+                  "cached_tokens": 4
+                },
+                "output_tokens_details": {
+                  "reasoning_tokens": 3
+                }
+              }
+            },
             "Headers": {
               "Content-Type": [
                 "application/json; charset=utf-8"
@@ -154,7 +203,53 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJpdGVtcyI6W3siaWQiOiIxIiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9yZXNwb25zZXMiLCJtb2RlbCI6Im9sbGFtYS9ncHQtb3NzOjEyMGIiLCJ1cHN0cmVhbV9tb2RlbCI6ImdwdC1vc3M6MTIwYiIsInNlcnZlZF9tb2RlbCI6ImdwdC1vc3M6MTIwYiIsInJlYXNvbmluZ19lZmZvcnQiOiJsb3ciLCJzdHJlYW0iOmZhbHNlLCJzdGF0dXMiOiJzdWNjZXNzIiwiaHR0cF9zdGF0dXMiOjIwMCwiY3JlZGVudGlhbCI6Im9sbGFtYeKApmFhYWEiLCJhdXRoX2lkIjoiazEuanNvbiIsImR1cmF0aW9uX21zIjoiPHZvbGF0aWxlPiIsImlucHV0X3Rva2VucyI6MTAsIm91dHB1dF90b2tlbnMiOjYsImNhY2hlZF90b2tlbnMiOjQsInJlYXNvbmluZ190b2tlbnMiOjMsImNsaWVudF9wYXRoIjoiL3YxL3Jlc3BvbnNlcyIsInVzZXJfYWdlbnQiOiJzbmFwc2hvdC1jbGllbnQvMS4wIiwiYXV0aF9pbmRleCI6ImlkeC0xIiwiZWdyZXNzIjoiZW52IiwidXBzdHJlYW1fc3RhdHVzIjoyMDAsInVwc3RyZWFtX3JlcXVlc3RfaWQiOiJ1cC1yZXEtMiIsImZpbmlzaF9yZWFzb24iOiJjb21wbGV0ZWQiLCJ1c2FnZV9yZXBvcnRlZCI6dHJ1ZSwiYXR0ZW1wdHMiOjF9XSwidG90YWwiOjEsIm9mZnNldCI6MCwicmV0ZW50aW9uIjoxMDAwMDAsInJldGVudGlvbl9kYXlzIjozMCwic3VtbWFyeSI6eyJyZXF1ZXN0cyI6MSwic3VjY2VzcyI6MSwiZmFpbGVkIjowLCJpbnB1dF90b2tlbnMiOjEwLCJvdXRwdXRfdG9rZW5zIjo2LCJjYWNoZWRfdG9rZW5zIjo0LCJjYWNoZV9oaXRfcmF0ZSI6MC40LCJvdXRwdXRfdG9rZW5zX3Blcl9zZWNvbmQiOiI8dm9sYXRpbGU+IiwiZTJlX3Rva2Vuc19wZXJfc2Vjb25kIjoiPHZvbGF0aWxlPiJ9fQ=="
+            "Body": {
+              "items": [
+                {
+                  "id": "1",
+                  "time": "<volatile>",
+                  "endpoint": "/v1/responses",
+                  "model": "ollama/gpt-oss:120b",
+                  "upstream_model": "gpt-oss:120b",
+                  "served_model": "gpt-oss:120b",
+                  "reasoning_effort": "low",
+                  "stream": false,
+                  "status": "success",
+                  "http_status": 200,
+                  "credential": "ollama…aaaa",
+                  "auth_id": "k1.json",
+                  "duration_ms": "<volatile>",
+                  "input_tokens": 10,
+                  "output_tokens": 6,
+                  "cached_tokens": 4,
+                  "reasoning_tokens": 3,
+                  "client_path": "/v1/responses",
+                  "user_agent": "snapshot-client/1.0",
+                  "auth_index": "idx-1",
+                  "egress": "env",
+                  "upstream_status": 200,
+                  "upstream_request_id": "up-req-2",
+                  "finish_reason": "completed",
+                  "usage_reported": true,
+                  "attempts": 1
+                }
+              ],
+              "total": 1,
+              "offset": 0,
+              "retention": 100000,
+              "retention_days": 30,
+              "summary": {
+                "requests": 1,
+                "success": 1,
+                "failed": 0,
+                "input_tokens": 10,
+                "output_tokens": 6,
+                "cached_tokens": 4,
+                "cache_hit_rate": 0.4,
+                "output_tokens_per_second": "<volatile>",
+                "e2e_tokens_per_second": "<volatile>"
+              }
+            }
           }
         }
       }

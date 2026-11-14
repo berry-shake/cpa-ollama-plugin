@@ -139,7 +139,10 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJlcnJvciI6InVwc3RyZWFtXzQwMSIsIm1lc3NhZ2UiOiJvbGxhbWE6IHVuYXV0aG9yaXplZCJ9"
+            "Body": {
+              "error": "upstream_401",
+              "message": "ollama: unauthorized"
+            }
           }
         }
       }
@@ -247,7 +250,10 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJlcnJvciI6InVwc3RyZWFtXzUwMCIsIm1lc3NhZ2UiOiJvbGxhbWE6IGRvd24ifQ=="
+            "Body": {
+              "error": "upstream_500",
+              "message": "ollama: down"
+            }
           }
         }
       }

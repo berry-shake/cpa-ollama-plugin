@@ -83,7 +83,10 @@
           },
           "AuthID": "k1.json",
           "AuthProvider": "ollama",
-          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "StorageJSON": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
           "Metadata": {
             "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
             "type": "ollama"
@@ -280,7 +283,10 @@
           },
           "AuthID": "k1.json",
           "AuthProvider": "ollama",
-          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "StorageJSON": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
           "Metadata": {
             "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
             "type": "ollama"
@@ -407,7 +413,76 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJjYXRhbG9nIjp7ImNvdW50IjozLCJyZXZpc2lvbiI6IjlkMmQ0ZDc3ODUwMTA3M2UiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoifSwibW9kZWxzIjpbeyJpZCI6ImVtYmVkLXNuYXA6MWIiLCJjYXBhYmlsaXRpZXMiOlsiZW1iZWRkaW5nIl0sImNoYXQiOmZhbHNlLCJjb250ZXh0X2xlbmd0aCI6MTMxMDcyLCJmYW1pbHkiOiJzbmFwZmFtIiwicGFyYW1ldGVyX3NpemUiOiIxMTYuOEIiLCJxdWFudGl6YXRpb24iOiJNWEZQNCIsInNpemUiOjEwMDAwMDAsIm1vZGlmaWVkX2F0IjoiMjAyNS0wMS0wMlQwMzowNDowNVoiLCJ0aGlua2luZ19sZXZlbHMiOlsibG93IiwibWVkaXVtIiwiaGlnaCJdLCJ0aGlua2luZ19kZWZhdWx0IjoibWVkaXVtIn0seyJpZCI6ImdwdC1vc3M6MTIwYiIsImNhcGFiaWxpdGllcyI6WyJjb21wbGV0aW9uIiwidG9vbHMiLCJ0aGlua2luZyJdLCJjaGF0Ijp0cnVlLCJjb250ZXh0X2xlbmd0aCI6MTMxMDcyLCJmYW1pbHkiOiJzbmFwZmFtIiwicGFyYW1ldGVyX3NpemUiOiIxMTYuOEIiLCJxdWFudGl6YXRpb24iOiJNWEZQNCIsInNpemUiOjY1MzY5ODE4OTQxLCJtb2RpZmllZF9hdCI6IjIwMjUtMDgtMDVUMTI6MDA6MDBaIiwidGhpbmtpbmdfbGV2ZWxzIjpbImxvdyIsIm1lZGl1bSIsImhpZ2giXSwidGhpbmtpbmdfZGVmYXVsdCI6Im1lZGl1bSJ9LHsiaWQiOiJxd2VuMy12bDoyMzViIiwiY2FwYWJpbGl0aWVzIjpbImNvbXBsZXRpb24iLCJ2aXNpb24iXSwiY2hhdCI6dHJ1ZSwiY29udGV4dF9sZW5ndGgiOjEzMTA3MiwiZmFtaWx5Ijoic25hcGZhbSIsInBhcmFtZXRlcl9zaXplIjoiMTE2LjhCIiwicXVhbnRpemF0aW9uIjoiTVhGUDQiLCJzaXplIjoxMjUwMDAwMDAwMDAsIm1vZGlmaWVkX2F0IjoiMjAyNS0xMC0wMVQwMDowMDowMFoiLCJ0aGlua2luZ19sZXZlbHMiOlsibG93IiwibWVkaXVtIiwiaGlnaCJdLCJ0aGlua2luZ19kZWZhdWx0IjoibWVkaXVtIn1dfQ=="
+            "Body": {
+              "catalog": {
+                "count": 3,
+                "revision": "9d2d4d778501073e",
+                "fetched_at": "2026-01-02T03:04:05Z",
+                "checked_at": "2026-01-02T03:04:05Z"
+              },
+              "models": [
+                {
+                  "id": "embed-snap:1b",
+                  "capabilities": [
+                    "embedding"
+                  ],
+                  "chat": false,
+                  "context_length": 131072,
+                  "family": "snapfam",
+                  "parameter_size": "116.8B",
+                  "quantization": "MXFP4",
+                  "size": 1000000,
+                  "modified_at": "2025-01-02T03:04:05Z",
+                  "thinking_levels": [
+                    "low",
+                    "medium",
+                    "high"
+                  ],
+                  "thinking_default": "medium"
+                },
+                {
+                  "id": "gpt-oss:120b",
+                  "capabilities": [
+                    "completion",
+                    "tools",
+                    "thinking"
+                  ],
+                  "chat": true,
+                  "context_length": 131072,
+                  "family": "snapfam",
+                  "parameter_size": "116.8B",
+                  "quantization": "MXFP4",
+                  "size": 65369818941,
+                  "modified_at": "2025-08-05T12:00:00Z",
+                  "thinking_levels": [
+                    "low",
+                    "medium",
+                    "high"
+                  ],
+                  "thinking_default": "medium"
+                },
+                {
+                  "id": "qwen3-vl:235b",
+                  "capabilities": [
+                    "completion",
+                    "vision"
+                  ],
+                  "chat": true,
+                  "context_length": 131072,
+                  "family": "snapfam",
+                  "parameter_size": "116.8B",
+                  "quantization": "MXFP4",
+                  "size": 125000000000,
+                  "modified_at": "2025-10-01T00:00:00Z",
+                  "thinking_levels": [
+                    "low",
+                    "medium",
+                    "high"
+                  ],
+                  "thinking_default": "medium"
+                }
+              ]
+            }
           }
         }
       }

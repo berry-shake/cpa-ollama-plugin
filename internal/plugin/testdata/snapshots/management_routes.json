@@ -57,7 +57,7 @@
               {
                 "method": "GET",
                 "path": "/v0/management/plugins/ollama/logs",
-                "description": "Request log, newest first (?search=\u0026status=all|success|error\u0026from=\u0026to=\u0026request_id=\u0026limit=\u0026offset=), with a summary."
+                "description": "Request log, newest first (?search=&status=all|success|error&from=&to=&request_id=&limit=&offset=), with a summary."
               },
               {
                 "method": "DELETE",
@@ -112,7 +112,7 @@
               },
               {
                 "path": "/flag.svg",
-                "description": "Country flag icon for egress checks (?cc=\u003cISO 3166-1 alpha-2\u003e)."
+                "description": "Country flag icon for egress checks (?cc=<ISO 3166-1 alpha-2>)."
               }
             ]
           }
@@ -150,7 +150,10 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJlcnJvciI6Im5vdF9mb3VuZCIsIm1lc3NhZ2UiOiJwbHVnaW4gcm91dGUgbm90IGZvdW5kIn0="
+            "Body": {
+              "error": "not_found",
+              "message": "plugin route not found"
+            }
           }
         }
       }
@@ -186,7 +189,10 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJlcnJvciI6Im1ldGhvZF9ub3RfYWxsb3dlZCIsIm1lc3NhZ2UiOiJtZXRob2Qgbm90IGFsbG93ZWQgb24gdGhpcyByb3V0ZSJ9"
+            "Body": {
+              "error": "method_not_allowed",
+              "message": "method not allowed on this route"
+            }
           }
         }
       }
@@ -226,7 +232,7 @@
                 "text/plain; charset=utf-8"
               ]
             },
-            "Body": "dW5rbm93biBjb3VudHJ5IGNvZGU="
+            "Body": "unknown country code"
           }
         }
       }

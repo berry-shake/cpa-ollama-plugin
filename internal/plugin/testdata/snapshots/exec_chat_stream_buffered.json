@@ -66,16 +66,37 @@
             ]
           },
           "Query": null,
-          "OriginalRequest": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsInN0cmVhbSI6dHJ1ZSwibWVzc2FnZXMiOlt7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6IkhpIn1dfQ==",
+          "OriginalRequest": {
+            "model": "gpt-oss:120b",
+            "stream": true,
+            "messages": [
+              {
+                "role": "user",
+                "content": "Hi"
+              }
+            ]
+          },
           "SourceFormat": "openai",
-          "Payload": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsInN0cmVhbSI6dHJ1ZSwibWVzc2FnZXMiOlt7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6IkhpIn1dfQ==",
+          "Payload": {
+            "model": "gpt-oss:120b",
+            "stream": true,
+            "messages": [
+              {
+                "role": "user",
+                "content": "Hi"
+              }
+            ]
+          },
           "Metadata": {
             "request_path": "/v1/chat/completions",
             "requested_model": "ollama/gpt-oss:120b",
             "selected_auth_id": "k1.json",
             "selected_auth_index": "idx-1"
           },
-          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "StorageJSON": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
           "AuthMetadata": {
             "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
             "type": "ollama"
@@ -127,27 +148,27 @@
             },
             "chunks": [
               {
-                "Payload": "ZGF0YTogeyJpZCI6ImNoYXRjbXBsLXNuYXAyIiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uLmNodW5rIiwiY3JlYXRlZCI6MTc2MzEwNzIwMCwibW9kZWwiOiJncHQtb3NzOjEyMGIiLCJjaG9pY2VzIjpbeyJpbmRleCI6MCwiZGVsdGEiOnsicm9sZSI6ImFzc2lzdGFudCJ9LCJmaW5pc2hfcmVhc29uIjpudWxsfV19Cgo=",
+                "Payload": "data: {\"id\":\"chatcmpl-snap2\",\"object\":\"chat.completion.chunk\",\"created\":1763107200,\"model\":\"gpt-oss:120b\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}]}\n\n",
                 "Err": null
               },
               {
-                "Payload": "ZGF0YTogeyJpZCI6ImNoYXRjbXBsLXNuYXAyIiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uLmNodW5rIiwiY3JlYXRlZCI6MTc2MzEwNzIwMCwibW9kZWwiOiJncHQtb3NzOjEyMGIiLCJjaG9pY2VzIjpbeyJpbmRleCI6MCwiZGVsdGEiOnsiY29udGVudCI6IkhlbCJ9LCJmaW5pc2hfcmVhc29uIjpudWxsfV19Cgo=",
+                "Payload": "data: {\"id\":\"chatcmpl-snap2\",\"object\":\"chat.completion.chunk\",\"created\":1763107200,\"model\":\"gpt-oss:120b\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hel\"},\"finish_reason\":null}]}\n\n",
                 "Err": null
               },
               {
-                "Payload": "ZGF0YTogeyJpZCI6ImNoYXRjbXBsLXNuYXAyIiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uLmNodW5rIiwiY3JlYXRlZCI6MTc2MzEwNzIwMCwibW9kZWwiOiJncHQtb3NzOjEyMGIiLCJjaG9pY2VzIjpbeyJpbmRleCI6MCwiZGVsdGEiOnsiY29udGVudCI6ImxvIn0sImZpbmlzaF9yZWFzb24iOm51bGx9XX0KCg==",
+                "Payload": "data: {\"id\":\"chatcmpl-snap2\",\"object\":\"chat.completion.chunk\",\"created\":1763107200,\"model\":\"gpt-oss:120b\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"lo\"},\"finish_reason\":null}]}\n\n",
                 "Err": null
               },
               {
-                "Payload": "ZGF0YTogeyJpZCI6ImNoYXRjbXBsLXNuYXAyIiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uLmNodW5rIiwiY3JlYXRlZCI6MTc2MzEwNzIwMCwibW9kZWwiOiJncHQtb3NzOjEyMGIiLCJjaG9pY2VzIjpbeyJpbmRleCI6MCwiZGVsdGEiOnt9LCJmaW5pc2hfcmVhc29uIjoic3RvcCJ9XX0KCg==",
+                "Payload": "data: {\"id\":\"chatcmpl-snap2\",\"object\":\"chat.completion.chunk\",\"created\":1763107200,\"model\":\"gpt-oss:120b\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}]}\n\n",
                 "Err": null
               },
               {
-                "Payload": "ZGF0YTogeyJpZCI6ImNoYXRjbXBsLXNuYXAyIiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uLmNodW5rIiwiY3JlYXRlZCI6MTc2MzEwNzIwMCwibW9kZWwiOiJncHQtb3NzOjEyMGIiLCJjaG9pY2VzIjpbXSwidXNhZ2UiOnsicHJvbXB0X3Rva2VucyI6MTIsImNvbXBsZXRpb25fdG9rZW5zIjoyLCJ0b3RhbF90b2tlbnMiOjE0fX0KCg==",
+                "Payload": "data: {\"id\":\"chatcmpl-snap2\",\"object\":\"chat.completion.chunk\",\"created\":1763107200,\"model\":\"gpt-oss:120b\",\"choices\":[],\"usage\":{\"prompt_tokens\":12,\"completion_tokens\":2,\"total_tokens\":14}}\n\n",
                 "Err": null
               },
               {
-                "Payload": "ZGF0YTogW0RPTkVdCgo=",
+                "Payload": "data: [DONE]\n\n",
                 "Err": null
               }
             ]
@@ -186,7 +207,54 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJpdGVtcyI6W3siaWQiOiIxIiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9jaGF0L2NvbXBsZXRpb25zIiwibW9kZWwiOiJvbGxhbWEvZ3B0LW9zczoxMjBiIiwidXBzdHJlYW1fbW9kZWwiOiJncHQtb3NzOjEyMGIiLCJzZXJ2ZWRfbW9kZWwiOiJncHQtb3NzOjEyMGIiLCJzdHJlYW0iOnRydWUsInN0YXR1cyI6InN1Y2Nlc3MiLCJodHRwX3N0YXR1cyI6MjAwLCJjcmVkZW50aWFsIjoib2xsYW1h4oCmYWFhYSIsImF1dGhfaWQiOiJrMS5qc29uIiwiZHVyYXRpb25fbXMiOiI8dm9sYXRpbGU+IiwidHRmdF9tcyI6Ijx2b2xhdGlsZT4iLCJpbnB1dF90b2tlbnMiOjEyLCJvdXRwdXRfdG9rZW5zIjoyLCJjYWNoZWRfdG9rZW5zIjowLCJjbGllbnRfcGF0aCI6Ii92MS9jaGF0L2NvbXBsZXRpb25zIiwidXNlcl9hZ2VudCI6InNuYXBzaG90LWNsaWVudC8xLjAiLCJhdXRoX2luZGV4IjoiaWR4LTEiLCJlZ3Jlc3MiOiJlbnYiLCJ1cHN0cmVhbV9zdGF0dXMiOjIwMCwidXBzdHJlYW1fcmVxdWVzdF9pZCI6InVwLXN0cmVhbS0xIiwiZmluaXNoX3JlYXNvbiI6InN0b3AiLCJmcmFtZXMiOjIsImxhc3RfZnJhbWVfbXMiOiI8dm9sYXRpbGU+IiwidXNhZ2VfcmVwb3J0ZWQiOnRydWUsImF0dGVtcHRzIjoxfV0sInRvdGFsIjoxLCJvZmZzZXQiOjAsInJldGVudGlvbiI6MTAwMDAwLCJyZXRlbnRpb25fZGF5cyI6MzAsInN1bW1hcnkiOnsicmVxdWVzdHMiOjEsInN1Y2Nlc3MiOjEsImZhaWxlZCI6MCwiaW5wdXRfdG9rZW5zIjoxMiwib3V0cHV0X3Rva2VucyI6MiwiY2FjaGVkX3Rva2VucyI6MCwiY2FjaGVfaGl0X3JhdGUiOjAsIm91dHB1dF90b2tlbnNfcGVyX3NlY29uZCI6Ijx2b2xhdGlsZT4iLCJlMmVfdG9rZW5zX3Blcl9zZWNvbmQiOiI8dm9sYXRpbGU+In19"
+            "Body": {
+              "items": [
+                {
+                  "id": "1",
+                  "time": "<volatile>",
+                  "endpoint": "/v1/chat/completions",
+                  "model": "ollama/gpt-oss:120b",
+                  "upstream_model": "gpt-oss:120b",
+                  "served_model": "gpt-oss:120b",
+                  "stream": true,
+                  "status": "success",
+                  "http_status": 200,
+                  "credential": "ollama…aaaa",
+                  "auth_id": "k1.json",
+                  "duration_ms": "<volatile>",
+                  "ttft_ms": "<volatile>",
+                  "input_tokens": 12,
+                  "output_tokens": 2,
+                  "cached_tokens": 0,
+                  "client_path": "/v1/chat/completions",
+                  "user_agent": "snapshot-client/1.0",
+                  "auth_index": "idx-1",
+                  "egress": "env",
+                  "upstream_status": 200,
+                  "upstream_request_id": "up-stream-1",
+                  "finish_reason": "stop",
+                  "frames": 2,
+                  "last_frame_ms": "<volatile>",
+                  "usage_reported": true,
+                  "attempts": 1
+                }
+              ],
+              "total": 1,
+              "offset": 0,
+              "retention": 100000,
+              "retention_days": 30,
+              "summary": {
+                "requests": 1,
+                "success": 1,
+                "failed": 0,
+                "input_tokens": 12,
+                "output_tokens": 2,
+                "cached_tokens": 0,
+                "cache_hit_rate": 0,
+                "output_tokens_per_second": "<volatile>",
+                "e2e_tokens_per_second": "<volatile>"
+              }
+            }
           }
         }
       }

@@ -174,7 +174,23 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJjYXRhbG9nIjp7ImNvdW50IjoxLCJyZXZpc2lvbiI6IjdlZGI2OWNhOTFkNWY1MTUiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJkZXRhaWxfZXJyb3JzIjoxfSwibW9kZWxzIjpbeyJpZCI6ImdwdC1vc3M6MTIwYiIsImNoYXQiOnRydWUsInNpemUiOjY1MzY5ODE4OTQxLCJtb2RpZmllZF9hdCI6IjIwMjUtMDgtMDVUMTI6MDA6MDBaIn1dfQ=="
+            "Body": {
+              "catalog": {
+                "count": 1,
+                "revision": "7edb69ca91d5f515",
+                "fetched_at": "2026-01-02T03:04:05Z",
+                "checked_at": "2026-01-02T03:04:05Z",
+                "detail_errors": 1
+              },
+              "models": [
+                {
+                  "id": "gpt-oss:120b",
+                  "chat": true,
+                  "size": 65369818941,
+                  "modified_at": "2025-08-05T12:00:00Z"
+                }
+              ]
+            }
           }
         }
       }
@@ -284,7 +300,25 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJjYXRhbG9nIjp7ImNvdW50IjoxLCJyZXZpc2lvbiI6IjYyZTc0N2M5ZGVkNTg1MzUiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoifSwibW9kZWxzIjpbeyJpZCI6ImdwdC1vc3M6MTIwYiIsImNhcGFiaWxpdGllcyI6WyJjb21wbGV0aW9uIl0sImNoYXQiOnRydWUsInNpemUiOjY1MzY5ODE4OTQxLCJtb2RpZmllZF9hdCI6IjIwMjUtMDgtMDVUMTI6MDA6MDBaIn1dfQ=="
+            "Body": {
+              "catalog": {
+                "count": 1,
+                "revision": "62e747c9ded58535",
+                "fetched_at": "2026-01-02T03:04:05Z",
+                "checked_at": "2026-01-02T03:04:05Z"
+              },
+              "models": [
+                {
+                  "id": "gpt-oss:120b",
+                  "capabilities": [
+                    "completion"
+                  ],
+                  "chat": true,
+                  "size": 65369818941,
+                  "modified_at": "2025-08-05T12:00:00Z"
+                }
+              ]
+            }
           }
         }
       }

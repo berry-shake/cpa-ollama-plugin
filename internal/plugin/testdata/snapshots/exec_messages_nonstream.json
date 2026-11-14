@@ -61,16 +61,45 @@
             ]
           },
           "Query": null,
-          "OriginalRequest": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1heF90b2tlbnMiOjI1NiwibWVzc2FnZXMiOlt7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6IkhpIn1dLCJ0aGlua2luZyI6eyJ0eXBlIjoiZW5hYmxlZCIsImJ1ZGdldF90b2tlbnMiOjEwMjR9fQ==",
+          "OriginalRequest": {
+            "model": "gpt-oss:120b",
+            "max_tokens": 256,
+            "messages": [
+              {
+                "role": "user",
+                "content": "Hi"
+              }
+            ],
+            "thinking": {
+              "type": "enabled",
+              "budget_tokens": 1024
+            }
+          },
           "SourceFormat": "claude",
-          "Payload": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1heF90b2tlbnMiOjI1NiwibWVzc2FnZXMiOlt7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6IkhpIn1dLCJ0aGlua2luZyI6eyJ0eXBlIjoiZW5hYmxlZCIsImJ1ZGdldF90b2tlbnMiOjEwMjR9fQ==",
+          "Payload": {
+            "model": "gpt-oss:120b",
+            "max_tokens": 256,
+            "messages": [
+              {
+                "role": "user",
+                "content": "Hi"
+              }
+            ],
+            "thinking": {
+              "type": "enabled",
+              "budget_tokens": 1024
+            }
+          },
           "Metadata": {
             "request_path": "/v1/messages",
             "requested_model": "ollama/gpt-oss:120b",
             "selected_auth_id": "k1.json",
             "selected_auth_index": "idx-1"
           },
-          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "StorageJSON": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
           "AuthMetadata": {
             "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
             "type": "ollama"
@@ -118,7 +147,26 @@
         "response": {
           "ok": true,
           "result": {
-            "Payload": "eyJpZCI6Im1zZ19zbmFwMSIsInR5cGUiOiJtZXNzYWdlIiwicm9sZSI6ImFzc2lzdGFudCIsIm1vZGVsIjoiZ3B0LW9zczoxMjBiIiwiY29udGVudCI6W3sidHlwZSI6InRleHQiLCJ0ZXh0IjoiSGVsbG8hIn1dLCJzdG9wX3JlYXNvbiI6ImVuZF90dXJuIiwic3RvcF9zZXF1ZW5jZSI6bnVsbCwidXNhZ2UiOnsiaW5wdXRfdG9rZW5zIjoyMCwib3V0cHV0X3Rva2VucyI6NywiY2FjaGVfcmVhZF9pbnB1dF90b2tlbnMiOjUsImNhY2hlX2NyZWF0aW9uX2lucHV0X3Rva2VucyI6MX19",
+            "Payload": {
+              "id": "msg_snap1",
+              "type": "message",
+              "role": "assistant",
+              "model": "gpt-oss:120b",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Hello!"
+                }
+              ],
+              "stop_reason": "end_turn",
+              "stop_sequence": null,
+              "usage": {
+                "input_tokens": 20,
+                "output_tokens": 7,
+                "cache_read_input_tokens": 5,
+                "cache_creation_input_tokens": 1
+              }
+            },
             "Headers": {
               "Content-Type": [
                 "application/json; charset=utf-8"
@@ -160,7 +208,52 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJpdGVtcyI6W3siaWQiOiIxIiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9tZXNzYWdlcyIsIm1vZGVsIjoib2xsYW1hL2dwdC1vc3M6MTIwYiIsInVwc3RyZWFtX21vZGVsIjoiZ3B0LW9zczoxMjBiIiwic2VydmVkX21vZGVsIjoiZ3B0LW9zczoxMjBiIiwicmVhc29uaW5nX2VmZm9ydCI6ImJ1ZGdldCAxMDI0Iiwic3RyZWFtIjpmYWxzZSwic3RhdHVzIjoic3VjY2VzcyIsImh0dHBfc3RhdHVzIjoyMDAsImNyZWRlbnRpYWwiOiJvbGxhbWHigKZhYWFhIiwiYXV0aF9pZCI6ImsxLmpzb24iLCJkdXJhdGlvbl9tcyI6Ijx2b2xhdGlsZT4iLCJpbnB1dF90b2tlbnMiOjI2LCJvdXRwdXRfdG9rZW5zIjo3LCJjYWNoZWRfdG9rZW5zIjo1LCJjYWNoZV93cml0ZV90b2tlbnMiOjEsImNsaWVudF9wYXRoIjoiL3YxL21lc3NhZ2VzIiwidXNlcl9hZ2VudCI6InNuYXBzaG90LWNsaWVudC8xLjAiLCJhdXRoX2luZGV4IjoiaWR4LTEiLCJlZ3Jlc3MiOiJlbnYiLCJ1cHN0cmVhbV9zdGF0dXMiOjIwMCwiZmluaXNoX3JlYXNvbiI6ImVuZF90dXJuIiwidXNhZ2VfcmVwb3J0ZWQiOnRydWUsImF0dGVtcHRzIjoxfV0sInRvdGFsIjoxLCJvZmZzZXQiOjAsInJldGVudGlvbiI6MTAwMDAwLCJyZXRlbnRpb25fZGF5cyI6MzAsInN1bW1hcnkiOnsicmVxdWVzdHMiOjEsInN1Y2Nlc3MiOjEsImZhaWxlZCI6MCwiaW5wdXRfdG9rZW5zIjoyNiwib3V0cHV0X3Rva2VucyI6NywiY2FjaGVkX3Rva2VucyI6NSwiY2FjaGVfaGl0X3JhdGUiOjAuMTkyMzA3NjkyMzA3NjkyMzIsIm91dHB1dF90b2tlbnNfcGVyX3NlY29uZCI6Ijx2b2xhdGlsZT4iLCJlMmVfdG9rZW5zX3Blcl9zZWNvbmQiOiI8dm9sYXRpbGU+In19"
+            "Body": {
+              "items": [
+                {
+                  "id": "1",
+                  "time": "<volatile>",
+                  "endpoint": "/v1/messages",
+                  "model": "ollama/gpt-oss:120b",
+                  "upstream_model": "gpt-oss:120b",
+                  "served_model": "gpt-oss:120b",
+                  "reasoning_effort": "budget 1024",
+                  "stream": false,
+                  "status": "success",
+                  "http_status": 200,
+                  "credential": "ollama…aaaa",
+                  "auth_id": "k1.json",
+                  "duration_ms": "<volatile>",
+                  "input_tokens": 26,
+                  "output_tokens": 7,
+                  "cached_tokens": 5,
+                  "cache_write_tokens": 1,
+                  "client_path": "/v1/messages",
+                  "user_agent": "snapshot-client/1.0",
+                  "auth_index": "idx-1",
+                  "egress": "env",
+                  "upstream_status": 200,
+                  "finish_reason": "end_turn",
+                  "usage_reported": true,
+                  "attempts": 1
+                }
+              ],
+              "total": 1,
+              "offset": 0,
+              "retention": 100000,
+              "retention_days": 30,
+              "summary": {
+                "requests": 1,
+                "success": 1,
+                "failed": 0,
+                "input_tokens": 26,
+                "output_tokens": 7,
+                "cached_tokens": 5,
+                "cache_hit_rate": 0.19230769230769232,
+                "output_tokens_per_second": "<volatile>",
+                "e2e_tokens_per_second": "<volatile>"
+              }
+            }
           }
         }
       }

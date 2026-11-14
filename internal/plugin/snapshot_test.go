@@ -1,86 +1,101 @@
 package plugin
 
-// TestSnapshots locks the plugin's behaviour at its RPC boundary before the
-// provider plugins move onto a shared core. Every fixture in
-// testdata/snapshots is replayed through New + Service.Call (the path CPA
-// takes through main.go) against a fake CPA host and a scripted httptest
-// upstream, and each step's output is compared with the fixture: every
-// upstream HTTP request (all headers as received, exact body), every host
-// callback (method + request) and the raw RPC response envelope.
+// TestSnapshots locks the plugin's behaviour at its RPC boundary. Every
+// fixture in testdata/snapshots is replayed through Service.Call against a
+// fake CPA host and a scripted httptest upstream (snapshot_host_test.go), and
+// every upstream request, host callback and RPC response is compared with
+// the fixture. The format is shared by the provider plugins and
+// cpa-provider-core's coretest package; see its README.
 //
-// Fixtures are the source of truth. `go test ./internal/plugin -run
-// TestSnapshots -update` rewrites only steps[].output; cases in
-// snapshotCases() without a fixture file are written from the table first.
+//	go test ./internal/plugin -run TestSnapshots           # compare
+//	go test ./internal/plugin -run TestSnapshots -update   # rewrite outputs
 //
-// Setup: the service is built by snapshotNewService (snapshot_seams_test.go),
-// setup.credentials are stored as auth files in the fake host (auth_index
-// idx-1, idx-2, ... in order) and plugin.register is called with setup.config
-// as config_yaml (JSON is valid YAML) and schema_version
-// pluginabi.SchemaVersion. Setup activity is not recorded.
+// Fixtures are the source of truth: -update rewrites only steps[].output
+// (and writes a skeleton for a case of snapshotSkeletons that has no fixture
+// yet); setup, upstream_script and steps[].rpc are never touched.
 //
-// Placeholders in inputs (config, credential fields, step requests, also
-// inside base64 []byte fields): {{UPSTREAM}} is the httptest origin,
-// {{UPSTREAM_ADDR}} its host:port and {{DATA_DIR}} the per-run data dir.
+// Setup (not recorded): a Service is built with setup.version and the fake
+// host, its clock pinned and its refresh loop held back
+// (snapshot_seams_test.go); plugin.register is called with setup.config as
+// YAML (the subtree CPA passes) and schema_version pluginabi.SchemaVersion;
+// the catalog refresh register queues is dropped, so every case starts with
+// an empty catalog; setup.credentials are put in the fake host's auth
+// directory without any RPC (auth_index idx-1, idx-2, ... in order). Setup
+// must not reach the upstream.
 //
-// Upstream script: replies are matched in order per method+path (query
-// ignored); an unmatched request fails the case, and so does a reply that is
-// never used. The catalog loads model details (POST /api/show) four at a
-// time, so consecutive /api/show replies in a script must be identical.
+// Steps: each rpc is sent with Service.Call. The runner then waits for
+// background stream pumps to finish and, when the RPC queued a catalog
+// refresh (plugin.register / plugin.reconfigure), runs it synchronously
+// before capturing the step's output, or drops it when
+// setup.drop_queued_refresh is set.
 //
-// Normalisation rules (recorded outputs only):
-//   - The upstream origin http://127.0.0.1:PORT becomes {{UPSTREAM}}, the
-//     bare 127.0.0.1:PORT (an egress check's "source") {{UPSTREAM_ADDR}} and
-//     the data dir {{DATA_DIR}}, in every string.
-//   - Request log entries (objects with "duration_ms"): "time",
-//     "duration_ms", "ttft_ms" and "last_frame_ms" become "<volatile>";
-//     "output_tokens_per_second" and "e2e_tokens_per_second" are dropped,
-//     since they only exist when a call took more than 50 ms of wall time.
-//     Elsewhere (the log summary medians) those two become "<volatile>".
-//   - Proxy list entries (objects under "proxy" / "proxies"): the generated
-//     "id" and "created_at" become "<volatile>", as does every "proxy_id"
-//     and an egress check's "latency_ms".
-//   - Base64 []byte fields (Body, Payload, payload, StorageJSON,
-//     storage_json, OriginalRequest, RawJSON, config_yaml) are decoded,
-//     normalised by the same rules and re-encoded; untouched values keep
-//     their exact bytes.
-//   - Upstream requests: a run of consecutive POST /api/show requests is
-//     sorted by body (they arrive concurrently).
+// Upstream script: replies are matched in order per method+path (the query
+// is ignored); an unscripted request and a reply nobody asked for both fail
+// the test.
 //
-// Pinned instead of normalised (snapshot_seams_test.go): the service clock,
-// the background catalog refresh loop (never started) and the egress check
-// URLs (the fake upstream's /json). Async work is awaited deterministically:
-// after each step the runner waits for the stream pumps to finish.
+// Representation (lossless, the same for inputs and outputs):
+//   - Fields CPA carries as []byte, base64 in the RPC JSON (Payload,
+//     OriginalRequest, StorageJSON, storage_json, RawJSON, config_yaml, Body,
+//     ResponseBody, payload), are shown decoded: as a JSON object or array
+//     when the bytes are JSON that re-encodes byte for byte with
+//     encoding/json, otherwise as a string of the raw text. The runner
+//     re-encodes them before calling the plugin.
+//   - A response or host-call request that is not JSON, or does not
+//     re-encode byte for byte, is kept as a raw string.
+//   - Upstream request headers are exactly what the httptest server received
+//     (canonical keys, sorted); bodies are exact raw strings.
+//
+// Normalisation (the only values that may differ between runs):
+//   - The httptest upstream URL is written as {{UPSTREAM}}, its bare
+//     host:port as {{UPSTREAM_HOST}} and the per-run data directory as
+//     {{DATA_DIR}}, in inputs and outputs alike.
+//   - In management.handle responses: time, duration_ms, ttft_ms,
+//     last_frame_ms (request log wall clock and timers), created_at,
+//     proxy_id and the id of a proxy object (under "proxy" or "proxies")
+//     (proxy store clock and random IDs) and latency_ms (egress check) are
+//     replaced with "<volatile>" by name. output_tokens_per_second and
+//     e2e_tokens_per_second are removed from request log entries (objects
+//     with a duration_ms member; an entry only has them when its call took
+//     over 50 ms) and replaced with "<volatile>" elsewhere (the log
+//     summary's medians). Inside strings the same names are replaced
+//     textually.
+//   - A run of consecutive upstream requests to one of
+//     snapshotConcurrentPaths (made concurrently by the plugin) is sorted by
+//     body.
+//   - Nothing else: the service clock is pinned to snapshotClock, so status,
+//     catalog, account and auth refresh times are compared exactly.
 
 import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
 	"net/http"
-	"net/http/httptest"
-	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
+	"slices"
 	"sort"
 	"strings"
-	"sync"
 	"testing"
+	"time"
+	"unicode/utf8"
 
 	"github.com/router-for-me/CLIProxyAPI/v8/sdk/pluginabi"
-	"github.com/router-for-me/CLIProxyAPI/v8/sdk/pluginapi"
+	"gopkg.in/yaml.v3"
 )
 
-var updateSnapshots = flag.Bool("update", false, "rewrite steps[].output of the RPC snapshot fixtures")
+var updateSnapshots = flag.Bool("update", false, "rewrite the outputs of the RPC snapshot fixtures")
 
-const (
-	snapshotDir      = "testdata/snapshots"
-	snapshotVolatile = `"<volatile>"`
-)
+const snapshotDir = "testdata/snapshots"
 
-// Fixture format, shared by the four provider plugins. Field order is the
-// key order of the files.
+// snapshotClock is the time the service clock is pinned to. It shows up as
+// the status "now", catalog and account fetch times and the auth refresh
+// horizon, and it keeps account caches from expiring inside a case.
+var snapshotClock = time.Date(2026, 1, 2, 3, 4, 5, 0, time.UTC)
 
 type snapshotFixture struct {
 	Case           string          `json:"case"`
@@ -94,6 +109,9 @@ type snapshotSetup struct {
 	Version     string               `json:"version"`
 	Config      json.RawMessage      `json:"config"`
 	Credentials []snapshotCredential `json:"credentials"`
+	// DropQueuedRefresh drops the catalog refresh a step queues instead of
+	// running it after the step.
+	DropQueuedRefresh bool `json:"drop_queued_refresh,omitempty"`
 }
 
 type snapshotCredential struct {
@@ -101,18 +119,9 @@ type snapshotCredential struct {
 	Fields json.RawMessage `json:"fields"`
 }
 
-type snapshotReply struct {
-	Method string      `json:"method"`
-	Path   string      `json:"path"`
-	Status int         `json:"status"`
-	Header http.Header `json:"header"`
-	Body   string      `json:"body"`
-	Chunks []string    `json:"chunks"`
-}
-
 type snapshotStep struct {
 	RPC    snapshotRPC     `json:"rpc"`
-	Output *snapshotOutput `json:"output,omitempty"`
+	Output json.RawMessage `json:"output"`
 }
 
 type snapshotRPC struct {
@@ -126,771 +135,623 @@ type snapshotOutput struct {
 	Response         json.RawMessage           `json:"response"`
 }
 
-type snapshotUpstreamRequest struct {
-	Method string      `json:"method"`
-	Path   string      `json:"path"`
-	Query  string      `json:"query"`
-	Header http.Header `json:"header"`
-	Body   string      `json:"body"`
-}
-
 type snapshotHostCall struct {
 	Method  string          `json:"method"`
 	Request json.RawMessage `json:"request"`
 }
 
-// snapshotLifecycleRequest is CPA's plugin.register request.
-type snapshotLifecycleRequest struct {
+// cpaLifecycleRequest mirrors CPA's rpcLifecycleRequest.
+type cpaLifecycleRequest struct {
 	ConfigYAML         []byte `json:"config_yaml"`
 	SchemaVersion      uint32 `json:"schema_version"`
 	MultiAuthProviders bool   `json:"multi_auth_providers,omitempty"`
 }
 
 func TestSnapshots(t *testing.T) {
-	files, errGlob := filepath.Glob(filepath.Join(snapshotDir, "*.json"))
+	if *updateSnapshots {
+		writeMissingSnapshots(t)
+	}
+	paths, errGlob := filepath.Glob(filepath.Join(snapshotDir, "*.json"))
 	if errGlob != nil {
 		t.Fatal(errGlob)
 	}
-	onDisk := make(map[string]bool, len(files))
-	for _, file := range files {
-		onDisk[strings.TrimSuffix(filepath.Base(file), ".json")] = true
+	sort.Strings(paths)
+	if len(paths) == 0 {
+		t.Fatal("no snapshot fixtures; run go test ./internal/plugin -run TestSnapshots -update")
 	}
 	seen := map[string]bool{}
-	for _, fixture := range snapshotCases() {
-		if seen[fixture.Case] {
-			t.Fatalf("case %s is defined twice", fixture.Case)
+	for _, file := range paths {
+		fixture := loadSnapshot(t, file)
+		if want := strings.TrimSuffix(filepath.Base(file), ".json"); fixture.Case != want {
+			t.Errorf("%s: case is %q, want %q", file, fixture.Case, want)
 		}
 		seen[fixture.Case] = true
-		if onDisk[fixture.Case] {
-			continue
-		}
-		if !*updateSnapshots {
-			t.Errorf("fixture %s.json is missing; run go test ./internal/plugin -run TestSnapshots -update", fixture.Case)
-			continue
-		}
-		path := filepath.Join(snapshotDir, fixture.Case+".json")
-		if errWrite := writeSnapshotFixture(path, fixture); errWrite != nil {
-			t.Fatal(errWrite)
-		}
-		files = append(files, path)
+		t.Run(fixture.Case, func(t *testing.T) { runSnapshot(t, file, fixture) })
 	}
-	sort.Strings(files)
-	if len(files) == 0 {
-		t.Fatal("no snapshot fixtures")
-	}
-	for _, file := range files {
-		name := strings.TrimSuffix(filepath.Base(file), ".json")
-		t.Run(name, func(t *testing.T) { runSnapshotFixture(t, file) })
+	for _, fixture := range snapshotSkeletons(t) {
+		if !seen[fixture.Case] {
+			t.Errorf("case %s has no fixture; run go test ./internal/plugin -run TestSnapshots -update", fixture.Case)
+		}
 	}
 }
 
-func runSnapshotFixture(t *testing.T, path string) {
-	raw, errRead := os.ReadFile(path)
+func loadSnapshot(t *testing.T, file string) snapshotFixture {
+	t.Helper()
+	raw, errRead := os.ReadFile(file)
 	if errRead != nil {
 		t.Fatal(errRead)
 	}
 	var fixture snapshotFixture
 	if errUnmarshal := json.Unmarshal(raw, &fixture); errUnmarshal != nil {
-		t.Fatalf("decode %s: %v", path, errUnmarshal)
+		t.Fatalf("%s: %v", file, errUnmarshal)
 	}
-	if want := strings.TrimSuffix(filepath.Base(path), ".json"); fixture.Case != want {
-		t.Fatalf("fixture case %q does not match its file name %q", fixture.Case, want)
+	return fixture
+}
+
+// writeMissingSnapshots writes a skeleton for every case without a fixture.
+func writeMissingSnapshots(t *testing.T) {
+	t.Helper()
+	if errDir := os.MkdirAll(snapshotDir, 0o755); errDir != nil {
+		t.Fatal(errDir)
 	}
-
-	upstream := newSnapshotUpstream(fixture.UpstreamScript)
-	t.Cleanup(upstream.Close)
-	dataDir := t.TempDir()
-	addr := strings.TrimPrefix(upstream.URL, "http://")
-	toReal := snapshotRewriter{text: strings.NewReplacer("{{UPSTREAM}}", upstream.URL, "{{UPSTREAM_ADDR}}", addr, "{{DATA_DIR}}", dataDir).Replace}
-	normaliser := snapshotRewriter{text: strings.NewReplacer(upstream.URL, "{{UPSTREAM}}", addr, "{{UPSTREAM_ADDR}}", dataDir, "{{DATA_DIR}}").Replace, normalise: true}
-
-	host := &snapshotHost{}
-	svc := snapshotNewService(fixture.Setup.Version, host.call)
-	host.svc = svc
-	t.Cleanup(svc.Close)
-	snapshotSetEgressCheckURLs(svc, []string{upstream.URL + "/json"})
-
-	for _, cred := range fixture.Setup.Credentials {
-		fields := snapshotCompact(t, toReal.apply(cred.Fields))
-		if errSeed := host.seed(cred.Name, fields); errSeed != nil {
-			t.Fatalf("seed %s: %v", cred.Name, errSeed)
+	seen := map[string]bool{}
+	for _, fixture := range snapshotSkeletons(t) {
+		if seen[fixture.Case] {
+			t.Fatalf("case %s is defined twice", fixture.Case)
 		}
-	}
-	config := snapshotCompact(t, toReal.apply(fixture.Setup.Config))
-	register, _ := json.Marshal(snapshotLifecycleRequest{ConfigYAML: config, SchemaVersion: pluginabi.SchemaVersion, MultiAuthProviders: true})
-	if errRegister := snapshotDecodeResult(svc.Call(pluginabi.MethodPluginRegister, register), nil); errRegister != nil {
-		t.Fatalf("plugin.register: %v", errRegister)
-	}
-	snapshotWaitIdle(svc)
-	host.take()
-	if setup := upstream.take(); len(setup) > 0 {
-		t.Fatalf("setup made %d upstream requests", len(setup))
-	}
-
-	changed := false
-	for i, step := range fixture.Steps {
-		request := toReal.apply(step.RPC.Request)
-		response := svc.Call(step.RPC.Method, request)
-		snapshotWaitIdle(svc)
-		got := &snapshotOutput{
-			UpstreamRequests: normaliser.upstreamRequests(upstream.take()),
-			HostCalls:        normaliser.hostCalls(host.take()),
-			Response:         normaliser.apply(response),
-		}
-		if *updateSnapshots {
-			fixture.Steps[i].Output = got
-			changed = true
+		seen[fixture.Case] = true
+		file := filepath.Join(snapshotDir, fixture.Case+".json")
+		if _, errStat := os.Stat(file); errStat == nil {
 			continue
 		}
-		if step.Output == nil {
+		writeSnapshot(t, file, fixture)
+	}
+}
+
+func writeSnapshot(t *testing.T, file string, fixture snapshotFixture) {
+	t.Helper()
+	raw, errMarshal := json.Marshal(fixture)
+	if errMarshal != nil {
+		t.Fatal(errMarshal)
+	}
+	pretty := prettyJSON(t, raw)
+	if current, errRead := os.ReadFile(file); errRead == nil && bytes.Equal(current, pretty) {
+		return
+	}
+	if errWrite := os.WriteFile(file, pretty, 0o644); errWrite != nil {
+		t.Fatal(errWrite)
+	}
+}
+
+func runSnapshot(t *testing.T, file string, fixture snapshotFixture) {
+	run := newSnapshotRun(t, fixture)
+	outputs := make([]json.RawMessage, len(fixture.Steps))
+	for i, step := range fixture.Steps {
+		outputs[i] = run.step(i, step.RPC)
+	}
+	for _, key := range run.upstream.leftover() {
+		t.Errorf("scripted upstream reply for %s was never requested", key)
+	}
+	if *updateSnapshots {
+		if t.Failed() {
+			return
+		}
+		for i := range fixture.Steps {
+			fixture.Steps[i].Output = outputs[i]
+		}
+		writeSnapshot(t, file, fixture)
+		return
+	}
+	for i, step := range fixture.Steps {
+		if isNullJSON(step.Output) {
 			t.Errorf("step %d (%s) has no recorded output; run with -update", i, step.RPC.Method)
 			continue
 		}
-		want, errWant := snapshotEncode(step.Output)
-		have, errHave := snapshotEncode(got)
-		if errWant != nil || errHave != nil {
-			t.Fatalf("encode step %d: %v %v", i, errWant, errHave)
-		}
-		if !bytes.Equal(want, have) {
-			t.Errorf("step %d (%s) output changed\n--- want\n%s\n--- got\n%s", i, step.RPC.Method, want, have)
-		}
-	}
-	for _, problem := range upstream.problems() {
-		t.Error(problem)
-	}
-	if *updateSnapshots && changed && !t.Failed() {
-		if errWrite := writeSnapshotFixture(path, fixture); errWrite != nil {
-			t.Fatal(errWrite)
+		want, got := string(prettyJSON(t, step.Output)), string(prettyJSON(t, outputs[i]))
+		if want != got {
+			t.Errorf("step %d (%s) output differs (-fixture +actual):\n%s", i, step.RPC.Method, lineDiff(want, got))
 		}
 	}
 }
 
-func writeSnapshotFixture(path string, fixture snapshotFixture) error {
-	raw, errEncode := snapshotEncode(fixture)
-	if errEncode != nil {
-		return errEncode
-	}
-	if errDir := os.MkdirAll(filepath.Dir(path), 0o755); errDir != nil {
-		return errDir
-	}
-	return os.WriteFile(path, raw, 0o644)
+// snapshotRun is one replay of a fixture.
+type snapshotRun struct {
+	t        *testing.T
+	svc      *Service
+	host     *snapshotHost
+	upstream *snapshotUpstream
+	drop     bool
+	// toActual fills the placeholders of inputs; toPlaceholder puts them
+	// back into outputs.
+	toActual, toPlaceholder *strings.Replacer
 }
 
-// snapshotEncode is the fixture encoding: two-space indent, no HTML escaping.
-func snapshotEncode(v any) ([]byte, error) {
-	var buf bytes.Buffer
-	enc := json.NewEncoder(&buf)
-	enc.SetEscapeHTML(false)
-	enc.SetIndent("", "  ")
-	if errEncode := enc.Encode(v); errEncode != nil {
-		return nil, errEncode
-	}
-	return buf.Bytes(), nil
-}
-
-func snapshotCompact(t *testing.T, raw []byte) []byte {
+func newSnapshotRun(t *testing.T, fixture snapshotFixture) *snapshotRun {
 	t.Helper()
-	if len(bytes.TrimSpace(raw)) == 0 {
-		return []byte("{}")
+	dataDir := t.TempDir()
+	upstream := newSnapshotUpstream(fixture.UpstreamScript)
+	t.Cleanup(upstream.Close)
+	host := &snapshotHost{providerID: snapshotProviderID}
+	svc := snapshotNewService(fixture.Setup.Version, host.call, []string{upstream.URL + "/json"})
+	host.plugin = svc
+	t.Cleanup(svc.Close)
+
+	upstreamHost := strings.TrimPrefix(upstream.URL, "http://")
+	replacements := []string{upstream.URL, "{{UPSTREAM}}", upstreamHost, "{{UPSTREAM_HOST}}", dataDir, "{{DATA_DIR}}"}
+	if resolved, errResolve := filepath.EvalSymlinks(dataDir); errResolve == nil && resolved != dataDir {
+		replacements = append(replacements, resolved, "{{DATA_DIR}}")
 	}
-	var buf bytes.Buffer
-	if errCompact := json.Compact(&buf, raw); errCompact != nil {
-		t.Fatalf("compact %s: %v", raw, errCompact)
+	run := &snapshotRun{
+		t:             t,
+		svc:           svc,
+		host:          host,
+		upstream:      upstream,
+		drop:          fixture.Setup.DropQueuedRefresh,
+		toActual:      strings.NewReplacer("{{UPSTREAM}}", upstream.URL, "{{UPSTREAM_HOST}}", upstreamHost, "{{DATA_DIR}}", dataDir),
+		toPlaceholder: strings.NewReplacer(replacements...),
 	}
-	return buf.Bytes()
+
+	config := run.configYAML(fixture.Setup.Config)
+	register, _ := json.Marshal(cpaLifecycleRequest{ConfigYAML: config, SchemaVersion: pluginabi.SchemaVersion})
+	var envelope pluginabi.Envelope
+	if errUnmarshal := json.Unmarshal(svc.Call(pluginabi.MethodPluginRegister, register), &envelope); errUnmarshal != nil || !envelope.OK {
+		t.Fatalf("setup plugin.register failed: %+v %v", envelope.Error, errUnmarshal)
+	}
+	snapshotWaitIdle(svc)
+	snapshotDropQueuedRefresh(svc)
+	for _, cred := range fixture.Setup.Credentials {
+		host.seed(cred.Name, run.compactInput(cred.Fields))
+	}
+	host.takeCalls()
+	if requests, _ := upstream.take(); len(requests) > 0 {
+		t.Fatalf("setup reached the upstream: %+v", requests)
+	}
+	return run
 }
 
-// snapshotDecodeResult decodes a plugin or host envelope's result into out
-// (when non-nil) and turns a failed envelope into an error.
-func snapshotDecodeResult(raw []byte, out any) error {
-	var envelope pluginabi.Envelope
-	if errUnmarshal := json.Unmarshal(raw, &envelope); errUnmarshal != nil {
-		return fmt.Errorf("decode envelope %s: %w", raw, errUnmarshal)
-	}
-	if !envelope.OK {
-		if envelope.Error != nil {
-			return fmt.Errorf("%s: %s", envelope.Error.Code, envelope.Error.Message)
-		}
-		return fmt.Errorf("envelope not ok")
-	}
-	if out == nil || len(envelope.Result) == 0 {
+// configYAML turns the fixture's config object into the YAML CPA passes.
+func (r *snapshotRun) configYAML(raw json.RawMessage) []byte {
+	if isNullJSON(raw) {
 		return nil
 	}
-	return json.Unmarshal(envelope.Result, out)
+	var config map[string]any
+	if errUnmarshal := json.Unmarshal([]byte(r.toActual.Replace(string(raw))), &config); errUnmarshal != nil {
+		r.t.Fatalf("setup.config: %v", errUnmarshal)
+	}
+	out, errMarshal := yaml.Marshal(config)
+	if errMarshal != nil {
+		r.t.Fatalf("setup.config: %v", errMarshal)
+	}
+	return out
 }
 
-func snapshotOK(result any) []byte {
-	rawResult, _ := json.Marshal(result)
-	raw, _ := json.Marshal(pluginabi.Envelope{OK: true, Result: rawResult})
-	return raw
-}
-
-func snapshotFail(message string) []byte {
-	raw, _ := json.Marshal(pluginabi.Envelope{OK: false, Error: &pluginabi.Error{Code: "host_error", Message: message}})
-	return raw
-}
-
-// ---------------------------------------------------------------------------
-// Normalisation
-
-// snapshotBase64Keys are the []byte fields of the RPC types, which travel as
-// base64 strings.
-var snapshotBase64Keys = map[string]bool{
-	"Body": true, "Payload": true, "payload": true, "StorageJSON": true, "storage_json": true,
-	"OriginalRequest": true, "RawJSON": true, "config_yaml": true,
-}
-
-// snapshotRewriter rewrites JSON while keeping member order and the exact
-// bytes of every value it leaves alone. text is applied to every string;
-// normalise also applies the volatile-field rules.
-type snapshotRewriter struct {
-	text      func(string) string
-	normalise bool
-}
-
-func (w snapshotRewriter) apply(raw []byte) json.RawMessage {
-	if len(bytes.TrimSpace(raw)) == 0 {
-		return raw
-	}
-	if !json.Valid(raw) {
-		return snapshotString(w.text(string(raw)))
-	}
-	out, _ := w.rewrite(raw, "")
-	return append(json.RawMessage(nil), out...)
-}
-
-func (w snapshotRewriter) rewrite(raw []byte, context string) ([]byte, bool) {
-	trimmed := bytes.TrimSpace(raw)
-	if len(trimmed) == 0 {
-		return raw, false
-	}
-	switch trimmed[0] {
-	case '{':
-		return w.object(trimmed, context)
-	case '[':
-		return w.array(trimmed, context)
-	case '"':
-		var text string
-		if json.Unmarshal(trimmed, &text) != nil {
-			return raw, false
-		}
-		if replaced := w.text(text); replaced != text {
-			return snapshotString(replaced), true
-		}
-	}
-	return raw, false
-}
-
-type snapshotMember struct {
-	key   string
-	value []byte
-}
-
-func (w snapshotRewriter) object(raw []byte, context string) ([]byte, bool) {
-	dec := json.NewDecoder(bytes.NewReader(raw))
-	dec.UseNumber()
-	if _, errToken := dec.Token(); errToken != nil {
-		return raw, false
-	}
-	var members []snapshotMember
-	logEntry := false
-	for dec.More() {
-		token, errToken := dec.Token()
-		if errToken != nil {
-			return raw, false
-		}
-		key, _ := token.(string)
-		var value json.RawMessage
-		if errDecode := dec.Decode(&value); errDecode != nil {
-			return raw, false
-		}
-		members = append(members, snapshotMember{key: key, value: value})
-		if key == "duration_ms" {
-			logEntry = true
-		}
-	}
-	changed := false
-	out := make([]snapshotMember, 0, len(members))
-	for _, member := range members {
-		value, memberChanged, keep := w.member(member, context, logEntry)
-		changed = changed || memberChanged
-		if keep {
-			out = append(out, snapshotMember{key: member.key, value: value})
-		}
-	}
-	if !changed {
-		return raw, false
-	}
-	var buf bytes.Buffer
-	buf.WriteByte('{')
-	for i, member := range out {
-		if i > 0 {
-			buf.WriteByte(',')
-		}
-		buf.Write(snapshotString(member.key))
-		buf.WriteByte(':')
-		buf.Write(member.value)
-	}
-	buf.WriteByte('}')
-	return buf.Bytes(), true
-}
-
-func (w snapshotRewriter) member(member snapshotMember, context string, logEntry bool) (value []byte, changed, keep bool) {
-	if w.normalise {
-		if logEntry {
-			switch member.key {
-			case "output_tokens_per_second", "e2e_tokens_per_second":
-				return nil, true, false
-			case "time", "duration_ms", "ttft_ms", "last_frame_ms":
-				return []byte(snapshotVolatile), true, true
-			}
-		}
-		switch member.key {
-		case "output_tokens_per_second", "e2e_tokens_per_second", "latency_ms", "proxy_id":
-			return []byte(snapshotVolatile), true, true
-		}
-		if (context == "proxy" || context == "proxies") && (member.key == "id" || member.key == "created_at") {
-			return []byte(snapshotVolatile), true, true
-		}
-	}
-	if snapshotBase64Keys[member.key] {
-		if value, changed, ok := w.base64(member.value); ok {
-			return value, changed, true
-		}
-	}
-	value, changed = w.rewrite(member.value, member.key)
-	return value, changed, true
-}
-
-func (w snapshotRewriter) array(raw []byte, context string) ([]byte, bool) {
-	dec := json.NewDecoder(bytes.NewReader(raw))
-	dec.UseNumber()
-	if _, errToken := dec.Token(); errToken != nil {
-		return raw, false
-	}
-	var items [][]byte
-	changed := false
-	for dec.More() {
-		var item json.RawMessage
-		if errDecode := dec.Decode(&item); errDecode != nil {
-			return raw, false
-		}
-		next, itemChanged := w.rewrite(item, context)
-		changed = changed || itemChanged
-		items = append(items, next)
-	}
-	if !changed {
-		return raw, false
-	}
-	return append(append([]byte{'['}, bytes.Join(items, []byte{','})...), ']'), true
-}
-
-// base64 rewrites a base64 []byte field; ok is false when the value is not
-// a base64 string.
-func (w snapshotRewriter) base64(raw []byte) (value []byte, changed, ok bool) {
-	var encoded string
-	if json.Unmarshal(raw, &encoded) != nil {
-		return nil, false, false
-	}
-	decoded, errDecode := base64.StdEncoding.DecodeString(encoded)
+// compactInput fills the placeholders of a JSON input and compacts it,
+// keeping its key order.
+func (r *snapshotRun) compactInput(raw json.RawMessage) []byte {
+	tree, errDecode := decodeOrdered([]byte(r.toActual.Replace(string(raw))))
 	if errDecode != nil {
-		return nil, false, false
+		r.t.Fatalf("decode input: %v", errDecode)
 	}
-	var next []byte
-	if json.Valid(decoded) {
-		next, changed = w.rewrite(decoded, "")
-	} else {
-		text := w.text(string(decoded))
-		next, changed = []byte(text), text != string(decoded)
-	}
-	if !changed {
-		return raw, false, true
-	}
-	return snapshotString(base64.StdEncoding.EncodeToString(next)), true, true
+	return marshalTree(tree, true)
 }
 
-func (w snapshotRewriter) upstreamRequests(requests []snapshotUpstreamRequest) []snapshotUpstreamRequest {
-	out := make([]snapshotUpstreamRequest, 0, len(requests))
-	for _, request := range requests {
+func (r *snapshotRun) step(index int, rpc snapshotRPC) json.RawMessage {
+	r.t.Helper()
+	var request []byte
+	if !isNullJSON(rpc.Request) {
+		tree, errDecode := decodeOrdered([]byte(r.toActual.Replace(string(rpc.Request))))
+		if errDecode != nil {
+			r.t.Fatalf("step %d: decode request: %v", index, errDecode)
+		}
+		request = marshalTree(packByteFields(tree, ""), true)
+	}
+	response := r.svc.Call(rpc.Method, request)
+	snapshotWaitIdle(r.svc)
+	if r.drop {
+		snapshotDropQueuedRefresh(r.svc)
+	} else if snapshotRunQueuedRefresh(r.svc) {
+		snapshotWaitIdle(r.svc)
+	}
+
+	requests, unmatched := r.upstream.take()
+	for _, key := range unmatched {
+		r.t.Errorf("step %d (%s): unscripted upstream request %s", index, rpc.Method, key)
+	}
+	out := snapshotOutput{UpstreamRequests: []snapshotUpstreamRequest{}, HostCalls: []snapshotHostCall{}}
+	for _, req := range requests {
 		header := http.Header{}
-		for key, values := range request.Header {
+		for name, values := range req.Header {
 			for _, value := range values {
-				header[key] = append(header[key], w.text(value))
+				header[name] = append(header[name], r.toPlaceholder.Replace(value))
 			}
 		}
-		out = append(out, snapshotUpstreamRequest{
-			Method: request.Method,
-			Path:   request.Path,
-			Query:  w.text(request.Query),
-			Header: header,
-			Body:   w.text(request.Body),
-		})
+		req.Header = header
+		req.Query = r.toPlaceholder.Replace(req.Query)
+		req.Body = r.toPlaceholder.Replace(req.Body)
+		out.UpstreamRequests = append(out.UpstreamRequests, req)
 	}
-	// Model details are fetched concurrently; order a run of them by body.
-	for i := 0; i < len(out); {
+	sortConcurrentRequests(out.UpstreamRequests)
+	for _, call := range r.host.takeCalls() {
+		out.HostCalls = append(out.HostCalls, snapshotHostCall{Method: call.method, Request: r.canonical(call.request, false)})
+	}
+	out.Response = r.canonical(response, rpc.Method == pluginabi.MethodManagementHandle)
+	raw, errMarshal := json.Marshal(out)
+	if errMarshal != nil {
+		r.t.Fatal(errMarshal)
+	}
+	return raw
+}
+
+// sortConcurrentRequests orders each run of consecutive requests to one of
+// snapshotConcurrentPaths by body; the plugin makes them concurrently.
+func sortConcurrentRequests(requests []snapshotUpstreamRequest) {
+	for i := 0; i < len(requests); {
 		j := i
-		for j < len(out) && out[j].Method == http.MethodPost && out[j].Path == "/api/show" {
+		for j < len(requests) && requests[j].Method == requests[i].Method && requests[j].Path == requests[i].Path && slices.Contains(snapshotConcurrentPaths, requests[i].Method+" "+requests[i].Path) {
 			j++
 		}
 		if j-i > 1 {
-			run := out[i:j]
+			run := requests[i:j]
 			sort.SliceStable(run, func(a, b int) bool { return run[a].Body < run[b].Body })
 		}
 		i = max(j, i+1)
 	}
-	return out
 }
 
-func (w snapshotRewriter) hostCalls(calls []snapshotHostCall) []snapshotHostCall {
-	out := make([]snapshotHostCall, 0, len(calls))
-	for _, call := range calls {
-		out = append(out, snapshotHostCall{Method: call.Method, Request: w.apply(call.Request)})
+// canonical renders an RPC response or host-call request for the fixture.
+func (r *snapshotRun) canonical(raw []byte, management bool) json.RawMessage {
+	value := unpackByteFields(losslessJSON(raw), "")
+	value = r.placeholders(value)
+	if management {
+		value = normaliseVolatile(value, "")
 	}
-	return out
+	return marshalTree(value, true)
 }
 
-// snapshotString encodes a JSON string without HTML escaping.
-func snapshotString(text string) []byte {
+func (r *snapshotRun) placeholders(value any) any {
+	switch typed := value.(type) {
+	case string:
+		return r.toPlaceholder.Replace(typed)
+	case []any:
+		for i := range typed {
+			typed[i] = r.placeholders(typed[i])
+		}
+	case *orderedObject:
+		for _, key := range typed.keys {
+			typed.values[key] = r.placeholders(typed.values[key])
+		}
+	}
+	return value
+}
+
+// byteFields are the members CPA's RPC types carry as []byte.
+var byteFields = map[string]bool{
+	"Payload": true, "OriginalRequest": true, "StorageJSON": true, "storage_json": true,
+	"RawJSON": true, "config_yaml": true, "Body": true, "ResponseBody": true, "payload": true,
+}
+
+// unpackByteFields decodes the base64 of byte fields. It does not descend
+// into the decoded content.
+func unpackByteFields(value any, key string) any {
+	switch typed := value.(type) {
+	case string:
+		if !byteFields[key] {
+			return typed
+		}
+		decoded, errDecode := base64.StdEncoding.DecodeString(typed)
+		if errDecode != nil || !utf8.Valid(decoded) {
+			return typed
+		}
+		switch tree := losslessJSON(decoded).(type) {
+		case *orderedObject, []any:
+			return tree
+		}
+		return string(decoded)
+	case []any:
+		for i := range typed {
+			typed[i] = unpackByteFields(typed[i], key)
+		}
+	case *orderedObject:
+		for _, member := range typed.keys {
+			typed.values[member] = unpackByteFields(typed.values[member], member)
+		}
+	}
+	return value
+}
+
+// packByteFields is the inverse of unpackByteFields for fixture inputs.
+func packByteFields(value any, key string) any {
+	if byteFields[key] {
+		switch typed := value.(type) {
+		case string:
+			return base64.StdEncoding.EncodeToString([]byte(typed))
+		case *orderedObject, []any:
+			return base64.StdEncoding.EncodeToString(marshalTree(typed, true))
+		}
+		return value
+	}
+	switch typed := value.(type) {
+	case []any:
+		for i := range typed {
+			typed[i] = packByteFields(typed[i], key)
+		}
+	case *orderedObject:
+		for _, member := range typed.keys {
+			typed.values[member] = packByteFields(typed.values[member], member)
+		}
+	}
+	return value
+}
+
+// volatileFields are replaced in management responses; see the top comment.
+var volatileFields = map[string]bool{
+	"time": true, "duration_ms": true, "ttft_ms": true, "last_frame_ms": true,
+	"output_tokens_per_second": true, "e2e_tokens_per_second": true,
+	"created_at": true, "proxy_id": true, "latency_ms": true,
+}
+
+// speedFields are dropped from request log entries.
+var speedFields = map[string]bool{"output_tokens_per_second": true, "e2e_tokens_per_second": true}
+
+var volatileText = regexp.MustCompile(`"(time|duration_ms|ttft_ms|last_frame_ms|output_tokens_per_second|e2e_tokens_per_second|created_at|proxy_id|latency_ms)":("(?:[^"\\]|\\.)*"|[^,}\]]*)`)
+
+const volatileMarker = "<volatile>"
+
+func normaliseVolatile(value any, parent string) any {
+	switch typed := value.(type) {
+	case string:
+		return volatileText.ReplaceAllString(typed, `"$1":"`+volatileMarker+`"`)
+	case []any:
+		for i := range typed {
+			typed[i] = normaliseVolatile(typed[i], parent+"[]")
+		}
+	case *orderedObject:
+		if _, logEntry := typed.values["duration_ms"]; logEntry {
+			typed.remove(speedFields)
+		}
+		for _, key := range typed.keys {
+			switch {
+			case volatileFields[key]:
+				typed.values[key] = volatileMarker
+			case key == "id" && (parent == "proxy" || parent == "proxies[]"):
+				typed.values[key] = volatileMarker
+			default:
+				typed.values[key] = normaliseVolatile(typed.values[key], key)
+			}
+		}
+	}
+	return value
+}
+
+func isNullJSON(raw json.RawMessage) bool {
+	trimmed := bytes.TrimSpace(raw)
+	return len(trimmed) == 0 || bytes.Equal(trimmed, []byte("null"))
+}
+
+// snapshotCaseJSON renders a Go value (an RPC request as CPA builds it) as
+// fixture JSON, byte fields decoded.
+func snapshotCaseJSON(t *testing.T, value any) json.RawMessage {
+	t.Helper()
+	if value == nil {
+		return json.RawMessage("null")
+	}
+	raw, errMarshal := json.Marshal(value)
+	if errMarshal != nil {
+		t.Fatal(errMarshal)
+	}
+	tree, errDecode := decodeOrdered(raw)
+	if errDecode != nil {
+		t.Fatal(errDecode)
+	}
+	return marshalTree(unpackByteFields(tree, ""), true)
+}
+
+// orderedObject is a JSON object that keeps its member order.
+type orderedObject struct {
+	keys   []string
+	values map[string]any
+}
+
+func newOrderedObject() *orderedObject {
+	return &orderedObject{values: map[string]any{}}
+}
+
+func (o *orderedObject) set(key string, value any) {
+	if _, exists := o.values[key]; !exists {
+		o.keys = append(o.keys, key)
+	}
+	o.values[key] = value
+}
+
+// remove deletes the members named in drop.
+func (o *orderedObject) remove(drop map[string]bool) {
+	keys := o.keys[:0]
+	for _, key := range o.keys {
+		if drop[key] {
+			delete(o.values, key)
+			continue
+		}
+		keys = append(keys, key)
+	}
+	o.keys = keys
+}
+
+func (o *orderedObject) MarshalJSON() ([]byte, error) {
+	return marshalTree(o, true), nil
+}
+
+// decodeOrdered decodes JSON into nil, bool, json.Number, string, []any and
+// *orderedObject values.
+func decodeOrdered(data []byte) (any, error) {
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.UseNumber()
+	value, errValue := decodeOrderedValue(decoder)
+	if errValue != nil {
+		return nil, errValue
+	}
+	if _, errEnd := decoder.Token(); !errors.Is(errEnd, io.EOF) {
+		return nil, fmt.Errorf("trailing data after JSON value")
+	}
+	return value, nil
+}
+
+func decodeOrderedValue(decoder *json.Decoder) (any, error) {
+	token, errToken := decoder.Token()
+	if errToken != nil {
+		return nil, errToken
+	}
+	delim, ok := token.(json.Delim)
+	if !ok {
+		return token, nil
+	}
+	switch delim {
+	case '{':
+		object := newOrderedObject()
+		for decoder.More() {
+			keyToken, errKey := decoder.Token()
+			if errKey != nil {
+				return nil, errKey
+			}
+			key, _ := keyToken.(string)
+			value, errValue := decodeOrderedValue(decoder)
+			if errValue != nil {
+				return nil, errValue
+			}
+			object.set(key, value)
+		}
+		_, errEnd := decoder.Token()
+		return object, errEnd
+	case '[':
+		array := []any{}
+		for decoder.More() {
+			value, errValue := decodeOrderedValue(decoder)
+			if errValue != nil {
+				return nil, errValue
+			}
+			array = append(array, value)
+		}
+		_, errEnd := decoder.Token()
+		return array, errEnd
+	}
+	return nil, fmt.Errorf("unexpected delimiter %v", delim)
+}
+
+// losslessJSON decodes raw when it re-encodes byte for byte and otherwise
+// returns it as a string.
+func losslessJSON(raw []byte) any {
+	if len(raw) == 0 {
+		return nil
+	}
+	tree, errDecode := decodeOrdered(raw)
+	if errDecode != nil || !bytes.Equal(marshalTree(tree, true), raw) {
+		return string(raw)
+	}
+	return tree
+}
+
+// marshalTree encodes a decoded tree compactly. With escapeHTML it matches
+// encoding/json.Marshal.
+func marshalTree(value any, escapeHTML bool) []byte {
 	var buf bytes.Buffer
-	enc := json.NewEncoder(&buf)
-	enc.SetEscapeHTML(false)
-	_ = enc.Encode(text)
-	return bytes.TrimRight(buf.Bytes(), "\n")
+	writeTree(&buf, value, escapeHTML)
+	return buf.Bytes()
 }
 
-// ---------------------------------------------------------------------------
-// Fake upstream
-
-// snapshotUpstream serves the fixture's upstream script and records every
-// request it receives.
-type snapshotUpstream struct {
-	*httptest.Server
-
-	mu        sync.Mutex
-	script    []snapshotReply
-	used      []bool
-	requests  []snapshotUpstreamRequest
-	unmatched []string
-}
-
-func newSnapshotUpstream(script []snapshotReply) *snapshotUpstream {
-	u := &snapshotUpstream{script: script, used: make([]bool, len(script))}
-	u.Server = httptest.NewServer(http.HandlerFunc(u.serve))
-	return u
-}
-
-func (u *snapshotUpstream) serve(rw http.ResponseWriter, r *http.Request) {
-	body, _ := io.ReadAll(r.Body)
-	u.mu.Lock()
-	u.requests = append(u.requests, snapshotUpstreamRequest{
-		Method: r.Method,
-		Path:   r.URL.Path,
-		Query:  r.URL.RawQuery,
-		Header: r.Header.Clone(),
-		Body:   string(body),
-	})
-	index := -1
-	for i, reply := range u.script {
-		if !u.used[i] && reply.Method == r.Method && reply.Path == r.URL.Path {
-			index = i
-			u.used[i] = true
-			break
+func writeTree(buf *bytes.Buffer, value any, escapeHTML bool) {
+	switch typed := value.(type) {
+	case nil:
+		buf.WriteString("null")
+	case bool:
+		if typed {
+			buf.WriteString("true")
+		} else {
+			buf.WriteString("false")
 		}
-	}
-	if index < 0 {
-		u.unmatched = append(u.unmatched, r.Method+" "+r.URL.RequestURI())
-	}
-	u.mu.Unlock()
-	if index < 0 {
-		http.Error(rw, "snapshot: no scripted reply for "+r.Method+" "+r.URL.Path, http.StatusTeapot)
-		return
-	}
-	reply := u.script[index]
-	for key, values := range reply.Header {
-		rw.Header()[http.CanonicalHeaderKey(key)] = append([]string(nil), values...)
-	}
-	status := reply.Status
-	if status == 0 {
-		status = http.StatusOK
-	}
-	rw.WriteHeader(status)
-	if len(reply.Chunks) == 0 {
-		_, _ = io.WriteString(rw, reply.Body)
-		return
-	}
-	flusher, _ := rw.(http.Flusher)
-	for _, chunk := range reply.Chunks {
-		_, _ = io.WriteString(rw, chunk)
-		if flusher != nil {
-			flusher.Flush()
-		}
-	}
-}
-
-func (u *snapshotUpstream) take() []snapshotUpstreamRequest {
-	u.mu.Lock()
-	defer u.mu.Unlock()
-	out := u.requests
-	u.requests = nil
-	return out
-}
-
-func (u *snapshotUpstream) problems() []string {
-	u.mu.Lock()
-	defer u.mu.Unlock()
-	var out []string
-	for _, request := range u.unmatched {
-		out = append(out, "unmatched upstream request: "+request)
-	}
-	for i, used := range u.used {
-		if !used {
-			out = append(out, fmt.Sprintf("upstream_script[%d] (%s %s) was never requested", i, u.script[i].Method, u.script[i].Path))
-		}
-	}
-	return out
-}
-
-// ---------------------------------------------------------------------------
-// Fake CPA host
-
-// snapshotAuthFile is one auth file held by snapshotHost.
-type snapshotAuthFile struct {
-	index    string
-	name     string
-	provider string
-	label    string
-	disabled bool
-	raw      []byte
-	// models are the IDs CPA registered for the file (after a save).
-	models []string
-}
-
-// snapshotHost is an in-memory stand-in for CPA's host callbacks, adapted
-// from the wokey plugin's fakeHost. It records every callback. Saving an
-// auth file goes back into the plugin through auth.parse and model.for_auth
-// (RPC calls, not recorded) and registers the models with CPA's prefix rules.
-type snapshotHost struct {
-	svc *Service
-
-	mu    sync.Mutex
-	files []*snapshotAuthFile
-	next  int
-	calls []snapshotHostCall
-}
-
-const snapshotAuthDir = "/auths"
-
-// snapshotHostSummary is the host config summary the fake host sends.
-var snapshotHostSummary = pluginapi.HostConfigSummary{AuthDir: snapshotAuthDir}
-
-// snapshotAuthList is the host.auth.list result.
-type snapshotAuthList struct {
-	Files []pluginapi.HostAuthFileEntry `json:"files"`
-}
-
-func (h *snapshotHost) seed(name string, raw []byte) error {
-	var fields map[string]any
-	if errUnmarshal := json.Unmarshal(raw, &fields); errUnmarshal != nil {
-		return errUnmarshal
-	}
-	label, _ := fields["label"].(string)
-	if strings.TrimSpace(label) == "" {
-		label = strings.TrimSuffix(name, filepath.Ext(name))
-	}
-	disabled, _ := fields["disabled"].(bool)
-	provider, _ := fields["type"].(string)
-	h.mu.Lock()
-	defer h.mu.Unlock()
-	h.next++
-	h.files = append(h.files, &snapshotAuthFile{
-		index:    fmt.Sprintf("idx-%d", h.next),
-		name:     name,
-		provider: strings.ToLower(strings.TrimSpace(provider)),
-		label:    strings.TrimSpace(label),
-		disabled: disabled,
-		raw:      append([]byte(nil), raw...),
-		models:   []string{},
-	})
-	return nil
-}
-
-func (h *snapshotHost) take() []snapshotHostCall {
-	h.mu.Lock()
-	defer h.mu.Unlock()
-	out := h.calls
-	h.calls = nil
-	return out
-}
-
-func (h *snapshotHost) call(method string, request []byte) ([]byte, error) {
-	recorded := json.RawMessage(append([]byte(nil), request...))
-	if !json.Valid(request) {
-		recorded = snapshotString(string(request))
-	}
-	h.mu.Lock()
-	h.calls = append(h.calls, snapshotHostCall{Method: method, Request: recorded})
-	h.mu.Unlock()
-
-	switch method {
-	case pluginabi.MethodHostLog, pluginabi.MethodHostStreamEmit, pluginabi.MethodHostStreamClose:
-		return snapshotOK(struct{}{}), nil
-	case pluginabi.MethodHostAuthList:
-		h.mu.Lock()
-		defer h.mu.Unlock()
-		list := snapshotAuthList{Files: make([]pluginapi.HostAuthFileEntry, 0, len(h.files))}
-		for _, file := range h.files {
-			list.Files = append(list.Files, pluginapi.HostAuthFileEntry{
-				ID:        file.name,
-				AuthIndex: file.index,
-				Name:      file.name,
-				Type:      file.provider,
-				Provider:  file.provider,
-				Label:     file.label,
-				Disabled:  file.disabled,
-				Source:    "file",
-				Path:      snapshotAuthDir + "/" + file.name,
-			})
-		}
-		return snapshotOK(list), nil
-	case pluginabi.MethodHostAuthGet:
-		var req pluginapi.HostAuthGetRequest
-		if errUnmarshal := json.Unmarshal(request, &req); errUnmarshal != nil {
-			return snapshotFail(errUnmarshal.Error()), nil
-		}
-		h.mu.Lock()
-		defer h.mu.Unlock()
-		for _, file := range h.files {
-			if file.index == req.AuthIndex {
-				return snapshotOK(pluginapi.HostAuthGetResponse{AuthIndex: file.index, Name: file.name, Path: snapshotAuthDir + "/" + file.name, JSON: file.raw}), nil
+	case json.Number:
+		buf.WriteString(typed.String())
+	case string:
+		writeJSONString(buf, typed, escapeHTML)
+	case []any:
+		buf.WriteByte('[')
+		for i, item := range typed {
+			if i > 0 {
+				buf.WriteByte(',')
 			}
+			writeTree(buf, item, escapeHTML)
 		}
-		return snapshotFail("auth not found"), nil
-	case pluginabi.MethodHostAuthSave:
-		var req pluginapi.HostAuthSaveRequest
-		if errUnmarshal := json.Unmarshal(request, &req); errUnmarshal != nil {
-			return snapshotFail(errUnmarshal.Error()), nil
-		}
-		return h.save(req), nil
-	case pluginabi.MethodHostAuthModels:
-		h.mu.Lock()
-		defer h.mu.Unlock()
-		var out pluginapi.HostAuthModelsResponse
-		out.Credentials = []pluginapi.HostAuthModels{}
-		for _, file := range h.files {
-			if file.disabled {
-				continue
+		buf.WriteByte(']')
+	case *orderedObject:
+		buf.WriteByte('{')
+		for i, key := range typed.keys {
+			if i > 0 {
+				buf.WriteByte(',')
 			}
-			out.Credentials = append(out.Credentials, pluginapi.HostAuthModels{ID: file.name, AuthIndex: file.index, Provider: file.provider, Models: append([]string{}, file.models...)})
+			writeJSONString(buf, key, escapeHTML)
+			buf.WriteByte(':')
+			writeTree(buf, typed.values[key], escapeHTML)
 		}
-		return snapshotOK(out), nil
+		buf.WriteByte('}')
 	default:
-		return snapshotFail("unexpected host method " + method), nil
+		raw, _ := json.Marshal(typed)
+		buf.Write(raw)
 	}
 }
 
-// save mimics host.auth.save: CPA writes the file, parses it through the
-// plugin and asks the plugin for its models. The lock is not held while
-// calling into the plugin, which calls back into the host.
-func (h *snapshotHost) save(req pluginapi.HostAuthSaveRequest) []byte {
-	name := filepath.Base(req.Name)
-	if !strings.HasSuffix(strings.ToLower(name), ".json") {
-		return snapshotFail("auth file name must end with .json")
+func writeJSONString(buf *bytes.Buffer, text string, escapeHTML bool) {
+	var encoded bytes.Buffer
+	encoder := json.NewEncoder(&encoded)
+	encoder.SetEscapeHTML(escapeHTML)
+	_ = encoder.Encode(text)
+	buf.Write(bytes.TrimSuffix(encoded.Bytes(), []byte("\n")))
+}
+
+// prettyJSON renders JSON the way fixtures are stored: member order kept,
+// two-space indent, no HTML escaping, trailing newline.
+func prettyJSON(t *testing.T, raw []byte) []byte {
+	t.Helper()
+	if isNullJSON(raw) {
+		return []byte("null\n")
 	}
-	parseRequest, _ := json.Marshal(pluginapi.AuthParseRequest{Provider: "ollama", Path: snapshotAuthDir + "/" + name, FileName: name, RawJSON: req.JSON, Host: snapshotHostSummary})
-	var parsed pluginapi.AuthParseResponse
-	if errParse := snapshotDecodeResult(h.svc.Call(pluginabi.MethodAuthParse, parseRequest), &parsed); errParse != nil {
-		return snapshotFail(errParse.Error())
+	tree, errDecode := decodeOrdered(raw)
+	if errDecode != nil {
+		t.Fatalf("decode fixture JSON: %v", errDecode)
 	}
-	if !parsed.Handled {
-		return snapshotFail("no provider handled the auth file")
+	var out bytes.Buffer
+	if errIndent := json.Indent(&out, marshalTree(tree, false), "", "  "); errIndent != nil {
+		t.Fatalf("indent fixture JSON: %v", errIndent)
 	}
-	models := []string{}
-	if !parsed.Auth.Disabled {
-		modelRequest, _ := json.Marshal(snapshotAuthModelRequest{AuthModelRequest: pluginapi.AuthModelRequest{
-			AuthID:       name,
-			AuthProvider: "ollama",
-			StorageJSON:  req.JSON,
-			Metadata:     parsed.Auth.Metadata,
-			Host:         snapshotHostSummary,
-		}})
-		var resp pluginapi.ModelResponse
-		if errModels := snapshotDecodeResult(h.svc.Call(pluginabi.MethodModelForAuth, modelRequest), &resp); errModels != nil {
-			return snapshotFail(errModels.Error())
-		}
-		prefix := strings.TrimSpace(parsed.Auth.Prefix)
-		for _, model := range resp.Models {
-			if prefix == "" {
-				models = append(models, model.ID)
-				continue
-			}
-			// Without routing.force-model-prefix CPA registers both IDs.
-			models = append(models, model.ID, prefix+"/"+model.ID)
-		}
-		sort.Strings(models)
+	out.WriteByte('\n')
+	return out.Bytes()
+}
+
+// lineDiff shows the differing region of two texts with some context.
+func lineDiff(want, got string) string {
+	a, b := strings.Split(want, "\n"), strings.Split(got, "\n")
+	start := 0
+	for start < len(a) && start < len(b) && a[start] == b[start] {
+		start++
 	}
-	h.mu.Lock()
-	defer h.mu.Unlock()
-	saved := pluginapi.HostAuthSaveResponse{Name: name, Path: snapshotAuthDir + "/" + name}
-	for _, file := range h.files {
-		if file.name == name {
-			file.raw = append([]byte(nil), req.JSON...)
-			file.label = parsed.Auth.Label
-			file.disabled = parsed.Auth.Disabled
-			file.models = models
-			return snapshotOK(saved)
-		}
+	endA, endB := len(a)-1, len(b)-1
+	for endA >= start && endB >= start && a[endA] == b[endB] {
+		endA--
+		endB--
 	}
-	h.next++
-	h.files = append(h.files, &snapshotAuthFile{
-		index:    fmt.Sprintf("idx-%d", h.next),
-		name:     name,
-		provider: "ollama",
-		label:    parsed.Auth.Label,
-		disabled: parsed.Auth.Disabled,
-		raw:      append([]byte(nil), req.JSON...),
-		models:   models,
-	})
-	return snapshotOK(saved)
-}
-
-// CPA's RPC request shapes (internal/pluginhost/rpc_schema.go in CPA v8).
-
-type snapshotExecutorRequest struct {
-	pluginapi.ExecutorRequest
-	StreamID       string `json:"stream_id,omitempty"`
-	HostCallbackID string `json:"host_callback_id,omitempty"`
-}
-
-type snapshotAuthModelRequest struct {
-	pluginapi.AuthModelRequest
-	HostCallbackID string `json:"host_callback_id,omitempty"`
-}
-
-type snapshotAuthRefreshRequest struct {
-	pluginapi.AuthRefreshRequest
-	HostCallbackID string `json:"host_callback_id,omitempty"`
-}
-
-type snapshotManagementRequest struct {
-	pluginapi.ManagementRequest
-	HostCallbackID string `json:"host_callback_id,omitempty"`
-}
-
-type snapshotQuotaFetchRequest struct {
-	pluginapi.QuotaFetchRequest
-	HostCallbackID string `json:"host_callback_id,omitempty"`
-}
-
-type snapshotInterceptRequest struct {
-	pluginapi.RequestInterceptRequest
-	HostCallbackID string `json:"host_callback_id,omitempty"`
-}
-
-// snapshotQuery builds url.Values from key/value pairs.
-func snapshotQuery(pairs ...string) url.Values {
-	values := url.Values{}
-	for i := 0; i+1 < len(pairs); i += 2 {
-		values.Add(pairs[i], pairs[i+1])
+	const context, limit = 3, 120
+	var out []string
+	for i := max(0, start-context); i < start; i++ {
+		out = append(out, "  "+a[i])
 	}
-	return values
+	for i := start; i <= endA; i++ {
+		out = append(out, "- "+a[i])
+	}
+	for i := start; i <= endB; i++ {
+		out = append(out, "+ "+b[i])
+	}
+	for i := endA + 1; i < min(len(a), endA+1+context); i++ {
+		out = append(out, "  "+a[i])
+	}
+	if len(out) > limit {
+		out = append(out[:limit], fmt.Sprintf("... %d more lines", len(out)-limit))
+	}
+	return strings.Join(out, "\n")
 }

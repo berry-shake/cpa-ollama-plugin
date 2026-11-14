@@ -16,7 +16,8 @@
           "type": "ollama"
         }
       }
-    ]
+    ],
+    "drop_queued_refresh": true
   },
   "upstream_script": [
     {
@@ -198,7 +199,37 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJjYXRhbG9nIjp7ImNvdW50IjoxLCJyZXZpc2lvbiI6ImY2ZDZiMDAxMjdlZThiODUiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoifSwibW9kZWxzIjpbeyJpZCI6ImdwdC1vc3M6MTIwYiIsImNhcGFiaWxpdGllcyI6WyJjb21wbGV0aW9uIiwidG9vbHMiLCJ0aGlua2luZyJdLCJjaGF0Ijp0cnVlLCJjb250ZXh0X2xlbmd0aCI6MTMxMDcyLCJmYW1pbHkiOiJncHRvc3MiLCJwYXJhbWV0ZXJfc2l6ZSI6IjExNjgyOTE1NjY3MiIsInF1YW50aXphdGlvbiI6Ik1YRlA0Iiwic2l6ZSI6NjUzNjk4MTg5NDEsIm1vZGlmaWVkX2F0IjoiMjAyNS0wOC0wNVQxMjowMDowMFoiLCJ0aGlua2luZ19sZXZlbHMiOlsibG93IiwibWVkaXVtIiwiaGlnaCJdLCJ0aGlua2luZ19kZWZhdWx0IjoibWVkaXVtIn1dfQ=="
+            "Body": {
+              "catalog": {
+                "count": 1,
+                "revision": "f6d6b00127ee8b85",
+                "fetched_at": "2026-01-02T03:04:05Z",
+                "checked_at": "2026-01-02T03:04:05Z"
+              },
+              "models": [
+                {
+                  "id": "gpt-oss:120b",
+                  "capabilities": [
+                    "completion",
+                    "tools",
+                    "thinking"
+                  ],
+                  "chat": true,
+                  "context_length": 131072,
+                  "family": "gptoss",
+                  "parameter_size": "116829156672",
+                  "quantization": "MXFP4",
+                  "size": 65369818941,
+                  "modified_at": "2025-08-05T12:00:00Z",
+                  "thinking_levels": [
+                    "low",
+                    "medium",
+                    "high"
+                  ],
+                  "thinking_default": "medium"
+                }
+              ]
+            }
           }
         }
       }
@@ -207,7 +238,12 @@
       "rpc": {
         "method": "plugin.reconfigure",
         "request": {
-          "config_yaml": "eyJiYXNlLXVybCI6Int7VVBTVFJFQU19fSIsImRhdGEtZGlyIjoie3tEQVRBX0RJUn19IiwibW9kZWwtcHJlZml4Ijoib2wyLyIsIm1vZGVscy1yZWZyZXNoLW1pbnV0ZXMiOjB9",
+          "config_yaml": {
+            "base-url": "{{UPSTREAM}}",
+            "data-dir": "{{DATA_DIR}}",
+            "model-prefix": "ol2/",
+            "models-refresh-minutes": 0
+          },
           "schema_version": 10,
           "multi_auth_providers": true
         }
@@ -238,7 +274,7 @@
                   "Type": "string",
                   "Default": "ollama",
                   "EnumValues": null,
-                  "Description": "Default CPA prefix for Ollama keys (\"ollama\" -\u003e ollama/gpt-oss:120b). Empty adds no prefix. An auth file's own prefix field wins."
+                  "Description": "Default CPA prefix for Ollama keys (\"ollama\" -> ollama/gpt-oss:120b). Empty adds no prefix. An auth file's own prefix field wins."
                 },
                 {
                   "Name": "models-refresh-minutes",
@@ -414,7 +450,37 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJjYXRhbG9nIjp7ImNvdW50IjoxLCJyZXZpc2lvbiI6ImY2ZDZiMDAxMjdlZThiODUiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoifSwibW9kZWxzIjpbeyJpZCI6ImdwdC1vc3M6MTIwYiIsImNhcGFiaWxpdGllcyI6WyJjb21wbGV0aW9uIiwidG9vbHMiLCJ0aGlua2luZyJdLCJjaGF0Ijp0cnVlLCJjb250ZXh0X2xlbmd0aCI6MTMxMDcyLCJmYW1pbHkiOiJncHRvc3MiLCJwYXJhbWV0ZXJfc2l6ZSI6IjExNjgyOTE1NjY3MiIsInF1YW50aXphdGlvbiI6Ik1YRlA0Iiwic2l6ZSI6NjUzNjk4MTg5NDEsIm1vZGlmaWVkX2F0IjoiMjAyNS0wOC0wNVQxMjowMDowMFoiLCJ0aGlua2luZ19sZXZlbHMiOlsibG93IiwibWVkaXVtIiwiaGlnaCJdLCJ0aGlua2luZ19kZWZhdWx0IjoibWVkaXVtIn1dfQ=="
+            "Body": {
+              "catalog": {
+                "count": 1,
+                "revision": "f6d6b00127ee8b85",
+                "fetched_at": "2026-01-02T03:04:05Z",
+                "checked_at": "2026-01-02T03:04:05Z"
+              },
+              "models": [
+                {
+                  "id": "gpt-oss:120b",
+                  "capabilities": [
+                    "completion",
+                    "tools",
+                    "thinking"
+                  ],
+                  "chat": true,
+                  "context_length": 131072,
+                  "family": "gptoss",
+                  "parameter_size": "116829156672",
+                  "quantization": "MXFP4",
+                  "size": 65369818941,
+                  "modified_at": "2025-08-05T12:00:00Z",
+                  "thinking_levels": [
+                    "low",
+                    "medium",
+                    "high"
+                  ],
+                  "thinking_default": "medium"
+                }
+              ]
+            }
           }
         }
       }
@@ -502,7 +568,37 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJjYXRhbG9nIjp7ImNvdW50IjoxLCJyZXZpc2lvbiI6ImY2ZDZiMDAxMjdlZThiODUiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoifSwibW9kZWxzIjpbeyJpZCI6ImdwdC1vc3M6MTIwYiIsImNhcGFiaWxpdGllcyI6WyJjb21wbGV0aW9uIiwidG9vbHMiLCJ0aGlua2luZyJdLCJjaGF0Ijp0cnVlLCJjb250ZXh0X2xlbmd0aCI6MTMxMDcyLCJmYW1pbHkiOiJncHRvc3MiLCJwYXJhbWV0ZXJfc2l6ZSI6IjExNjgyOTE1NjY3MiIsInF1YW50aXphdGlvbiI6Ik1YRlA0Iiwic2l6ZSI6NjUzNjk4MTg5NDEsIm1vZGlmaWVkX2F0IjoiMjAyNS0wOC0wNVQxMjowMDowMFoiLCJ0aGlua2luZ19sZXZlbHMiOlsibG93IiwibWVkaXVtIiwiaGlnaCJdLCJ0aGlua2luZ19kZWZhdWx0IjoibWVkaXVtIn1dfQ=="
+            "Body": {
+              "catalog": {
+                "count": 1,
+                "revision": "f6d6b00127ee8b85",
+                "fetched_at": "2026-01-02T03:04:05Z",
+                "checked_at": "2026-01-02T03:04:05Z"
+              },
+              "models": [
+                {
+                  "id": "gpt-oss:120b",
+                  "capabilities": [
+                    "completion",
+                    "tools",
+                    "thinking"
+                  ],
+                  "chat": true,
+                  "context_length": 131072,
+                  "family": "gptoss",
+                  "parameter_size": "116829156672",
+                  "quantization": "MXFP4",
+                  "size": 65369818941,
+                  "modified_at": "2025-08-05T12:00:00Z",
+                  "thinking_levels": [
+                    "low",
+                    "medium",
+                    "high"
+                  ],
+                  "thinking_default": "medium"
+                }
+              ]
+            }
           }
         }
       }

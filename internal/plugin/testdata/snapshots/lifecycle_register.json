@@ -8,7 +8,8 @@
       "data-dir": "{{DATA_DIR}}",
       "models-refresh-minutes": 0
     },
-    "credentials": []
+    "credentials": [],
+    "drop_queued_refresh": true
   },
   "upstream_script": [],
   "steps": [
@@ -16,7 +17,11 @@
       "rpc": {
         "method": "plugin.register",
         "request": {
-          "config_yaml": "eyJiYXNlLXVybCI6Int7VVBTVFJFQU19fSIsImRhdGEtZGlyIjoie3tEQVRBX0RJUn19IiwibW9kZWxzLXJlZnJlc2gtbWludXRlcyI6MH0=",
+          "config_yaml": {
+            "base-url": "{{UPSTREAM}}",
+            "data-dir": "{{DATA_DIR}}",
+            "models-refresh-minutes": 0
+          },
           "schema_version": 10,
           "multi_auth_providers": true
         }
@@ -47,7 +52,7 @@
                   "Type": "string",
                   "Default": "ollama",
                   "EnumValues": null,
-                  "Description": "Default CPA prefix for Ollama keys (\"ollama\" -\u003e ollama/gpt-oss:120b). Empty adds no prefix. An auth file's own prefix field wins."
+                  "Description": "Default CPA prefix for Ollama keys (\"ollama\" -> ollama/gpt-oss:120b). Empty adds no prefix. An auth file's own prefix field wins."
                 },
                 {
                   "Name": "models-refresh-minutes",
@@ -122,7 +127,13 @@
       "rpc": {
         "method": "plugin.reconfigure",
         "request": {
-          "config_yaml": "eyJiYXNlLXVybCI6Int7VVBTVFJFQU19fSIsImRhdGEtZGlyIjoie3tEQVRBX0RJUn19IiwibG9nLXJldGVudGlvbiI6LTEsIm1vZGVscy1yZWZyZXNoLW1pbnV0ZXMiOi01LCJyZXF1ZXN0LXRpbWVvdXQtc2Vjb25kcyI6MH0=",
+          "config_yaml": {
+            "base-url": "{{UPSTREAM}}",
+            "data-dir": "{{DATA_DIR}}",
+            "log-retention": -1,
+            "models-refresh-minutes": -5,
+            "request-timeout-seconds": 0
+          },
           "schema_version": 5,
           "multi_auth_providers": true
         }
@@ -175,7 +186,7 @@
                   "Type": "string",
                   "Default": "ollama",
                   "EnumValues": null,
-                  "Description": "Default CPA prefix for Ollama keys (\"ollama\" -\u003e ollama/gpt-oss:120b). Empty adds no prefix. An auth file's own prefix field wins."
+                  "Description": "Default CPA prefix for Ollama keys (\"ollama\" -> ollama/gpt-oss:120b). Empty adds no prefix. An auth file's own prefix field wins."
                 },
                 {
                   "Name": "models-refresh-minutes",
@@ -247,7 +258,11 @@
       "rpc": {
         "method": "plugin.reconfigure",
         "request": {
-          "config_yaml": "eyJiYXNlLXVybCI6ImZ0cDovL2JhZCIsImRhdGEtZGlyIjoie3tEQVRBX0RJUn19IiwibW9kZWxzLXJlZnJlc2gtbWludXRlcyI6MH0=",
+          "config_yaml": {
+            "base-url": "ftp://bad",
+            "data-dir": "{{DATA_DIR}}",
+            "models-refresh-minutes": 0
+          },
           "schema_version": 0,
           "multi_auth_providers": true
         }
@@ -286,7 +301,7 @@
                   "Type": "string",
                   "Default": "ollama",
                   "EnumValues": null,
-                  "Description": "Default CPA prefix for Ollama keys (\"ollama\" -\u003e ollama/gpt-oss:120b). Empty adds no prefix. An auth file's own prefix field wins."
+                  "Description": "Default CPA prefix for Ollama keys (\"ollama\" -> ollama/gpt-oss:120b). Empty adds no prefix. An auth file's own prefix field wins."
                 },
                 {
                   "Name": "models-refresh-minutes",
@@ -394,7 +409,22 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJwbHVnaW4iOiJvbGxhbWEiLCJ2ZXJzaW9uIjoiOS45Ljktc25hcHNob3QiLCJub3ciOiIyMDI2LTExLTE0VDA4OjAwOjAwWiIsImNvbmZpZyI6eyJiYXNlX3VybCI6Imh0dHBzOi8vb2xsYW1hLmNvbSIsImRlZmF1bHRfcHJlZml4Ijoib2xsYW1hIiwibW9kZWxzX3JlZnJlc2hfbWludXRlcyI6MCwicmVxdWVzdF90aW1lb3V0X3NlY29uZHMiOjYwMCwic3RyZWFtX2lkbGVfdGltZW91dF9zZWNvbmRzIjozMDB9LCJjYXRhbG9nIjp7ImNvdW50IjowfSwiY3JlZGVudGlhbHMiOltdfQ=="
+            "Body": {
+              "plugin": "ollama",
+              "version": "9.9.9-snapshot",
+              "now": "2026-01-02T03:04:05Z",
+              "config": {
+                "base_url": "https://ollama.com",
+                "default_prefix": "ollama",
+                "models_refresh_minutes": 0,
+                "request_timeout_seconds": 600,
+                "stream_idle_timeout_seconds": 300
+              },
+              "catalog": {
+                "count": 0
+              },
+              "credentials": []
+            }
           }
         }
       }

@@ -316,7 +316,76 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJjYXRhbG9nIjp7ImNvdW50IjozLCJyZXZpc2lvbiI6IjlkMmQ0ZDc3ODUwMTA3M2UiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoifSwibW9kZWxzIjpbeyJpZCI6ImVtYmVkLXNuYXA6MWIiLCJjYXBhYmlsaXRpZXMiOlsiZW1iZWRkaW5nIl0sImNoYXQiOmZhbHNlLCJjb250ZXh0X2xlbmd0aCI6MTMxMDcyLCJmYW1pbHkiOiJzbmFwZmFtIiwicGFyYW1ldGVyX3NpemUiOiIxMTYuOEIiLCJxdWFudGl6YXRpb24iOiJNWEZQNCIsInNpemUiOjEwMDAwMDAsIm1vZGlmaWVkX2F0IjoiMjAyNS0wMS0wMlQwMzowNDowNVoiLCJ0aGlua2luZ19sZXZlbHMiOlsibG93IiwibWVkaXVtIiwiaGlnaCJdLCJ0aGlua2luZ19kZWZhdWx0IjoibWVkaXVtIn0seyJpZCI6ImdwdC1vc3M6MTIwYiIsImNhcGFiaWxpdGllcyI6WyJjb21wbGV0aW9uIiwidG9vbHMiLCJ0aGlua2luZyJdLCJjaGF0Ijp0cnVlLCJjb250ZXh0X2xlbmd0aCI6MTMxMDcyLCJmYW1pbHkiOiJzbmFwZmFtIiwicGFyYW1ldGVyX3NpemUiOiIxMTYuOEIiLCJxdWFudGl6YXRpb24iOiJNWEZQNCIsInNpemUiOjY1MzY5ODE4OTQxLCJtb2RpZmllZF9hdCI6IjIwMjUtMDgtMDVUMTI6MDA6MDBaIiwidGhpbmtpbmdfbGV2ZWxzIjpbImxvdyIsIm1lZGl1bSIsImhpZ2giXSwidGhpbmtpbmdfZGVmYXVsdCI6Im1lZGl1bSJ9LHsiaWQiOiJxd2VuMy12bDoyMzViIiwiY2FwYWJpbGl0aWVzIjpbImNvbXBsZXRpb24iLCJ2aXNpb24iXSwiY2hhdCI6dHJ1ZSwiY29udGV4dF9sZW5ndGgiOjEzMTA3MiwiZmFtaWx5Ijoic25hcGZhbSIsInBhcmFtZXRlcl9zaXplIjoiMTE2LjhCIiwicXVhbnRpemF0aW9uIjoiTVhGUDQiLCJzaXplIjoxMjUwMDAwMDAwMDAsIm1vZGlmaWVkX2F0IjoiMjAyNS0xMC0wMVQwMDowMDowMFoiLCJ0aGlua2luZ19sZXZlbHMiOlsibG93IiwibWVkaXVtIiwiaGlnaCJdLCJ0aGlua2luZ19kZWZhdWx0IjoibWVkaXVtIn1dfQ=="
+            "Body": {
+              "catalog": {
+                "count": 3,
+                "revision": "9d2d4d778501073e",
+                "fetched_at": "2026-01-02T03:04:05Z",
+                "checked_at": "2026-01-02T03:04:05Z"
+              },
+              "models": [
+                {
+                  "id": "embed-snap:1b",
+                  "capabilities": [
+                    "embedding"
+                  ],
+                  "chat": false,
+                  "context_length": 131072,
+                  "family": "snapfam",
+                  "parameter_size": "116.8B",
+                  "quantization": "MXFP4",
+                  "size": 1000000,
+                  "modified_at": "2025-01-02T03:04:05Z",
+                  "thinking_levels": [
+                    "low",
+                    "medium",
+                    "high"
+                  ],
+                  "thinking_default": "medium"
+                },
+                {
+                  "id": "gpt-oss:120b",
+                  "capabilities": [
+                    "completion",
+                    "tools",
+                    "thinking"
+                  ],
+                  "chat": true,
+                  "context_length": 131072,
+                  "family": "snapfam",
+                  "parameter_size": "116.8B",
+                  "quantization": "MXFP4",
+                  "size": 65369818941,
+                  "modified_at": "2025-08-05T12:00:00Z",
+                  "thinking_levels": [
+                    "low",
+                    "medium",
+                    "high"
+                  ],
+                  "thinking_default": "medium"
+                },
+                {
+                  "id": "qwen3-vl:235b",
+                  "capabilities": [
+                    "completion",
+                    "vision"
+                  ],
+                  "chat": true,
+                  "context_length": 131072,
+                  "family": "snapfam",
+                  "parameter_size": "116.8B",
+                  "quantization": "MXFP4",
+                  "size": 125000000000,
+                  "modified_at": "2025-10-01T00:00:00Z",
+                  "thinking_levels": [
+                    "low",
+                    "medium",
+                    "high"
+                  ],
+                  "thinking_default": "medium"
+                }
+              ]
+            }
           }
         }
       }
@@ -456,7 +525,76 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJjYXRhbG9nIjp7ImNvdW50IjozLCJyZXZpc2lvbiI6IjlkMmQ0ZDc3ODUwMTA3M2UiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoifSwibW9kZWxzIjpbeyJpZCI6ImVtYmVkLXNuYXA6MWIiLCJjYXBhYmlsaXRpZXMiOlsiZW1iZWRkaW5nIl0sImNoYXQiOmZhbHNlLCJjb250ZXh0X2xlbmd0aCI6MTMxMDcyLCJmYW1pbHkiOiJzbmFwZmFtIiwicGFyYW1ldGVyX3NpemUiOiIxMTYuOEIiLCJxdWFudGl6YXRpb24iOiJNWEZQNCIsInNpemUiOjEwMDAwMDAsIm1vZGlmaWVkX2F0IjoiMjAyNS0wMS0wMlQwMzowNDowNVoiLCJ0aGlua2luZ19sZXZlbHMiOlsibG93IiwibWVkaXVtIiwiaGlnaCJdLCJ0aGlua2luZ19kZWZhdWx0IjoibWVkaXVtIn0seyJpZCI6ImdwdC1vc3M6MTIwYiIsImNhcGFiaWxpdGllcyI6WyJjb21wbGV0aW9uIiwidG9vbHMiLCJ0aGlua2luZyJdLCJjaGF0Ijp0cnVlLCJjb250ZXh0X2xlbmd0aCI6MTMxMDcyLCJmYW1pbHkiOiJzbmFwZmFtIiwicGFyYW1ldGVyX3NpemUiOiIxMTYuOEIiLCJxdWFudGl6YXRpb24iOiJNWEZQNCIsInNpemUiOjY1MzY5ODE4OTQxLCJtb2RpZmllZF9hdCI6IjIwMjUtMDgtMDVUMTI6MDA6MDBaIiwidGhpbmtpbmdfbGV2ZWxzIjpbImxvdyIsIm1lZGl1bSIsImhpZ2giXSwidGhpbmtpbmdfZGVmYXVsdCI6Im1lZGl1bSJ9LHsiaWQiOiJxd2VuMy12bDoyMzViIiwiY2FwYWJpbGl0aWVzIjpbImNvbXBsZXRpb24iLCJ2aXNpb24iXSwiY2hhdCI6dHJ1ZSwiY29udGV4dF9sZW5ndGgiOjEzMTA3MiwiZmFtaWx5Ijoic25hcGZhbSIsInBhcmFtZXRlcl9zaXplIjoiMTE2LjhCIiwicXVhbnRpemF0aW9uIjoiTVhGUDQiLCJzaXplIjoxMjUwMDAwMDAwMDAsIm1vZGlmaWVkX2F0IjoiMjAyNS0xMC0wMVQwMDowMDowMFoiLCJ0aGlua2luZ19sZXZlbHMiOlsibG93IiwibWVkaXVtIiwiaGlnaCJdLCJ0aGlua2luZ19kZWZhdWx0IjoibWVkaXVtIn1dfQ=="
+            "Body": {
+              "catalog": {
+                "count": 3,
+                "revision": "9d2d4d778501073e",
+                "fetched_at": "2026-01-02T03:04:05Z",
+                "checked_at": "2026-01-02T03:04:05Z"
+              },
+              "models": [
+                {
+                  "id": "embed-snap:1b",
+                  "capabilities": [
+                    "embedding"
+                  ],
+                  "chat": false,
+                  "context_length": 131072,
+                  "family": "snapfam",
+                  "parameter_size": "116.8B",
+                  "quantization": "MXFP4",
+                  "size": 1000000,
+                  "modified_at": "2025-01-02T03:04:05Z",
+                  "thinking_levels": [
+                    "low",
+                    "medium",
+                    "high"
+                  ],
+                  "thinking_default": "medium"
+                },
+                {
+                  "id": "gpt-oss:120b",
+                  "capabilities": [
+                    "completion",
+                    "tools",
+                    "thinking"
+                  ],
+                  "chat": true,
+                  "context_length": 131072,
+                  "family": "snapfam",
+                  "parameter_size": "116.8B",
+                  "quantization": "MXFP4",
+                  "size": 65369818941,
+                  "modified_at": "2025-08-05T12:00:00Z",
+                  "thinking_levels": [
+                    "low",
+                    "medium",
+                    "high"
+                  ],
+                  "thinking_default": "medium"
+                },
+                {
+                  "id": "qwen3-vl:235b",
+                  "capabilities": [
+                    "completion",
+                    "vision"
+                  ],
+                  "chat": true,
+                  "context_length": 131072,
+                  "family": "snapfam",
+                  "parameter_size": "116.8B",
+                  "quantization": "MXFP4",
+                  "size": 125000000000,
+                  "modified_at": "2025-10-01T00:00:00Z",
+                  "thinking_levels": [
+                    "low",
+                    "medium",
+                    "high"
+                  ],
+                  "thinking_default": "medium"
+                }
+              ]
+            }
           }
         }
       }
@@ -513,7 +651,63 @@
                 "application/json; charset=utf-8"
               ]
             },
-            "Body": "eyJwbHVnaW4iOiJvbGxhbWEiLCJ2ZXJzaW9uIjoiOS45Ljktc25hcHNob3QiLCJub3ciOiIyMDI2LTExLTE0VDA4OjAwOjAwWiIsImNvbmZpZyI6eyJiYXNlX3VybCI6Int7VVBTVFJFQU19fSIsImRlZmF1bHRfcHJlZml4Ijoib2xsYW1hIiwiZm9yY2VfbW9kZWxfcHJlZml4IjpmYWxzZSwibW9kZWxzX3JlZnJlc2hfbWludXRlcyI6MCwicmVxdWVzdF90aW1lb3V0X3NlY29uZHMiOjYwMCwic3RyZWFtX2lkbGVfdGltZW91dF9zZWNvbmRzIjozMDB9LCJjYXRhbG9nIjp7ImNvdW50IjozLCJyZXZpc2lvbiI6IjlkMmQ0ZDc3ODUwMTA3M2UiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoifSwiY3JlZGVudGlhbHMiOlt7ImF1dGhfaW5kZXgiOiJpZHgtMSIsImlkIjoiazEuanNvbiIsIm5hbWUiOiJrMS5qc29uIiwibGFiZWwiOiJNYWluIiwia2V5X21hc2tlZCI6Im9sbGFtYeKApmFhYWEiLCJkaXNhYmxlZCI6ZmFsc2UsInVuYXZhaWxhYmxlIjpmYWxzZSwicHJpb3JpdHkiOjAsInByZWZpeCI6bnVsbCwiZWZmZWN0aXZlX3ByZWZpeCI6Im9sbGFtYSIsImFsbF9tb2RlbHMiOnRydWUsIm1vZGVscyI6W10sInJlZ2lzdGVyZWRfbW9kZWxzIjoyLCJyZWdpc3RlcmVkX2tub3duIjp0cnVlLCJzdWNjZXNzIjowLCJmYWlsZWQiOjB9LHsiYXV0aF9pbmRleCI6ImlkeC0yIiwiaWQiOiJrMi5qc29uIiwibmFtZSI6ImsyLmpzb24iLCJsYWJlbCI6IiIsImtleV9tYXNrZWQiOiJvbGxhbWHigKZiYmJiIiwiZGlzYWJsZWQiOnRydWUsInVuYXZhaWxhYmxlIjpmYWxzZSwicHJpb3JpdHkiOjAsInByZWZpeCI6bnVsbCwiZWZmZWN0aXZlX3ByZWZpeCI6Im9sbGFtYSIsImFsbF9tb2RlbHMiOnRydWUsIm1vZGVscyI6W10sInJlZ2lzdGVyZWRfbW9kZWxzIjowLCJyZWdpc3RlcmVkX2tub3duIjp0cnVlLCJzdWNjZXNzIjowLCJmYWlsZWQiOjB9XX0="
+            "Body": {
+              "plugin": "ollama",
+              "version": "9.9.9-snapshot",
+              "now": "2026-01-02T03:04:05Z",
+              "config": {
+                "base_url": "{{UPSTREAM}}",
+                "default_prefix": "ollama",
+                "force_model_prefix": false,
+                "models_refresh_minutes": 0,
+                "request_timeout_seconds": 600,
+                "stream_idle_timeout_seconds": 300
+              },
+              "catalog": {
+                "count": 3,
+                "revision": "9d2d4d778501073e",
+                "fetched_at": "2026-01-02T03:04:05Z",
+                "checked_at": "2026-01-02T03:04:05Z"
+              },
+              "credentials": [
+                {
+                  "auth_index": "idx-1",
+                  "id": "k1.json",
+                  "name": "k1.json",
+                  "label": "Main",
+                  "key_masked": "ollama…aaaa",
+                  "disabled": false,
+                  "unavailable": false,
+                  "priority": 0,
+                  "prefix": null,
+                  "effective_prefix": "ollama",
+                  "all_models": true,
+                  "models": [],
+                  "registered_models": 2,
+                  "registered_known": true,
+                  "success": 0,
+                  "failed": 0
+                },
+                {
+                  "auth_index": "idx-2",
+                  "id": "k2.json",
+                  "name": "k2.json",
+                  "label": "",
+                  "key_masked": "ollama…bbbb",
+                  "disabled": true,
+                  "unavailable": false,
+                  "priority": 0,
+                  "prefix": null,
+                  "effective_prefix": "ollama",
+                  "all_models": true,
+                  "models": [],
+                  "registered_models": 0,
+                  "registered_known": true,
+                  "success": 0,
+                  "failed": 0
+                }
+              ]
+            }
           }
         }
       }
