@@ -1,6 +1,10 @@
 package ollama
 
-import "testing"
+import (
+	"encoding/json"
+	"math"
+	"testing"
+)
 
 // CPA's panel shows one Ollama group of bars and no figures. It labels a bar
 // with its description when there is one, so the buckets carry only the
@@ -35,6 +39,21 @@ func TestQuotaFromAccountNamesWindows(t *testing.T) {
 	for i, want := range []string{"session", "7d"} {
 		if b := legacy.Groups[0].Buckets[i]; b.Window != want || b.Description != "" {
 			t.Errorf("legacy bucket %d = %+v, want window %s and no description", i, b, want)
+		}
+	}
+}
+
+// "NaN" and "Infinity" parse as floats but are no amount, and JSON cannot
+// carry them to the page or CPA's quota panel.
+func TestOptionalNumberRejectsNonFinite(t *testing.T) {
+	for _, in := range []any{"NaN", "Infinity", "-Inf", math.Inf(1), math.NaN()} {
+		if got, ok := optionalNumber(in); ok || got != 0 {
+			t.Errorf("optionalNumber(%v) = %v, %v; want 0, false", in, got, ok)
+		}
+	}
+	for in, want := range map[any]float64{"12.5": 12.5, 3.0: 3, json.Number("7"): 7} {
+		if got, ok := optionalNumber(in); !ok || got != want {
+			t.Errorf("optionalNumber(%v) = %v, %v; want %v", in, got, ok, want)
 		}
 	}
 }
