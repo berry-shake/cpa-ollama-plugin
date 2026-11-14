@@ -1,0 +1,263 @@
+{
+  "case": "management_status_host_proxy",
+  "description": "CPA's global proxy and force-model-prefix arrive with model.for_auth and show (redacted) in status and the proxy list",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": [
+      {
+        "name": "k1.json",
+        "fields": {
+          "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+          "proxy_url": "direct",
+          "type": "ollama"
+        }
+      }
+    ]
+  },
+  "upstream_script": [
+    {
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"models\":[{\"name\":\"gpt-oss:120b\",\"model\":\"gpt-oss:120b\",\"modified_at\":\"2025-08-05T12:00:00Z\",\"size\":65369818941,\"digest\":\"aaaa1111\"}]}",
+      "chunks": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"capabilities\":[\"completion\",\"tools\",\"thinking\"],\"details\":{\"family\":\"gptoss\",\"parameter_size\":\"116829156672\",\"quantization_level\":\"MXFP4\"},\"model_info\":{\"general.architecture\":\"gptoss\",\"gptoss.context_length\":131072},\"thinking\":{\"values\":[\"low\",\"medium\",\"high\"],\"default\":\"medium\"}}",
+      "chunks": []
+    }
+  ],
+  "steps": [
+    {
+      "rpc": {
+        "method": "model.for_auth",
+        "request": {
+          "Plugin": {
+            "Name": "",
+            "Version": "",
+            "Author": "",
+            "GitHubRepository": "",
+            "Logo": "",
+            "ConfigFields": null
+          },
+          "AuthID": "k1.json",
+          "AuthProvider": "ollama",
+          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJwcm94eV91cmwiOiJkaXJlY3QiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "Metadata": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "proxy_url": "direct",
+            "type": "ollama"
+          },
+          "Attributes": null,
+          "Host": {
+            "AuthDir": "/auths",
+            "ProxyURL": "http://admin:hunter2@proxy.example:3128",
+            "ForceModelPrefix": true,
+            "OAuthModelAlias": null,
+            "ExcludedModels": null
+          },
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "GET",
+            "path": "/api/tags",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          },
+          {
+            "method": "POST",
+            "path": "/api/show",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Content-Length": [
+                "24"
+              ],
+              "Content-Type": [
+                "application/json"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": "{\"model\":\"gpt-oss:120b\"}"
+          }
+        ],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "Provider": "ollama",
+            "Models": [
+              {
+                "ID": "gpt-oss:120b",
+                "Object": "model",
+                "Created": 1754395200,
+                "OwnedBy": "ollama",
+                "Type": "ollama",
+                "DisplayName": "gpt-oss:120b",
+                "Name": "gpt-oss:120b",
+                "Version": "",
+                "Description": "Ollama Cloud · gpt-oss:120b",
+                "InputTokenLimit": 131072,
+                "OutputTokenLimit": 0,
+                "SupportedGenerationMethods": null,
+                "ContextLength": 131072,
+                "MaxCompletionTokens": 0,
+                "SupportedParameters": [
+                  "tools",
+                  "reasoning"
+                ],
+                "SupportedInputModalities": [
+                  "text"
+                ],
+                "SupportedOutputModalities": [
+                  "text"
+                ],
+                "Thinking": null,
+                "UserDefined": true
+              }
+            ],
+            "AuthUpdate": {
+              "Provider": "",
+              "ID": "",
+              "FileName": "",
+              "Label": "",
+              "Prefix": "",
+              "ProxyURL": "",
+              "Disabled": false,
+              "StorageJSON": null,
+              "Metadata": null,
+              "Attributes": null,
+              "NextRefreshAfter": "0001-01-01T00:00:00Z"
+            }
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/status",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [
+          {
+            "method": "host.auth.list",
+            "request": {}
+          },
+          {
+            "method": "host.auth.get",
+            "request": {
+              "auth_index": "idx-1"
+            }
+          },
+          {
+            "method": "host.auth.models",
+            "request": {}
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJwbHVnaW4iOiJvbGxhbWEiLCJ2ZXJzaW9uIjoiOS45Ljktc25hcHNob3QiLCJub3ciOiIyMDI2LTExLTE0VDA4OjAwOjAwWiIsImNvbmZpZyI6eyJiYXNlX3VybCI6Int7VVBTVFJFQU19fSIsImRlZmF1bHRfcHJlZml4Ijoib2xsYW1hIiwiZm9yY2VfbW9kZWxfcHJlZml4Ijp0cnVlLCJtb2RlbHNfcmVmcmVzaF9taW51dGVzIjowLCJyZXF1ZXN0X3RpbWVvdXRfc2Vjb25kcyI6NjAwLCJzdHJlYW1faWRsZV90aW1lb3V0X3NlY29uZHMiOjMwMCwiZ2xvYmFsX3Byb3h5IjoiaHR0cDovL2FkbWluOnh4eHh4QHByb3h5LmV4YW1wbGU6MzEyOCJ9LCJjYXRhbG9nIjp7ImNvdW50IjoxLCJyZXZpc2lvbiI6ImY2ZDZiMDAxMjdlZThiODUiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoifSwiY3JlZGVudGlhbHMiOlt7ImF1dGhfaW5kZXgiOiJpZHgtMSIsImlkIjoiazEuanNvbiIsIm5hbWUiOiJrMS5qc29uIiwibGFiZWwiOiIiLCJrZXlfbWFza2VkIjoib2xsYW1h4oCmYWFhYSIsImRpc2FibGVkIjpmYWxzZSwidW5hdmFpbGFibGUiOmZhbHNlLCJwcmlvcml0eSI6MCwicHJveHlfdXJsIjoiZGlyZWN0IiwicHJlZml4IjpudWxsLCJlZmZlY3RpdmVfcHJlZml4Ijoib2xsYW1hIiwiYWxsX21vZGVscyI6dHJ1ZSwibW9kZWxzIjpbXSwicmVnaXN0ZXJlZF9tb2RlbHMiOjAsInJlZ2lzdGVyZWRfa25vd24iOnRydWUsInN1Y2Nlc3MiOjAsImZhaWxlZCI6MH1dfQ=="
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/proxies",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJwcm94aWVzIjpbXSwiZ2xvYmFsX3Byb3h5IjoiaHR0cDovL2FkbWluOnh4eHh4QHByb3h5LmV4YW1wbGU6MzEyOCJ9"
+          }
+        }
+      }
+    }
+  ]
+}

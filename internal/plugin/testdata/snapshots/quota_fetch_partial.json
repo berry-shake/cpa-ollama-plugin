@@ -1,0 +1,294 @@
+{
+  "case": "quota_fetch_partial",
+  "description": "Usage failing next to a good balance still answers (not cached); balance failing with 500 still reads usage",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": [
+      {
+        "name": "k1.json",
+        "fields": {
+          "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+          "type": "ollama"
+        }
+      }
+    ]
+  },
+  "upstream_script": [
+    {
+      "method": "GET",
+      "path": "/api/balance",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"included\":{\"balance_usd\":12.5,\"allowance_usd\":20,\"period\":{\"from\":\"2026-11-01T00:00:00Z\",\"until\":\"2026-12-01T00:00:00Z\"}},\"purchased\":{\"balance_usd\":\"3.25\"}}",
+      "chunks": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/usage",
+      "status": 500,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"error\":\"usage unavailable\"}",
+      "chunks": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/usage",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"from\":\"2026-11-13T08:00:00Z\",\"until\":\"2026-11-14T08:00:00Z\",\"totals\":{\"request_count\":20,\"input_tokens\":5000,\"cached_input_tokens\":2000,\"output_tokens\":1000,\"usage_usd\":0.7}}",
+      "chunks": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/balance",
+      "status": 500,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"error\":\"balance unavailable\"}",
+      "chunks": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/usage",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"from\":\"2026-10-15T00:00:00Z\",\"until\":\"2026-11-14T08:00:00Z\",\"totals\":{\"request_count\":120,\"input_tokens\":50000,\"cached_input_tokens\":10000,\"output_tokens\":8000,\"usage_usd\":4.2,\"groups\":[{\"model\":\"gpt-oss:120b\",\"request_count\":100,\"usage_usd\":3.5},{\"model\":\"qwen3-vl:235b\",\"request_count\":15,\"usage_usd\":0.5}],\"remainder\":{\"request_count\":5,\"usage_usd\":0.2}},\"buckets\":[{\"from\":\"2026-10-20T00:00:00Z\",\"request_count\":60,\"input_tokens\":30000,\"output_tokens\":5000,\"usage_usd\":2.0},{\"from\":\"2026-11-08T00:00:00Z\",\"request_count\":40,\"input_tokens\":15000,\"cached_input_tokens\":8000,\"output_tokens\":2000,\"usage_usd\":1.5},{\"from\":\"2026-11-14T00:00:00Z\",\"request_count\":20,\"input_tokens\":5000,\"cached_input_tokens\":2000,\"output_tokens\":1000,\"usage_usd\":0.7}]}",
+      "chunks": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/usage",
+      "status": 502,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "bad gateway",
+      "chunks": []
+    }
+  ],
+  "steps": [
+    {
+      "rpc": {
+        "method": "quota.fetch",
+        "request": {
+          "auth_index": "idx-1",
+          "auth_id": "k1.json",
+          "provider": "ollama",
+          "storage_json": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "metadata": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
+          "host": {
+            "AuthDir": "",
+            "ProxyURL": "",
+            "ForceModelPrefix": false,
+            "OAuthModelAlias": null,
+            "ExcludedModels": null
+          },
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "GET",
+            "path": "/api/balance",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          },
+          {
+            "method": "GET",
+            "path": "/api/usage",
+            "query": "range=30d&group_by=model",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          },
+          {
+            "method": "GET",
+            "path": "/api/usage",
+            "query": "range=24h",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          }
+        ],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "groups": [
+              {
+                "displayName": "Ollama",
+                "buckets": [
+                  {
+                    "window": "monthly",
+                    "remainingFraction": 0.625,
+                    "resetTime": "2026-12-01T00:00:00Z"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "quota.fetch",
+        "request": {
+          "auth_index": "idx-1",
+          "auth_id": "k1.json",
+          "provider": "ollama",
+          "storage_json": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "metadata": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
+          "host": {
+            "AuthDir": "",
+            "ProxyURL": "",
+            "ForceModelPrefix": false,
+            "OAuthModelAlias": null,
+            "ExcludedModels": null
+          },
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "GET",
+            "path": "/api/balance",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          },
+          {
+            "method": "GET",
+            "path": "/api/usage",
+            "query": "range=30d&group_by=model",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          },
+          {
+            "method": "GET",
+            "path": "/api/usage",
+            "query": "range=24h",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          }
+        ],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {}
+        }
+      }
+    }
+  ]
+}

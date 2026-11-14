@@ -1,0 +1,61 @@
+{
+  "case": "management_status_empty",
+  "description": "Status with no credentials: config view and empty catalog",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": []
+  },
+  "upstream_script": [],
+  "steps": [
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/status",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [
+          {
+            "method": "host.auth.list",
+            "request": {}
+          },
+          {
+            "method": "host.auth.models",
+            "request": {}
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJwbHVnaW4iOiJvbGxhbWEiLCJ2ZXJzaW9uIjoiOS45Ljktc25hcHNob3QiLCJub3ciOiIyMDI2LTExLTE0VDA4OjAwOjAwWiIsImNvbmZpZyI6eyJiYXNlX3VybCI6Int7VVBTVFJFQU19fSIsImRlZmF1bHRfcHJlZml4Ijoib2xsYW1hIiwibW9kZWxzX3JlZnJlc2hfbWludXRlcyI6MCwicmVxdWVzdF90aW1lb3V0X3NlY29uZHMiOjYwMCwic3RyZWFtX2lkbGVfdGltZW91dF9zZWNvbmRzIjozMDB9LCJjYXRhbG9nIjp7ImNvdW50IjowfSwiY3JlZGVudGlhbHMiOltdfQ=="
+          }
+        }
+      }
+    }
+  ]
+}

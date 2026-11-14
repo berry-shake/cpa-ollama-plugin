@@ -1,0 +1,522 @@
+{
+  "case": "catalog_refresh_resync",
+  "description": "Forced refresh re-saves auth files with an older model_revision (disabled ones too, non-Ollama ones never); a second refresh saves nothing",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": [
+      {
+        "name": "k1.json",
+        "fields": {
+          "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+          "label": "Main",
+          "model_revision": "stale",
+          "type": "ollama"
+        }
+      },
+      {
+        "name": "k2.json",
+        "fields": {
+          "api_key": "ollama-snap-key-bbbbbbbbbbbbbbbb",
+          "disabled": true,
+          "model_revision": "stale",
+          "type": "ollama"
+        }
+      },
+      {
+        "name": "k3.json",
+        "fields": {
+          "access_token": "fake-token",
+          "type": "codex"
+        }
+      }
+    ]
+  },
+  "upstream_script": [
+    {
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"models\":[{\"name\":\"gpt-oss:120b\",\"model\":\"gpt-oss:120b\",\"modified_at\":\"2025-08-05T12:00:00Z\",\"size\":65369818941,\"digest\":\"aaaa1111\",\"capabilities\":[\"completion\",\"tools\",\"thinking\"]},{\"name\":\"qwen3-vl:235b\",\"model\":\"qwen3-vl:235b\",\"modified_at\":\"2025-10-01T00:00:00Z\",\"size\":125000000000,\"digest\":\"bbbb2222\",\"capabilities\":[\"completion\",\"vision\"]},{\"name\":\"embed-snap:1b\",\"model\":\"embed-snap:1b\",\"modified_at\":\"2025-01-02T03:04:05Z\",\"size\":1000000,\"digest\":\"cccc3333\",\"capabilities\":[\"embedding\"]}]}",
+      "chunks": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"capabilities\":[\"completion\",\"tools\"],\"details\":{\"family\":\"snapfam\",\"parameter_size\":\"116.8B\",\"quantization_level\":\"MXFP4\"},\"model_info\":{\"general.architecture\":\"snaparch\",\"snaparch.context_length\":131072},\"thinking\":{\"values\":[\"low\",\"medium\",\"high\"],\"default\":\"medium\"}}",
+      "chunks": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"capabilities\":[\"completion\",\"tools\"],\"details\":{\"family\":\"snapfam\",\"parameter_size\":\"116.8B\",\"quantization_level\":\"MXFP4\"},\"model_info\":{\"general.architecture\":\"snaparch\",\"snaparch.context_length\":131072},\"thinking\":{\"values\":[\"low\",\"medium\",\"high\"],\"default\":\"medium\"}}",
+      "chunks": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"capabilities\":[\"completion\",\"tools\"],\"details\":{\"family\":\"snapfam\",\"parameter_size\":\"116.8B\",\"quantization_level\":\"MXFP4\"},\"model_info\":{\"general.architecture\":\"snaparch\",\"snaparch.context_length\":131072},\"thinking\":{\"values\":[\"low\",\"medium\",\"high\"],\"default\":\"medium\"}}",
+      "chunks": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"models\":[{\"name\":\"gpt-oss:120b\",\"model\":\"gpt-oss:120b\",\"modified_at\":\"2025-08-05T12:00:00Z\",\"size\":65369818941,\"digest\":\"aaaa1111\",\"capabilities\":[\"completion\",\"tools\",\"thinking\"]},{\"name\":\"qwen3-vl:235b\",\"model\":\"qwen3-vl:235b\",\"modified_at\":\"2025-10-01T00:00:00Z\",\"size\":125000000000,\"digest\":\"bbbb2222\",\"capabilities\":[\"completion\",\"vision\"]},{\"name\":\"embed-snap:1b\",\"model\":\"embed-snap:1b\",\"modified_at\":\"2025-01-02T03:04:05Z\",\"size\":1000000,\"digest\":\"cccc3333\",\"capabilities\":[\"embedding\"]}]}",
+      "chunks": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"capabilities\":[\"completion\",\"tools\"],\"details\":{\"family\":\"snapfam\",\"parameter_size\":\"116.8B\",\"quantization_level\":\"MXFP4\"},\"model_info\":{\"general.architecture\":\"snaparch\",\"snaparch.context_length\":131072},\"thinking\":{\"values\":[\"low\",\"medium\",\"high\"],\"default\":\"medium\"}}",
+      "chunks": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"capabilities\":[\"completion\",\"tools\"],\"details\":{\"family\":\"snapfam\",\"parameter_size\":\"116.8B\",\"quantization_level\":\"MXFP4\"},\"model_info\":{\"general.architecture\":\"snaparch\",\"snaparch.context_length\":131072},\"thinking\":{\"values\":[\"low\",\"medium\",\"high\"],\"default\":\"medium\"}}",
+      "chunks": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"capabilities\":[\"completion\",\"tools\"],\"details\":{\"family\":\"snapfam\",\"parameter_size\":\"116.8B\",\"quantization_level\":\"MXFP4\"},\"model_info\":{\"general.architecture\":\"snaparch\",\"snaparch.context_length\":131072},\"thinking\":{\"values\":[\"low\",\"medium\",\"high\"],\"default\":\"medium\"}}",
+      "chunks": []
+    }
+  ],
+  "steps": [
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "POST",
+          "Path": "/v0/management/plugins/ollama/models/refresh",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "GET",
+            "path": "/api/tags",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          },
+          {
+            "method": "POST",
+            "path": "/api/show",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Content-Length": [
+                "25"
+              ],
+              "Content-Type": [
+                "application/json"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": "{\"model\":\"embed-snap:1b\"}"
+          },
+          {
+            "method": "POST",
+            "path": "/api/show",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Content-Length": [
+                "24"
+              ],
+              "Content-Type": [
+                "application/json"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": "{\"model\":\"gpt-oss:120b\"}"
+          },
+          {
+            "method": "POST",
+            "path": "/api/show",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Content-Length": [
+                "25"
+              ],
+              "Content-Type": [
+                "application/json"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": "{\"model\":\"qwen3-vl:235b\"}"
+          }
+        ],
+        "host_calls": [
+          {
+            "method": "host.auth.list",
+            "request": {}
+          },
+          {
+            "method": "host.auth.get",
+            "request": {
+              "auth_index": "idx-1"
+            }
+          },
+          {
+            "method": "host.auth.get",
+            "request": {
+              "auth_index": "idx-2"
+            }
+          },
+          {
+            "method": "host.auth.save",
+            "request": {
+              "name": "k1.json",
+              "json": {
+                "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+                "label": "Main",
+                "model_revision": "9d2d4d778501073e",
+                "type": "ollama"
+              }
+            }
+          },
+          {
+            "method": "host.log",
+            "request": {
+              "level": "info",
+              "message": "ollama: refreshed registered models",
+              "fields": {
+                "auth": "k1.json",
+                "revision": "9d2d4d778501073e"
+              }
+            }
+          },
+          {
+            "method": "host.auth.save",
+            "request": {
+              "name": "k2.json",
+              "json": {
+                "api_key": "ollama-snap-key-bbbbbbbbbbbbbbbb",
+                "disabled": true,
+                "model_revision": "9d2d4d778501073e",
+                "type": "ollama"
+              }
+            }
+          },
+          {
+            "method": "host.log",
+            "request": {
+              "level": "info",
+              "message": "ollama: refreshed registered models",
+              "fields": {
+                "auth": "k2.json",
+                "revision": "9d2d4d778501073e"
+              }
+            }
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJjYXRhbG9nIjp7ImNvdW50IjozLCJyZXZpc2lvbiI6IjlkMmQ0ZDc3ODUwMTA3M2UiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoifSwibW9kZWxzIjpbeyJpZCI6ImVtYmVkLXNuYXA6MWIiLCJjYXBhYmlsaXRpZXMiOlsiZW1iZWRkaW5nIl0sImNoYXQiOmZhbHNlLCJjb250ZXh0X2xlbmd0aCI6MTMxMDcyLCJmYW1pbHkiOiJzbmFwZmFtIiwicGFyYW1ldGVyX3NpemUiOiIxMTYuOEIiLCJxdWFudGl6YXRpb24iOiJNWEZQNCIsInNpemUiOjEwMDAwMDAsIm1vZGlmaWVkX2F0IjoiMjAyNS0wMS0wMlQwMzowNDowNVoiLCJ0aGlua2luZ19sZXZlbHMiOlsibG93IiwibWVkaXVtIiwiaGlnaCJdLCJ0aGlua2luZ19kZWZhdWx0IjoibWVkaXVtIn0seyJpZCI6ImdwdC1vc3M6MTIwYiIsImNhcGFiaWxpdGllcyI6WyJjb21wbGV0aW9uIiwidG9vbHMiLCJ0aGlua2luZyJdLCJjaGF0Ijp0cnVlLCJjb250ZXh0X2xlbmd0aCI6MTMxMDcyLCJmYW1pbHkiOiJzbmFwZmFtIiwicGFyYW1ldGVyX3NpemUiOiIxMTYuOEIiLCJxdWFudGl6YXRpb24iOiJNWEZQNCIsInNpemUiOjY1MzY5ODE4OTQxLCJtb2RpZmllZF9hdCI6IjIwMjUtMDgtMDVUMTI6MDA6MDBaIiwidGhpbmtpbmdfbGV2ZWxzIjpbImxvdyIsIm1lZGl1bSIsImhpZ2giXSwidGhpbmtpbmdfZGVmYXVsdCI6Im1lZGl1bSJ9LHsiaWQiOiJxd2VuMy12bDoyMzViIiwiY2FwYWJpbGl0aWVzIjpbImNvbXBsZXRpb24iLCJ2aXNpb24iXSwiY2hhdCI6dHJ1ZSwiY29udGV4dF9sZW5ndGgiOjEzMTA3MiwiZmFtaWx5Ijoic25hcGZhbSIsInBhcmFtZXRlcl9zaXplIjoiMTE2LjhCIiwicXVhbnRpemF0aW9uIjoiTVhGUDQiLCJzaXplIjoxMjUwMDAwMDAwMDAsIm1vZGlmaWVkX2F0IjoiMjAyNS0xMC0wMVQwMDowMDowMFoiLCJ0aGlua2luZ19sZXZlbHMiOlsibG93IiwibWVkaXVtIiwiaGlnaCJdLCJ0aGlua2luZ19kZWZhdWx0IjoibWVkaXVtIn1dfQ=="
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "POST",
+          "Path": "/v0/management/plugins/ollama/models/refresh",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "GET",
+            "path": "/api/tags",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          },
+          {
+            "method": "POST",
+            "path": "/api/show",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Content-Length": [
+                "25"
+              ],
+              "Content-Type": [
+                "application/json"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": "{\"model\":\"embed-snap:1b\"}"
+          },
+          {
+            "method": "POST",
+            "path": "/api/show",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Content-Length": [
+                "24"
+              ],
+              "Content-Type": [
+                "application/json"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": "{\"model\":\"gpt-oss:120b\"}"
+          },
+          {
+            "method": "POST",
+            "path": "/api/show",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Content-Length": [
+                "25"
+              ],
+              "Content-Type": [
+                "application/json"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": "{\"model\":\"qwen3-vl:235b\"}"
+          }
+        ],
+        "host_calls": [
+          {
+            "method": "host.auth.list",
+            "request": {}
+          },
+          {
+            "method": "host.auth.get",
+            "request": {
+              "auth_index": "idx-1"
+            }
+          },
+          {
+            "method": "host.auth.get",
+            "request": {
+              "auth_index": "idx-2"
+            }
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJjYXRhbG9nIjp7ImNvdW50IjozLCJyZXZpc2lvbiI6IjlkMmQ0ZDc3ODUwMTA3M2UiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoifSwibW9kZWxzIjpbeyJpZCI6ImVtYmVkLXNuYXA6MWIiLCJjYXBhYmlsaXRpZXMiOlsiZW1iZWRkaW5nIl0sImNoYXQiOmZhbHNlLCJjb250ZXh0X2xlbmd0aCI6MTMxMDcyLCJmYW1pbHkiOiJzbmFwZmFtIiwicGFyYW1ldGVyX3NpemUiOiIxMTYuOEIiLCJxdWFudGl6YXRpb24iOiJNWEZQNCIsInNpemUiOjEwMDAwMDAsIm1vZGlmaWVkX2F0IjoiMjAyNS0wMS0wMlQwMzowNDowNVoiLCJ0aGlua2luZ19sZXZlbHMiOlsibG93IiwibWVkaXVtIiwiaGlnaCJdLCJ0aGlua2luZ19kZWZhdWx0IjoibWVkaXVtIn0seyJpZCI6ImdwdC1vc3M6MTIwYiIsImNhcGFiaWxpdGllcyI6WyJjb21wbGV0aW9uIiwidG9vbHMiLCJ0aGlua2luZyJdLCJjaGF0Ijp0cnVlLCJjb250ZXh0X2xlbmd0aCI6MTMxMDcyLCJmYW1pbHkiOiJzbmFwZmFtIiwicGFyYW1ldGVyX3NpemUiOiIxMTYuOEIiLCJxdWFudGl6YXRpb24iOiJNWEZQNCIsInNpemUiOjY1MzY5ODE4OTQxLCJtb2RpZmllZF9hdCI6IjIwMjUtMDgtMDVUMTI6MDA6MDBaIiwidGhpbmtpbmdfbGV2ZWxzIjpbImxvdyIsIm1lZGl1bSIsImhpZ2giXSwidGhpbmtpbmdfZGVmYXVsdCI6Im1lZGl1bSJ9LHsiaWQiOiJxd2VuMy12bDoyMzViIiwiY2FwYWJpbGl0aWVzIjpbImNvbXBsZXRpb24iLCJ2aXNpb24iXSwiY2hhdCI6dHJ1ZSwiY29udGV4dF9sZW5ndGgiOjEzMTA3MiwiZmFtaWx5Ijoic25hcGZhbSIsInBhcmFtZXRlcl9zaXplIjoiMTE2LjhCIiwicXVhbnRpemF0aW9uIjoiTVhGUDQiLCJzaXplIjoxMjUwMDAwMDAwMDAsIm1vZGlmaWVkX2F0IjoiMjAyNS0xMC0wMVQwMDowMDowMFoiLCJ0aGlua2luZ19sZXZlbHMiOlsibG93IiwibWVkaXVtIiwiaGlnaCJdLCJ0aGlua2luZ19kZWZhdWx0IjoibWVkaXVtIn1dfQ=="
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/status",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [
+          {
+            "method": "host.auth.list",
+            "request": {}
+          },
+          {
+            "method": "host.auth.get",
+            "request": {
+              "auth_index": "idx-1"
+            }
+          },
+          {
+            "method": "host.auth.get",
+            "request": {
+              "auth_index": "idx-2"
+            }
+          },
+          {
+            "method": "host.auth.models",
+            "request": {}
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJwbHVnaW4iOiJvbGxhbWEiLCJ2ZXJzaW9uIjoiOS45Ljktc25hcHNob3QiLCJub3ciOiIyMDI2LTExLTE0VDA4OjAwOjAwWiIsImNvbmZpZyI6eyJiYXNlX3VybCI6Int7VVBTVFJFQU19fSIsImRlZmF1bHRfcHJlZml4Ijoib2xsYW1hIiwiZm9yY2VfbW9kZWxfcHJlZml4IjpmYWxzZSwibW9kZWxzX3JlZnJlc2hfbWludXRlcyI6MCwicmVxdWVzdF90aW1lb3V0X3NlY29uZHMiOjYwMCwic3RyZWFtX2lkbGVfdGltZW91dF9zZWNvbmRzIjozMDB9LCJjYXRhbG9nIjp7ImNvdW50IjozLCJyZXZpc2lvbiI6IjlkMmQ0ZDc3ODUwMTA3M2UiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoifSwiY3JlZGVudGlhbHMiOlt7ImF1dGhfaW5kZXgiOiJpZHgtMSIsImlkIjoiazEuanNvbiIsIm5hbWUiOiJrMS5qc29uIiwibGFiZWwiOiJNYWluIiwia2V5X21hc2tlZCI6Im9sbGFtYeKApmFhYWEiLCJkaXNhYmxlZCI6ZmFsc2UsInVuYXZhaWxhYmxlIjpmYWxzZSwicHJpb3JpdHkiOjAsInByZWZpeCI6bnVsbCwiZWZmZWN0aXZlX3ByZWZpeCI6Im9sbGFtYSIsImFsbF9tb2RlbHMiOnRydWUsIm1vZGVscyI6W10sInJlZ2lzdGVyZWRfbW9kZWxzIjoyLCJyZWdpc3RlcmVkX2tub3duIjp0cnVlLCJzdWNjZXNzIjowLCJmYWlsZWQiOjB9LHsiYXV0aF9pbmRleCI6ImlkeC0yIiwiaWQiOiJrMi5qc29uIiwibmFtZSI6ImsyLmpzb24iLCJsYWJlbCI6IiIsImtleV9tYXNrZWQiOiJvbGxhbWHigKZiYmJiIiwiZGlzYWJsZWQiOnRydWUsInVuYXZhaWxhYmxlIjpmYWxzZSwicHJpb3JpdHkiOjAsInByZWZpeCI6bnVsbCwiZWZmZWN0aXZlX3ByZWZpeCI6Im9sbGFtYSIsImFsbF9tb2RlbHMiOnRydWUsIm1vZGVscyI6W10sInJlZ2lzdGVyZWRfbW9kZWxzIjowLCJyZWdpc3RlcmVkX2tub3duIjp0cnVlLCJzdWNjZXNzIjowLCJmYWlsZWQiOjB9XX0="
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "case": "catalog_model_static",
+  "description": "model.static registers no static models",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": []
+  },
+  "upstream_script": [],
+  "steps": [
+    {
+      "rpc": {
+        "method": "model.static",
+        "request": {
+          "Plugin": {
+            "Name": "",
+            "Version": "",
+            "Author": "",
+            "GitHubRepository": "",
+            "Logo": "",
+            "ConfigFields": null
+          },
+          "Host": {
+            "AuthDir": "/auths",
+            "ProxyURL": "",
+            "ForceModelPrefix": false,
+            "OAuthModelAlias": null,
+            "ExcludedModels": null
+          },
+          "multi_provider_models": true
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "Provider": "ollama",
+            "Models": null,
+            "AuthUpdate": {
+              "Provider": "",
+              "ID": "",
+              "FileName": "",
+              "Label": "",
+              "Prefix": "",
+              "ProxyURL": "",
+              "Disabled": false,
+              "StorageJSON": null,
+              "Metadata": null,
+              "Attributes": null,
+              "NextRefreshAfter": "0001-01-01T00:00:00Z"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

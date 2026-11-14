@@ -1,0 +1,259 @@
+{
+  "case": "catalog_tags_error",
+  "description": "/api/tags failing: models view 502, model.for_auth registers nothing, status shows the error",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": [
+      {
+        "name": "k1.json",
+        "fields": {
+          "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+          "type": "ollama"
+        }
+      }
+    ]
+  },
+  "upstream_script": [
+    {
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 503,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"error\":\"service unavailable\"}",
+      "chunks": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"models\":[]}",
+      "chunks": []
+    }
+  ],
+  "steps": [
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/models",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "GET",
+            "path": "/api/tags",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          }
+        ],
+        "host_calls": [
+          {
+            "method": "host.auth.list",
+            "request": {}
+          },
+          {
+            "method": "host.auth.get",
+            "request": {
+              "auth_index": "idx-1"
+            }
+          },
+          {
+            "method": "host.log",
+            "request": {
+              "level": "warn",
+              "message": "ollama: model catalog refresh failed",
+              "fields": {
+                "error": "GET /api/tags returned 503: {\"error\":\"service unavailable\"}"
+              }
+            }
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 502,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJlcnJvciI6ImNhdGFsb2dfdW5hdmFpbGFibGUiLCJtZXNzYWdlIjoiR0VUIC9hcGkvdGFncyByZXR1cm5lZCA1MDM6IHtcImVycm9yXCI6XCJzZXJ2aWNlIHVuYXZhaWxhYmxlXCJ9In0="
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "model.for_auth",
+        "request": {
+          "Plugin": {
+            "Name": "",
+            "Version": "",
+            "Author": "",
+            "GitHubRepository": "",
+            "Logo": "",
+            "ConfigFields": null
+          },
+          "AuthID": "k1.json",
+          "AuthProvider": "ollama",
+          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "Metadata": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
+          "Attributes": null,
+          "Host": {
+            "AuthDir": "/auths",
+            "ProxyURL": "",
+            "ForceModelPrefix": false,
+            "OAuthModelAlias": null,
+            "ExcludedModels": null
+          },
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "GET",
+            "path": "/api/tags",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          }
+        ],
+        "host_calls": [
+          {
+            "method": "host.log",
+            "request": {
+              "level": "warn",
+              "message": "ollama: model catalog unavailable",
+              "fields": {
+                "error": "/api/tags returned no models"
+              }
+            }
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "Provider": "ollama",
+            "Models": [],
+            "AuthUpdate": {
+              "Provider": "",
+              "ID": "",
+              "FileName": "",
+              "Label": "",
+              "Prefix": "",
+              "ProxyURL": "",
+              "Disabled": false,
+              "StorageJSON": null,
+              "Metadata": null,
+              "Attributes": null,
+              "NextRefreshAfter": "0001-01-01T00:00:00Z"
+            }
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/status",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [
+          {
+            "method": "host.auth.list",
+            "request": {}
+          },
+          {
+            "method": "host.auth.get",
+            "request": {
+              "auth_index": "idx-1"
+            }
+          },
+          {
+            "method": "host.auth.models",
+            "request": {}
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJwbHVnaW4iOiJvbGxhbWEiLCJ2ZXJzaW9uIjoiOS45Ljktc25hcHNob3QiLCJub3ciOiIyMDI2LTExLTE0VDA4OjAwOjAwWiIsImNvbmZpZyI6eyJiYXNlX3VybCI6Int7VVBTVFJFQU19fSIsImRlZmF1bHRfcHJlZml4Ijoib2xsYW1hIiwiZm9yY2VfbW9kZWxfcHJlZml4IjpmYWxzZSwibW9kZWxzX3JlZnJlc2hfbWludXRlcyI6MCwicmVxdWVzdF90aW1lb3V0X3NlY29uZHMiOjYwMCwic3RyZWFtX2lkbGVfdGltZW91dF9zZWNvbmRzIjozMDB9LCJjYXRhbG9nIjp7ImNvdW50IjowLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJsYXN0X2Vycm9yIjoiL2FwaS90YWdzIHJldHVybmVkIG5vIG1vZGVscyJ9LCJjcmVkZW50aWFscyI6W3siYXV0aF9pbmRleCI6ImlkeC0xIiwiaWQiOiJrMS5qc29uIiwibmFtZSI6ImsxLmpzb24iLCJsYWJlbCI6IiIsImtleV9tYXNrZWQiOiJvbGxhbWHigKZhYWFhIiwiZGlzYWJsZWQiOmZhbHNlLCJ1bmF2YWlsYWJsZSI6ZmFsc2UsInByaW9yaXR5IjowLCJwcmVmaXgiOm51bGwsImVmZmVjdGl2ZV9wcmVmaXgiOiJvbGxhbWEiLCJhbGxfbW9kZWxzIjp0cnVlLCJtb2RlbHMiOltdLCJyZWdpc3RlcmVkX21vZGVscyI6MCwicmVnaXN0ZXJlZF9rbm93biI6dHJ1ZSwic3VjY2VzcyI6MCwiZmFpbGVkIjowfV19"
+          }
+        }
+      }
+    }
+  ]
+}

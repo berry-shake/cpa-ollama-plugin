@@ -1,0 +1,98 @@
+{
+  "case": "quota_fetch_429",
+  "description": "Balance 429 skips the usage calls and fails with Retry-After",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": [
+      {
+        "name": "k1.json",
+        "fields": {
+          "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+          "type": "ollama"
+        }
+      }
+    ]
+  },
+  "upstream_script": [
+    {
+      "method": "GET",
+      "path": "/api/balance",
+      "status": 429,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ],
+        "Retry-After": [
+          "45"
+        ]
+      },
+      "body": "{\"error\":\"rate limited\"}",
+      "chunks": []
+    }
+  ],
+  "steps": [
+    {
+      "rpc": {
+        "method": "quota.fetch",
+        "request": {
+          "auth_index": "idx-1",
+          "auth_id": "k1.json",
+          "provider": "ollama",
+          "storage_json": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "metadata": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
+          "host": {
+            "AuthDir": "",
+            "ProxyURL": "",
+            "ForceModelPrefix": false,
+            "OAuthModelAlias": null,
+            "ExcludedModels": null
+          },
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "GET",
+            "path": "/api/balance",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          }
+        ],
+        "host_calls": [],
+        "response": {
+          "ok": false,
+          "error": {
+            "code": "upstream_429",
+            "message": "ollama: rate limited",
+            "retryable": true,
+            "http_status": 429,
+            "retry_after_seconds": 45
+          }
+        }
+      }
+    }
+  ]
+}

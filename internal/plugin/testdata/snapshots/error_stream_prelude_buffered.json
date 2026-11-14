@@ -1,0 +1,163 @@
+{
+  "case": "error_stream_prelude_buffered",
+  "description": "Messages error event before output without a stream_id fails the RPC (overloaded maps to 503)",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": [
+      {
+        "name": "k1.json",
+        "fields": {
+          "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+          "type": "ollama"
+        }
+      }
+    ]
+  },
+  "upstream_script": [
+    {
+      "method": "POST",
+      "path": "/v1/messages",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "text/event-stream"
+        ],
+        "X-Request-Id": [
+          "up-stream-1"
+        ]
+      },
+      "body": "",
+      "chunks": [
+        "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"id\":\"msg_x\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"gpt-oss:120b\",\"content\":[],\"usage\":{\"input_tokens\":3,\"output_tokens\":0}}}\n\n",
+        "event: error\ndata: {\"type\":\"error\",\"error\":{\"type\":\"overloaded_error\",\"message\":\"Overloaded\"}}\n\n"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "rpc": {
+        "method": "executor.execute_stream",
+        "request": {
+          "AuthID": "k1.json",
+          "AuthProvider": "ollama",
+          "Model": "gpt-oss:120b",
+          "Format": "claude",
+          "Stream": true,
+          "Alt": "",
+          "Headers": {
+            "Authorization": [
+              "Bearer sk-client-fake"
+            ],
+            "Content-Type": [
+              "application/json"
+            ],
+            "User-Agent": [
+              "snapshot-client/1.0"
+            ]
+          },
+          "Query": null,
+          "OriginalRequest": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1heF90b2tlbnMiOjI1NiwibWVzc2FnZXMiOlt7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6IkhpIn1dLCJ0aGlua2luZyI6eyJ0eXBlIjoiZW5hYmxlZCIsImJ1ZGdldF90b2tlbnMiOjEwMjR9fQ==",
+          "SourceFormat": "claude",
+          "Payload": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1heF90b2tlbnMiOjI1NiwibWVzc2FnZXMiOlt7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6IkhpIn1dLCJ0aGlua2luZyI6eyJ0eXBlIjoiZW5hYmxlZCIsImJ1ZGdldF90b2tlbnMiOjEwMjR9fQ==",
+          "Metadata": {
+            "request_path": "/v1/messages",
+            "requested_model": "ollama/gpt-oss:120b",
+            "selected_auth_id": "k1.json",
+            "selected_auth_index": "idx-1"
+          },
+          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "AuthMetadata": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
+          "AuthAttributes": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "POST",
+            "path": "/v1/messages",
+            "query": "",
+            "header": {
+              "Accept": [
+                "text/event-stream"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Anthropic-Version": [
+                "2023-06-01"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "Content-Length": [
+                "136"
+              ],
+              "Content-Type": [
+                "application/json"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": "{\"model\":\"gpt-oss:120b\",\"max_tokens\":256,\"messages\":[{\"role\":\"user\",\"content\":\"Hi\"}],\"thinking\":{\"type\":\"enabled\",\"budget_tokens\":1024}}"
+          }
+        ],
+        "host_calls": [],
+        "response": {
+          "ok": false,
+          "error": {
+            "code": "overloaded_error",
+            "message": "ollama: Overloaded",
+            "retryable": true,
+            "http_status": 503
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/logs",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJpdGVtcyI6W3siaWQiOiIxIiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9tZXNzYWdlcyIsIm1vZGVsIjoib2xsYW1hL2dwdC1vc3M6MTIwYiIsInVwc3RyZWFtX21vZGVsIjoiZ3B0LW9zczoxMjBiIiwic2VydmVkX21vZGVsIjoiZ3B0LW9zczoxMjBiIiwicmVhc29uaW5nX2VmZm9ydCI6ImJ1ZGdldCAxMDI0Iiwic3RyZWFtIjp0cnVlLCJzdGF0dXMiOiJlcnJvciIsImh0dHBfc3RhdHVzIjo1MDMsImNyZWRlbnRpYWwiOiJvbGxhbWHigKZhYWFhIiwiYXV0aF9pZCI6ImsxLmpzb24iLCJkdXJhdGlvbl9tcyI6Ijx2b2xhdGlsZT4iLCJpbnB1dF90b2tlbnMiOjMsIm91dHB1dF90b2tlbnMiOjAsImNhY2hlZF90b2tlbnMiOjAsImVycm9yX2NvZGUiOiJvdmVybG9hZGVkX2Vycm9yIiwiZXJyb3IiOiJvbGxhbWE6IE92ZXJsb2FkZWQiLCJlcnJvcl9waGFzZSI6InJlcXVlc3QiLCJjbGllbnRfcGF0aCI6Ii92MS9tZXNzYWdlcyIsInVzZXJfYWdlbnQiOiJzbmFwc2hvdC1jbGllbnQvMS4wIiwiYXV0aF9pbmRleCI6ImlkeC0xIiwiZWdyZXNzIjoiZW52IiwidXBzdHJlYW1fc3RhdHVzIjoyMDAsInVwc3RyZWFtX3JlcXVlc3RfaWQiOiJ1cC1zdHJlYW0tMSIsImZyYW1lcyI6MCwiYXR0ZW1wdHMiOjF9XSwidG90YWwiOjEsIm9mZnNldCI6MCwicmV0ZW50aW9uIjoxMDAwMDAsInJldGVudGlvbl9kYXlzIjozMCwic3VtbWFyeSI6eyJyZXF1ZXN0cyI6MSwic3VjY2VzcyI6MCwiZmFpbGVkIjoxLCJpbnB1dF90b2tlbnMiOjMsIm91dHB1dF90b2tlbnMiOjAsImNhY2hlZF90b2tlbnMiOjAsImNhY2hlX2hpdF9yYXRlIjowLCJvdXRwdXRfdG9rZW5zX3Blcl9zZWNvbmQiOiI8dm9sYXRpbGU+IiwiZTJlX3Rva2Vuc19wZXJfc2Vjb25kIjoiPHZvbGF0aWxlPiJ9fQ=="
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,156 @@
+{
+  "case": "error_403",
+  "description": "Upstream 403 with an Anthropic-style error body on Messages",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": [
+      {
+        "name": "k1.json",
+        "fields": {
+          "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+          "type": "ollama"
+        }
+      }
+    ]
+  },
+  "upstream_script": [
+    {
+      "method": "POST",
+      "path": "/v1/messages",
+      "status": 403,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"type\":\"error\",\"error\":{\"type\":\"permission_error\",\"message\":\"account suspended\"}}",
+      "chunks": []
+    }
+  ],
+  "steps": [
+    {
+      "rpc": {
+        "method": "executor.execute",
+        "request": {
+          "AuthID": "k1.json",
+          "AuthProvider": "ollama",
+          "Model": "gpt-oss:120b",
+          "Format": "claude",
+          "Stream": false,
+          "Alt": "",
+          "Headers": {
+            "Authorization": [
+              "Bearer sk-client-fake"
+            ],
+            "Content-Type": [
+              "application/json"
+            ],
+            "User-Agent": [
+              "snapshot-client/1.0"
+            ]
+          },
+          "Query": null,
+          "OriginalRequest": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1heF90b2tlbnMiOjI1NiwibWVzc2FnZXMiOlt7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6IkhpIn1dLCJ0aGlua2luZyI6eyJ0eXBlIjoiZW5hYmxlZCIsImJ1ZGdldF90b2tlbnMiOjEwMjR9fQ==",
+          "SourceFormat": "claude",
+          "Payload": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1heF90b2tlbnMiOjI1NiwibWVzc2FnZXMiOlt7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6IkhpIn1dLCJ0aGlua2luZyI6eyJ0eXBlIjoiZW5hYmxlZCIsImJ1ZGdldF90b2tlbnMiOjEwMjR9fQ==",
+          "Metadata": {
+            "request_path": "/v1/messages",
+            "requested_model": "ollama/gpt-oss:120b",
+            "selected_auth_id": "k1.json",
+            "selected_auth_index": "idx-1"
+          },
+          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "AuthMetadata": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
+          "AuthAttributes": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "POST",
+            "path": "/v1/messages",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Anthropic-Version": [
+                "2023-06-01"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "Content-Length": [
+                "136"
+              ],
+              "Content-Type": [
+                "application/json"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": "{\"model\":\"gpt-oss:120b\",\"max_tokens\":256,\"messages\":[{\"role\":\"user\",\"content\":\"Hi\"}],\"thinking\":{\"type\":\"enabled\",\"budget_tokens\":1024}}"
+          }
+        ],
+        "host_calls": [],
+        "response": {
+          "ok": false,
+          "error": {
+            "code": "permission_error",
+            "message": "ollama: account suspended",
+            "http_status": 403
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/logs",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJpdGVtcyI6W3siaWQiOiIxIiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9tZXNzYWdlcyIsIm1vZGVsIjoib2xsYW1hL2dwdC1vc3M6MTIwYiIsInVwc3RyZWFtX21vZGVsIjoiZ3B0LW9zczoxMjBiIiwicmVhc29uaW5nX2VmZm9ydCI6ImJ1ZGdldCAxMDI0Iiwic3RyZWFtIjpmYWxzZSwic3RhdHVzIjoiZXJyb3IiLCJodHRwX3N0YXR1cyI6NDAzLCJjcmVkZW50aWFsIjoib2xsYW1h4oCmYWFhYSIsImF1dGhfaWQiOiJrMS5qc29uIiwiZHVyYXRpb25fbXMiOiI8dm9sYXRpbGU+IiwiaW5wdXRfdG9rZW5zIjowLCJvdXRwdXRfdG9rZW5zIjowLCJjYWNoZWRfdG9rZW5zIjowLCJlcnJvcl9jb2RlIjoicGVybWlzc2lvbl9lcnJvciIsImVycm9yIjoib2xsYW1hOiBhY2NvdW50IHN1c3BlbmRlZCIsImVycm9yX3BoYXNlIjoicmVxdWVzdCIsImNsaWVudF9wYXRoIjoiL3YxL21lc3NhZ2VzIiwidXNlcl9hZ2VudCI6InNuYXBzaG90LWNsaWVudC8xLjAiLCJhdXRoX2luZGV4IjoiaWR4LTEiLCJlZ3Jlc3MiOiJlbnYiLCJ1cHN0cmVhbV9zdGF0dXMiOjQwMywiYXR0ZW1wdHMiOjF9XSwidG90YWwiOjEsIm9mZnNldCI6MCwicmV0ZW50aW9uIjoxMDAwMDAsInJldGVudGlvbl9kYXlzIjozMCwic3VtbWFyeSI6eyJyZXF1ZXN0cyI6MSwic3VjY2VzcyI6MCwiZmFpbGVkIjoxLCJpbnB1dF90b2tlbnMiOjAsIm91dHB1dF90b2tlbnMiOjAsImNhY2hlZF90b2tlbnMiOjAsImNhY2hlX2hpdF9yYXRlIjpudWxsLCJvdXRwdXRfdG9rZW5zX3Blcl9zZWNvbmQiOiI8dm9sYXRpbGU+IiwiZTJlX3Rva2Vuc19wZXJfc2Vjb25kIjoiPHZvbGF0aWxlPiJ9fQ=="
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+{
+  "case": "error_529_overloaded",
+  "description": "Upstream 529 becomes a retryable 503",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": [
+      {
+        "name": "k1.json",
+        "fields": {
+          "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+          "type": "ollama"
+        }
+      }
+    ]
+  },
+  "upstream_script": [
+    {
+      "method": "POST",
+      "path": "/v1/chat/completions",
+      "status": 529,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"error\":{\"message\":\"overloaded\",\"type\":\"overloaded_error\"}}",
+      "chunks": []
+    }
+  ],
+  "steps": [
+    {
+      "rpc": {
+        "method": "executor.execute",
+        "request": {
+          "AuthID": "k1.json",
+          "AuthProvider": "ollama",
+          "Model": "gpt-oss:120b",
+          "Format": "openai",
+          "Stream": false,
+          "Alt": "",
+          "Headers": {
+            "Authorization": [
+              "Bearer sk-client-fake"
+            ],
+            "Content-Type": [
+              "application/json"
+            ],
+            "User-Agent": [
+              "snapshot-client/1.0"
+            ],
+            "X-Ollama-Cpa-Request-Id": [
+              "trace-error_529_overloaded"
+            ]
+          },
+          "Query": null,
+          "OriginalRequest": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1lc3NhZ2VzIjpbeyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJIaSJ9XSwicmVhc29uaW5nX2VmZm9ydCI6ImhpZ2giLCJ0ZW1wZXJhdHVyZSI6MC4yfQ==",
+          "SourceFormat": "openai",
+          "Payload": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1lc3NhZ2VzIjpbeyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJIaSJ9XSwicmVhc29uaW5nX2VmZm9ydCI6ImhpZ2giLCJ0ZW1wZXJhdHVyZSI6MC4yfQ==",
+          "Metadata": {
+            "request_path": "/v1/chat/completions",
+            "requested_model": "ollama/gpt-oss:120b",
+            "selected_auth_id": "k1.json",
+            "selected_auth_index": "idx-1"
+          },
+          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "AuthMetadata": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
+          "AuthAttributes": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "POST",
+            "path": "/v1/chat/completions",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "Content-Length": [
+                "112"
+              ],
+              "Content-Type": [
+                "application/json"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": "{\"model\":\"gpt-oss:120b\",\"messages\":[{\"role\":\"user\",\"content\":\"Hi\"}],\"reasoning_effort\":\"high\",\"temperature\":0.2}"
+          }
+        ],
+        "host_calls": [],
+        "response": {
+          "ok": false,
+          "error": {
+            "code": "overloaded_error",
+            "message": "ollama: overloaded",
+            "retryable": true,
+            "http_status": 503
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/logs",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJpdGVtcyI6W3siaWQiOiIxIiwicmVxdWVzdF9pZCI6InRyYWNlLWVycm9yXzUyOV9vdmVybG9hZGVkIiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9jaGF0L2NvbXBsZXRpb25zIiwibW9kZWwiOiJvbGxhbWEvZ3B0LW9zczoxMjBiIiwidXBzdHJlYW1fbW9kZWwiOiJncHQtb3NzOjEyMGIiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsInN0cmVhbSI6ZmFsc2UsInN0YXR1cyI6ImVycm9yIiwiaHR0cF9zdGF0dXMiOjUwMywiY3JlZGVudGlhbCI6Im9sbGFtYeKApmFhYWEiLCJhdXRoX2lkIjoiazEuanNvbiIsImR1cmF0aW9uX21zIjoiPHZvbGF0aWxlPiIsImlucHV0X3Rva2VucyI6MCwib3V0cHV0X3Rva2VucyI6MCwiY2FjaGVkX3Rva2VucyI6MCwiZXJyb3JfY29kZSI6Im92ZXJsb2FkZWRfZXJyb3IiLCJlcnJvciI6Im9sbGFtYTogb3ZlcmxvYWRlZCIsImVycm9yX3BoYXNlIjoicmVxdWVzdCIsImNsaWVudF9wYXRoIjoiL3YxL2NoYXQvY29tcGxldGlvbnMiLCJ1c2VyX2FnZW50Ijoic25hcHNob3QtY2xpZW50LzEuMCIsImF1dGhfaW5kZXgiOiJpZHgtMSIsImVncmVzcyI6ImVudiIsInVwc3RyZWFtX3N0YXR1cyI6NTI5LCJhdHRlbXB0cyI6MX1dLCJ0b3RhbCI6MSwib2Zmc2V0IjowLCJyZXRlbnRpb24iOjEwMDAwMCwicmV0ZW50aW9uX2RheXMiOjMwLCJzdW1tYXJ5Ijp7InJlcXVlc3RzIjoxLCJzdWNjZXNzIjowLCJmYWlsZWQiOjEsImlucHV0X3Rva2VucyI6MCwib3V0cHV0X3Rva2VucyI6MCwiY2FjaGVkX3Rva2VucyI6MCwiY2FjaGVfaGl0X3JhdGUiOm51bGwsIm91dHB1dF90b2tlbnNfcGVyX3NlY29uZCI6Ijx2b2xhdGlsZT4iLCJlMmVfdG9rZW5zX3Blcl9zZWNvbmQiOiI8dm9sYXRpbGU+In19"
+          }
+        }
+      }
+    }
+  ]
+}

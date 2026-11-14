@@ -1,0 +1,293 @@
+{
+  "case": "catalog_show_error",
+  "description": "A failed /api/show is counted in detail_errors; a forced refresh loads the details again",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": [
+      {
+        "name": "k1.json",
+        "fields": {
+          "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+          "type": "ollama"
+        }
+      }
+    ]
+  },
+  "upstream_script": [
+    {
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"models\":[{\"name\":\"gpt-oss:120b\",\"model\":\"gpt-oss:120b\",\"modified_at\":\"2025-08-05T12:00:00Z\",\"size\":65369818941,\"digest\":\"aaaa1111\"}]}",
+      "chunks": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 500,
+      "header": {
+        "Content-Type": [
+          "text/plain"
+        ]
+      },
+      "body": "boom",
+      "chunks": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/tags",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"models\":[{\"name\":\"gpt-oss:120b\",\"model\":\"gpt-oss:120b\",\"modified_at\":\"2025-08-05T12:00:00Z\",\"size\":65369818941,\"digest\":\"aaaa1111\"}]}",
+      "chunks": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/show",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"capabilities\":[\"completion\"]}",
+      "chunks": []
+    }
+  ],
+  "steps": [
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/models",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "GET",
+            "path": "/api/tags",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          },
+          {
+            "method": "POST",
+            "path": "/api/show",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Content-Length": [
+                "24"
+              ],
+              "Content-Type": [
+                "application/json"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": "{\"model\":\"gpt-oss:120b\"}"
+          }
+        ],
+        "host_calls": [
+          {
+            "method": "host.auth.list",
+            "request": {}
+          },
+          {
+            "method": "host.auth.get",
+            "request": {
+              "auth_index": "idx-1"
+            }
+          },
+          {
+            "method": "host.auth.save",
+            "request": {
+              "name": "k1.json",
+              "json": {
+                "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+                "model_revision": "7edb69ca91d5f515",
+                "type": "ollama"
+              }
+            }
+          },
+          {
+            "method": "host.log",
+            "request": {
+              "level": "info",
+              "message": "ollama: refreshed registered models",
+              "fields": {
+                "auth": "k1.json",
+                "revision": "7edb69ca91d5f515"
+              }
+            }
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJjYXRhbG9nIjp7ImNvdW50IjoxLCJyZXZpc2lvbiI6IjdlZGI2OWNhOTFkNWY1MTUiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJkZXRhaWxfZXJyb3JzIjoxfSwibW9kZWxzIjpbeyJpZCI6ImdwdC1vc3M6MTIwYiIsImNoYXQiOnRydWUsInNpemUiOjY1MzY5ODE4OTQxLCJtb2RpZmllZF9hdCI6IjIwMjUtMDgtMDVUMTI6MDA6MDBaIn1dfQ=="
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "POST",
+          "Path": "/v0/management/plugins/ollama/models/refresh",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "GET",
+            "path": "/api/tags",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          },
+          {
+            "method": "POST",
+            "path": "/api/show",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Content-Length": [
+                "24"
+              ],
+              "Content-Type": [
+                "application/json"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": "{\"model\":\"gpt-oss:120b\"}"
+          }
+        ],
+        "host_calls": [
+          {
+            "method": "host.auth.list",
+            "request": {}
+          },
+          {
+            "method": "host.auth.get",
+            "request": {
+              "auth_index": "idx-1"
+            }
+          },
+          {
+            "method": "host.auth.save",
+            "request": {
+              "name": "k1.json",
+              "json": {
+                "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+                "model_revision": "62e747c9ded58535",
+                "type": "ollama"
+              }
+            }
+          },
+          {
+            "method": "host.log",
+            "request": {
+              "level": "info",
+              "message": "ollama: refreshed registered models",
+              "fields": {
+                "auth": "k1.json",
+                "revision": "62e747c9ded58535"
+              }
+            }
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJjYXRhbG9nIjp7ImNvdW50IjoxLCJyZXZpc2lvbiI6IjYyZTc0N2M5ZGVkNTg1MzUiLCJmZXRjaGVkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoiLCJjaGVja2VkX2F0IjoiMjAyNi0xMS0xNFQwODowMDowMFoifSwibW9kZWxzIjpbeyJpZCI6ImdwdC1vc3M6MTIwYiIsImNhcGFiaWxpdGllcyI6WyJjb21wbGV0aW9uIl0sImNoYXQiOnRydWUsInNpemUiOjY1MzY5ODE4OTQxLCJtb2RpZmllZF9hdCI6IjIwMjUtMDgtMDVUMTI6MDA6MDBaIn1dfQ=="
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,700 @@
+{
+  "case": "management_proxies",
+  "description": "Proxy list: add (redacted), duplicate, invalid, import from credentials, direct / inherit egress checks against the fake lookup service, unknown ids",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": [
+      {
+        "name": "k1.json",
+        "fields": {
+          "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+          "proxy_url": "socks5://10.9.9.9:1080",
+          "type": "ollama"
+        }
+      }
+    ]
+  },
+  "upstream_script": [
+    {
+      "method": "GET",
+      "path": "/json",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"ip\":\"203.0.113.7\",\"city\":\"Tokyo\",\"region\":\"Tokyo\",\"country\":\"JP\"}",
+      "chunks": []
+    },
+    {
+      "method": "GET",
+      "path": "/json",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"ip\":\"198.51.100.4\",\"country_code\":\"us\",\"region\":\"California\",\"city\":\"San Jose\"}",
+      "chunks": []
+    }
+  ],
+  "steps": [
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/proxies",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJwcm94aWVzIjpbXX0="
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "POST",
+          "Path": "/v0/management/plugins/ollama/proxies",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ],
+            "Content-Type": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": "eyJuYW1lIjoiVG9reW8iLCJ1cmwiOiJodHRwOi8vYWxpY2U6c2VjcmV0QDEwLjEuMi4zOjgwODAifQ==",
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [
+          {
+            "method": "host.log",
+            "request": {
+              "level": "info",
+              "message": "ollama: added proxy",
+              "fields": {
+                "proxy": "http://10.1.2.3:8080"
+              }
+            }
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 201,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJvayI6dHJ1ZSwicHJveHkiOnsiaWQiOiI8dm9sYXRpbGU+IiwibmFtZSI6IlRva3lvIiwidXJsIjoiaHR0cDovL2FsaWNlOnh4eHh4QDEwLjEuMi4zOjgwODAiLCJsYWJlbCI6Imh0dHA6Ly8xMC4xLjIuMzo4MDgwIiwiY3JlYXRlZF9hdCI6Ijx2b2xhdGlsZT4ifSwidXBkYXRlZF9jcmVkZW50aWFscyI6MH0="
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "POST",
+          "Path": "/v0/management/plugins/ollama/proxies",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ],
+            "Content-Type": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": "eyJuYW1lIjoiQWdhaW4iLCJ1cmwiOiJodHRwOi8vYWxpY2U6c2VjcmV0QDEwLjEuMi4zOjgwODAifQ==",
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 409,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJlcnJvciI6ImR1cGxpY2F0ZV9wcm94eSIsIm1lc3NhZ2UiOiJ0aGlzIHByb3h5IFVSTCBpcyBhbHJlYWR5IGluIHRoZSBsaXN0In0="
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "POST",
+          "Path": "/v0/management/plugins/ollama/proxies",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ],
+            "Content-Type": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": "eyJuYW1lIjoiQmFkIiwidXJsIjoiZnRwOi8vMTAuMS4yLjMifQ==",
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 400,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJlcnJvciI6ImludmFsaWRfcHJveHkiLCJtZXNzYWdlIjoidXJsOiBpbnZhbGlkIHByb3h5X3VybDogdW5zdXBwb3J0ZWQgc2NoZW1lIFwiZnRwXCIgKHVzZSBodHRwLCBodHRwcywgc29ja3M1IG9yIHNvY2tzNWgpIn0="
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "POST",
+          "Path": "/v0/management/plugins/ollama/proxies/import",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [
+          {
+            "method": "host.auth.list",
+            "request": {}
+          },
+          {
+            "method": "host.auth.get",
+            "request": {
+              "auth_index": "idx-1"
+            }
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJhZGRlZCI6MSwib2siOnRydWUsInByb3hpZXMiOlt7ImlkIjoiPHZvbGF0aWxlPiIsIm5hbWUiOiJUb2t5byIsInVybCI6Imh0dHA6Ly9hbGljZTp4eHh4eEAxMC4xLjIuMzo4MDgwIiwibGFiZWwiOiJodHRwOi8vMTAuMS4yLjM6ODA4MCIsImNyZWF0ZWRfYXQiOiI8dm9sYXRpbGU+In0seyJpZCI6Ijx2b2xhdGlsZT4iLCJuYW1lIjoiMTAuOS45Ljk6MTA4MCIsInVybCI6InNvY2tzNTovLzEwLjkuOS45OjEwODAiLCJsYWJlbCI6InNvY2tzNTovLzEwLjkuOS45OjEwODAiLCJjcmVhdGVkX2F0IjoiPHZvbGF0aWxlPiJ9XX0="
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/proxies",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJwcm94aWVzIjpbeyJpZCI6Ijx2b2xhdGlsZT4iLCJuYW1lIjoiVG9reW8iLCJ1cmwiOiJodHRwOi8vYWxpY2U6eHh4eHhAMTAuMS4yLjM6ODA4MCIsImxhYmVsIjoiaHR0cDovLzEwLjEuMi4zOjgwODAiLCJjcmVhdGVkX2F0IjoiPHZvbGF0aWxlPiJ9LHsiaWQiOiI8dm9sYXRpbGU+IiwibmFtZSI6IjEwLjkuOS45OjEwODAiLCJ1cmwiOiJzb2NrczU6Ly8xMC45LjkuOToxMDgwIiwibGFiZWwiOiJzb2NrczU6Ly8xMC45LjkuOToxMDgwIiwiY3JlYXRlZF9hdCI6Ijx2b2xhdGlsZT4ifV19"
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "POST",
+          "Path": "/v0/management/plugins/ollama/proxies/check",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ],
+            "Content-Type": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": "eyJ0YXJnZXQiOiJkaXJlY3QifQ==",
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "GET",
+            "path": "/json",
+            "query": "",
+            "header": {
+              "Accept": [
+                "*/*"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Connection": [
+                "close"
+              ],
+              "User-Agent": [
+                "curl/8.7.1"
+              ]
+            },
+            "body": ""
+          }
+        ],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJvayI6dHJ1ZSwiZWdyZXNzIjoiZGlyZWN0IiwiaXAiOiIyMDMuMC4xMTMuNyIsImNvdW50cnkiOiJKUCIsInJlZ2lvbiI6IlRva3lvIiwiY2l0eSI6IlRva3lvIiwibGF0ZW5jeV9tcyI6Ijx2b2xhdGlsZT4iLCJzb3VyY2UiOiJ7e1VQU1RSRUFNX0FERFJ9fSIsImNoZWNrZWRfYXQiOiIyMDI2LTExLTE0VDA4OjAwOjAwWiJ9"
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "POST",
+          "Path": "/v0/management/plugins/ollama/proxies/check",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ],
+            "Content-Type": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": "eyJ0YXJnZXQiOiJpbmhlcml0In0=",
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "GET",
+            "path": "/json",
+            "query": "",
+            "header": {
+              "Accept": [
+                "*/*"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Connection": [
+                "close"
+              ],
+              "User-Agent": [
+                "curl/8.7.1"
+              ]
+            },
+            "body": ""
+          }
+        ],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJvayI6dHJ1ZSwiZWdyZXNzIjoiZW52IiwiaXAiOiIxOTguNTEuMTAwLjQiLCJjb3VudHJ5IjoiVVMiLCJyZWdpb24iOiJDYWxpZm9ybmlhIiwiY2l0eSI6IlNhbiBKb3NlIiwibGF0ZW5jeV9tcyI6Ijx2b2xhdGlsZT4iLCJzb3VyY2UiOiJ7e1VQU1RSRUFNX0FERFJ9fSIsImNoZWNrZWRfYXQiOiIyMDI2LTExLTE0VDA4OjAwOjAwWiJ9"
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "POST",
+          "Path": "/v0/management/plugins/ollama/proxies/check",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ],
+            "Content-Type": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": "eyJ0YXJnZXQiOiJtYXJzIn0=",
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 400,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJlcnJvciI6ImludmFsaWRfdGFyZ2V0IiwibWVzc2FnZSI6InNlbmQge1wiaWRcIn0gb3Ige1widGFyZ2V0XCI6XCJkaXJlY3RcInxcImluaGVyaXRcIn0ifQ=="
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "POST",
+          "Path": "/v0/management/plugins/ollama/proxies/check",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ],
+            "Content-Type": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": "eyJpZCI6Im1pc3NpbmcifQ==",
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 404,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJlcnJvciI6InByb3h5X25vdF9mb3VuZCIsIm1lc3NhZ2UiOiJubyBsaXN0ZWQgcHJveHkgaGFzIHRoaXMgaWQifQ=="
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "PATCH",
+          "Path": "/v0/management/plugins/ollama/proxies",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ],
+            "Content-Type": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": "eyJpZCI6Im1pc3NpbmciLCJuYW1lIjoieCJ9",
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 404,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJlcnJvciI6InByb3h5X25vdF9mb3VuZCIsIm1lc3NhZ2UiOiJubyBsaXN0ZWQgcHJveHkgaGFzIHRoaXMgaWQifQ=="
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "DELETE",
+          "Path": "/v0/management/plugins/ollama/proxies",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": {
+            "id": [
+              "missing"
+            ]
+          },
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 404,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJlcnJvciI6InByb3h5X25vdF9mb3VuZCIsIm1lc3NhZ2UiOiJubyBsaXN0ZWQgcHJveHkgaGFzIHRoaXMgaWQifQ=="
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "POST",
+          "Path": "/v0/management/plugins/ollama/proxies/order",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ],
+            "Content-Type": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": "eyJpZHMiOlsibWlzc2luZyJdfQ==",
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJvayI6dHJ1ZSwicHJveGllcyI6W3siaWQiOiI8dm9sYXRpbGU+IiwibmFtZSI6IlRva3lvIiwidXJsIjoiaHR0cDovL2FsaWNlOnh4eHh4QDEwLjEuMi4zOjgwODAiLCJsYWJlbCI6Imh0dHA6Ly8xMC4xLjIuMzo4MDgwIiwiY3JlYXRlZF9hdCI6Ijx2b2xhdGlsZT4ifSx7ImlkIjoiPHZvbGF0aWxlPiIsIm5hbWUiOiIxMC45LjkuOToxMDgwIiwidXJsIjoic29ja3M1Oi8vMTAuOS45Ljk6MTA4MCIsImxhYmVsIjoic29ja3M1Oi8vMTAuOS45Ljk6MTA4MCIsImNyZWF0ZWRfYXQiOiI8dm9sYXRpbGU+In1dfQ=="
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/proxies",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJwcm94aWVzIjpbeyJpZCI6Ijx2b2xhdGlsZT4iLCJuYW1lIjoiVG9reW8iLCJ1cmwiOiJodHRwOi8vYWxpY2U6eHh4eHhAMTAuMS4yLjM6ODA4MCIsImxhYmVsIjoiaHR0cDovLzEwLjEuMi4zOjgwODAiLCJjcmVhdGVkX2F0IjoiPHZvbGF0aWxlPiJ9LHsiaWQiOiI8dm9sYXRpbGU+IiwibmFtZSI6IjEwLjkuOS45OjEwODAiLCJ1cmwiOiJzb2NrczU6Ly8xMC45LjkuOToxMDgwIiwibGFiZWwiOiJzb2NrczU6Ly8xMC45LjkuOToxMDgwIiwiY3JlYXRlZF9hdCI6Ijx2b2xhdGlsZT4ifV0sImJ1aWx0aW5fY2hlY2tzIjp7ImRpcmVjdCI6eyJvayI6dHJ1ZSwiZWdyZXNzIjoiZGlyZWN0IiwiaXAiOiIyMDMuMC4xMTMuNyIsImNvdW50cnkiOiJKUCIsInJlZ2lvbiI6IlRva3lvIiwiY2l0eSI6IlRva3lvIiwibGF0ZW5jeV9tcyI6Ijx2b2xhdGlsZT4iLCJzb3VyY2UiOiJ7e1VQU1RSRUFNX0FERFJ9fSIsImNoZWNrZWRfYXQiOiIyMDI2LTExLTE0VDA4OjAwOjAwWiJ9LCJpbmhlcml0Ijp7Im9rIjp0cnVlLCJlZ3Jlc3MiOiJlbnYiLCJpcCI6IjE5OC41MS4xMDAuNCIsImNvdW50cnkiOiJVUyIsInJlZ2lvbiI6IkNhbGlmb3JuaWEiLCJjaXR5IjoiU2FuIEpvc2UiLCJsYXRlbmN5X21zIjoiPHZvbGF0aWxlPiIsInNvdXJjZSI6Int7VVBTVFJFQU1fQUREUn19IiwiY2hlY2tlZF9hdCI6IjIwMjYtMTEtMTRUMDg6MDA6MDBaIn19fQ=="
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/status",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [
+          {
+            "method": "host.auth.list",
+            "request": {}
+          },
+          {
+            "method": "host.auth.get",
+            "request": {
+              "auth_index": "idx-1"
+            }
+          },
+          {
+            "method": "host.auth.models",
+            "request": {}
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJwbHVnaW4iOiJvbGxhbWEiLCJ2ZXJzaW9uIjoiOS45Ljktc25hcHNob3QiLCJub3ciOiIyMDI2LTExLTE0VDA4OjAwOjAwWiIsImNvbmZpZyI6eyJiYXNlX3VybCI6Int7VVBTVFJFQU19fSIsImRlZmF1bHRfcHJlZml4Ijoib2xsYW1hIiwibW9kZWxzX3JlZnJlc2hfbWludXRlcyI6MCwicmVxdWVzdF90aW1lb3V0X3NlY29uZHMiOjYwMCwic3RyZWFtX2lkbGVfdGltZW91dF9zZWNvbmRzIjozMDB9LCJjYXRhbG9nIjp7ImNvdW50IjowfSwiY3JlZGVudGlhbHMiOlt7ImF1dGhfaW5kZXgiOiJpZHgtMSIsImlkIjoiazEuanNvbiIsIm5hbWUiOiJrMS5qc29uIiwibGFiZWwiOiIiLCJrZXlfbWFza2VkIjoib2xsYW1h4oCmYWFhYSIsImRpc2FibGVkIjpmYWxzZSwidW5hdmFpbGFibGUiOmZhbHNlLCJwcmlvcml0eSI6MCwicHJveHlfdXJsIjoic29ja3M1Oi8vMTAuOS45Ljk6MTA4MCIsInByb3h5X2lkIjoiPHZvbGF0aWxlPiIsInByb3h5X25hbWUiOiIxMC45LjkuOToxMDgwIiwicHJlZml4IjpudWxsLCJlZmZlY3RpdmVfcHJlZml4Ijoib2xsYW1hIiwiYWxsX21vZGVscyI6dHJ1ZSwibW9kZWxzIjpbXSwicmVnaXN0ZXJlZF9tb2RlbHMiOjAsInJlZ2lzdGVyZWRfa25vd24iOnRydWUsInN1Y2Nlc3MiOjAsImZhaWxlZCI6MH1dfQ=="
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+{
+  "case": "error_stream_response_failed",
+  "description": "Responses response.failed before output closes the stream with the failure's error",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": [
+      {
+        "name": "k1.json",
+        "fields": {
+          "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+          "type": "ollama"
+        }
+      }
+    ]
+  },
+  "upstream_script": [
+    {
+      "method": "POST",
+      "path": "/v1/responses",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "text/event-stream"
+        ],
+        "X-Request-Id": [
+          "up-stream-1"
+        ]
+      },
+      "body": "",
+      "chunks": [
+        "event: response.created\ndata: {\"type\":\"response.created\",\"sequence_number\":0,\"response\":{\"id\":\"resp_f\",\"status\":\"in_progress\",\"output\":[]}}\n\n",
+        "event: response.failed\ndata: {\"type\":\"response.failed\",\"sequence_number\":1,\"response\":{\"id\":\"resp_f\",\"status\":\"failed\",\"error\":{\"code\":\"server_error\",\"message\":\"model runner crashed\"}}}\n\n"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "rpc": {
+        "method": "executor.execute_stream",
+        "request": {
+          "AuthID": "k1.json",
+          "AuthProvider": "ollama",
+          "Model": "gpt-oss:120b",
+          "Format": "openai-response",
+          "Stream": true,
+          "Alt": "",
+          "Headers": {
+            "Authorization": [
+              "Bearer sk-client-fake"
+            ],
+            "Content-Type": [
+              "application/json"
+            ],
+            "User-Agent": [
+              "snapshot-client/1.0"
+            ]
+          },
+          "Query": null,
+          "OriginalRequest": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsImlucHV0IjoiSGkiLCJyZWFzb25pbmciOnsiZWZmb3J0IjoibG93In0sInN0b3JlIjpmYWxzZX0=",
+          "SourceFormat": "openai-response",
+          "Payload": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsImlucHV0IjoiSGkiLCJyZWFzb25pbmciOnsiZWZmb3J0IjoibG93In0sInN0b3JlIjpmYWxzZX0=",
+          "Metadata": {
+            "request_path": "/v1/responses",
+            "requested_model": "ollama/gpt-oss:120b",
+            "selected_auth_id": "k1.json",
+            "selected_auth_index": "idx-1"
+          },
+          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "AuthMetadata": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
+          "AuthAttributes": null,
+          "stream_id": "stream-err-3",
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "POST",
+            "path": "/v1/responses",
+            "query": "",
+            "header": {
+              "Accept": [
+                "text/event-stream"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "Content-Length": [
+                "80"
+              ],
+              "Content-Type": [
+                "application/json"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": "{\"model\":\"gpt-oss:120b\",\"input\":\"Hi\",\"reasoning\":{\"effort\":\"low\"},\"store\":false}"
+          }
+        ],
+        "host_calls": [
+          {
+            "method": "host.stream.close",
+            "request": {
+              "stream_id": "stream-err-3",
+              "error": "ollama: model runner crashed",
+              "error_detail": {
+                "code": "server_error",
+                "message": "ollama: model runner crashed",
+                "retryable": true,
+                "http_status": 502
+              }
+            }
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "headers": {
+              "Content-Type": [
+                "text/event-stream"
+              ],
+              "X-Request-Id": [
+                "up-stream-1"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/logs",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJpdGVtcyI6W3siaWQiOiIxIiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9yZXNwb25zZXMiLCJtb2RlbCI6Im9sbGFtYS9ncHQtb3NzOjEyMGIiLCJ1cHN0cmVhbV9tb2RlbCI6ImdwdC1vc3M6MTIwYiIsInJlYXNvbmluZ19lZmZvcnQiOiJsb3ciLCJzdHJlYW0iOnRydWUsInN0YXR1cyI6ImVycm9yIiwiaHR0cF9zdGF0dXMiOjUwMiwiY3JlZGVudGlhbCI6Im9sbGFtYeKApmFhYWEiLCJhdXRoX2lkIjoiazEuanNvbiIsImR1cmF0aW9uX21zIjoiPHZvbGF0aWxlPiIsImlucHV0X3Rva2VucyI6MCwib3V0cHV0X3Rva2VucyI6MCwiY2FjaGVkX3Rva2VucyI6MCwiZXJyb3JfY29kZSI6InNlcnZlcl9lcnJvciIsImVycm9yIjoib2xsYW1hOiBtb2RlbCBydW5uZXIgY3Jhc2hlZCIsImVycm9yX3BoYXNlIjoicmVxdWVzdCIsImNsaWVudF9wYXRoIjoiL3YxL3Jlc3BvbnNlcyIsInVzZXJfYWdlbnQiOiJzbmFwc2hvdC1jbGllbnQvMS4wIiwiYXV0aF9pbmRleCI6ImlkeC0xIiwiZWdyZXNzIjoiZW52IiwidXBzdHJlYW1fc3RhdHVzIjoyMDAsInVwc3RyZWFtX3JlcXVlc3RfaWQiOiJ1cC1zdHJlYW0tMSIsImZpbmlzaF9yZWFzb24iOiJmYWlsZWQiLCJmcmFtZXMiOjAsImF0dGVtcHRzIjoxfV0sInRvdGFsIjoxLCJvZmZzZXQiOjAsInJldGVudGlvbiI6MTAwMDAwLCJyZXRlbnRpb25fZGF5cyI6MzAsInN1bW1hcnkiOnsicmVxdWVzdHMiOjEsInN1Y2Nlc3MiOjAsImZhaWxlZCI6MSwiaW5wdXRfdG9rZW5zIjowLCJvdXRwdXRfdG9rZW5zIjowLCJjYWNoZWRfdG9rZW5zIjowLCJjYWNoZV9oaXRfcmF0ZSI6bnVsbCwib3V0cHV0X3Rva2Vuc19wZXJfc2Vjb25kIjoiPHZvbGF0aWxlPiIsImUyZV90b2tlbnNfcGVyX3NlY29uZCI6Ijx2b2xhdGlsZT4ifX0="
+          }
+        }
+      }
+    }
+  ]
+}

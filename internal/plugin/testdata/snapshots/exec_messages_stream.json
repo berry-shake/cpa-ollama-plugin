@@ -1,0 +1,232 @@
+{
+  "case": "exec_messages_stream",
+  "description": "Messages stream with the client's Anthropic-Version; usage from message_start and message_delta",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": [
+      {
+        "name": "k1.json",
+        "fields": {
+          "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+          "type": "ollama"
+        }
+      }
+    ]
+  },
+  "upstream_script": [
+    {
+      "method": "POST",
+      "path": "/v1/messages",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "text/event-stream"
+        ],
+        "X-Request-Id": [
+          "up-stream-1"
+        ]
+      },
+      "body": "",
+      "chunks": [
+        "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"id\":\"msg_snap2\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"gpt-oss:120b\",\"content\":[],\"stop_reason\":null,\"usage\":{\"input_tokens\":20,\"output_tokens\":1}}}\n\n",
+        "event: ping\ndata: {\"type\":\"ping\"}\n\n",
+        "event: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"text\",\"text\":\"\"}}\n\n",
+        "event: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"Hello\"}}\n\n",
+        "event: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":0}\n\n",
+        "event: message_delta\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"end_turn\",\"stop_sequence\":null},\"usage\":{\"output_tokens\":3}}\n\n",
+        "event: message_stop\ndata: {\"type\":\"message_stop\"}\n\n"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "rpc": {
+        "method": "executor.execute_stream",
+        "request": {
+          "AuthID": "k1.json",
+          "AuthProvider": "ollama",
+          "Model": "gpt-oss:120b",
+          "Format": "claude",
+          "Stream": true,
+          "Alt": "",
+          "Headers": {
+            "Anthropic-Version": [
+              "2023-06-01"
+            ],
+            "Authorization": [
+              "Bearer sk-client-fake"
+            ],
+            "Content-Type": [
+              "application/json"
+            ],
+            "User-Agent": [
+              "snapshot-client/1.0"
+            ]
+          },
+          "Query": null,
+          "OriginalRequest": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1heF90b2tlbnMiOjY0LCJzdHJlYW0iOnRydWUsIm1lc3NhZ2VzIjpbeyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJIaSJ9XSwib3V0cHV0X2NvbmZpZyI6eyJlZmZvcnQiOiJtZWRpdW0ifX0=",
+          "SourceFormat": "claude",
+          "Payload": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1heF90b2tlbnMiOjY0LCJzdHJlYW0iOnRydWUsIm1lc3NhZ2VzIjpbeyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJIaSJ9XSwib3V0cHV0X2NvbmZpZyI6eyJlZmZvcnQiOiJtZWRpdW0ifX0=",
+          "Metadata": {
+            "request_path": "/v1/messages",
+            "requested_model": "ollama/gpt-oss:120b",
+            "selected_auth_id": "k1.json",
+            "selected_auth_index": "idx-1"
+          },
+          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "AuthMetadata": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
+          "AuthAttributes": null,
+          "stream_id": "stream-msg-1",
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "POST",
+            "path": "/v1/messages",
+            "query": "",
+            "header": {
+              "Accept": [
+                "text/event-stream"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Anthropic-Version": [
+                "2023-06-01"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "Content-Length": [
+                "134"
+              ],
+              "Content-Type": [
+                "application/json"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": "{\"model\":\"gpt-oss:120b\",\"max_tokens\":64,\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Hi\"}],\"output_config\":{\"effort\":\"medium\"}}"
+          }
+        ],
+        "host_calls": [
+          {
+            "method": "host.stream.emit",
+            "request": {
+              "stream_id": "stream-msg-1",
+              "payload": "ZXZlbnQ6IG1lc3NhZ2Vfc3RhcnQKZGF0YTogeyJ0eXBlIjoibWVzc2FnZV9zdGFydCIsIm1lc3NhZ2UiOnsiaWQiOiJtc2dfc25hcDIiLCJ0eXBlIjoibWVzc2FnZSIsInJvbGUiOiJhc3Npc3RhbnQiLCJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsImNvbnRlbnQiOltdLCJzdG9wX3JlYXNvbiI6bnVsbCwidXNhZ2UiOnsiaW5wdXRfdG9rZW5zIjoyMCwib3V0cHV0X3Rva2VucyI6MX19fQoK"
+            }
+          },
+          {
+            "method": "host.stream.emit",
+            "request": {
+              "stream_id": "stream-msg-1",
+              "payload": "ZXZlbnQ6IHBpbmcKZGF0YTogeyJ0eXBlIjoicGluZyJ9Cgo="
+            }
+          },
+          {
+            "method": "host.stream.emit",
+            "request": {
+              "stream_id": "stream-msg-1",
+              "payload": "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RhcnQKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19zdGFydCIsImluZGV4IjowLCJjb250ZW50X2Jsb2NrIjp7InR5cGUiOiJ0ZXh0IiwidGV4dCI6IiJ9fQoK"
+            }
+          },
+          {
+            "method": "host.stream.emit",
+            "request": {
+              "stream_id": "stream-msg-1",
+              "payload": "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfZGVsdGEKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19kZWx0YSIsImluZGV4IjowLCJkZWx0YSI6eyJ0eXBlIjoidGV4dF9kZWx0YSIsInRleHQiOiJIZWxsbyJ9fQoK"
+            }
+          },
+          {
+            "method": "host.stream.emit",
+            "request": {
+              "stream_id": "stream-msg-1",
+              "payload": "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RvcApkYXRhOiB7InR5cGUiOiJjb250ZW50X2Jsb2NrX3N0b3AiLCJpbmRleCI6MH0KCg=="
+            }
+          },
+          {
+            "method": "host.stream.emit",
+            "request": {
+              "stream_id": "stream-msg-1",
+              "payload": "ZXZlbnQ6IG1lc3NhZ2VfZGVsdGEKZGF0YTogeyJ0eXBlIjoibWVzc2FnZV9kZWx0YSIsImRlbHRhIjp7InN0b3BfcmVhc29uIjoiZW5kX3R1cm4iLCJzdG9wX3NlcXVlbmNlIjpudWxsfSwidXNhZ2UiOnsib3V0cHV0X3Rva2VucyI6M319Cgo="
+            }
+          },
+          {
+            "method": "host.stream.emit",
+            "request": {
+              "stream_id": "stream-msg-1",
+              "payload": "ZXZlbnQ6IG1lc3NhZ2Vfc3RvcApkYXRhOiB7InR5cGUiOiJtZXNzYWdlX3N0b3AifQoK"
+            }
+          },
+          {
+            "method": "host.stream.close",
+            "request": {
+              "stream_id": "stream-msg-1"
+            }
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "headers": {
+              "Content-Type": [
+                "text/event-stream"
+              ],
+              "X-Request-Id": [
+                "up-stream-1"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/logs",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJpdGVtcyI6W3siaWQiOiIxIiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9tZXNzYWdlcyIsIm1vZGVsIjoib2xsYW1hL2dwdC1vc3M6MTIwYiIsInVwc3RyZWFtX21vZGVsIjoiZ3B0LW9zczoxMjBiIiwic2VydmVkX21vZGVsIjoiZ3B0LW9zczoxMjBiIiwicmVhc29uaW5nX2VmZm9ydCI6Im1lZGl1bSIsInN0cmVhbSI6dHJ1ZSwic3RhdHVzIjoic3VjY2VzcyIsImh0dHBfc3RhdHVzIjoyMDAsImNyZWRlbnRpYWwiOiJvbGxhbWHigKZhYWFhIiwiYXV0aF9pZCI6ImsxLmpzb24iLCJkdXJhdGlvbl9tcyI6Ijx2b2xhdGlsZT4iLCJ0dGZ0X21zIjoiPHZvbGF0aWxlPiIsImlucHV0X3Rva2VucyI6MjAsIm91dHB1dF90b2tlbnMiOjMsImNhY2hlZF90b2tlbnMiOjAsImNsaWVudF9wYXRoIjoiL3YxL21lc3NhZ2VzIiwidXNlcl9hZ2VudCI6InNuYXBzaG90LWNsaWVudC8xLjAiLCJhdXRoX2luZGV4IjoiaWR4LTEiLCJlZ3Jlc3MiOiJlbnYiLCJ1cHN0cmVhbV9zdGF0dXMiOjIwMCwidXBzdHJlYW1fcmVxdWVzdF9pZCI6InVwLXN0cmVhbS0xIiwiZmluaXNoX3JlYXNvbiI6ImVuZF90dXJuIiwiZnJhbWVzIjoyLCJsYXN0X2ZyYW1lX21zIjoiPHZvbGF0aWxlPiIsInVzYWdlX3JlcG9ydGVkIjp0cnVlLCJhdHRlbXB0cyI6MX1dLCJ0b3RhbCI6MSwib2Zmc2V0IjowLCJyZXRlbnRpb24iOjEwMDAwMCwicmV0ZW50aW9uX2RheXMiOjMwLCJzdW1tYXJ5Ijp7InJlcXVlc3RzIjoxLCJzdWNjZXNzIjoxLCJmYWlsZWQiOjAsImlucHV0X3Rva2VucyI6MjAsIm91dHB1dF90b2tlbnMiOjMsImNhY2hlZF90b2tlbnMiOjAsImNhY2hlX2hpdF9yYXRlIjowLCJvdXRwdXRfdG9rZW5zX3Blcl9zZWNvbmQiOiI8dm9sYXRpbGU+IiwiZTJlX3Rva2Vuc19wZXJfc2Vjb25kIjoiPHZvbGF0aWxlPiJ9fQ=="
+          }
+        }
+      }
+    }
+  ]
+}

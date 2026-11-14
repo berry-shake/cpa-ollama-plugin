@@ -1,0 +1,235 @@
+{
+  "case": "management_routes",
+  "description": "management.register routes and resources; unknown route, wrong method, unknown flag",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": []
+  },
+  "upstream_script": [],
+  "steps": [
+    {
+      "rpc": {
+        "method": "management.register",
+        "request": {}
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "routes": [
+              {
+                "method": "GET",
+                "path": "/v0/management/plugins/ollama/status",
+                "description": "Plugin status, model catalog summary and Ollama credentials."
+              },
+              {
+                "method": "GET",
+                "path": "/v0/management/plugins/ollama/models",
+                "description": "Ollama cloud model list with capabilities, context length and thinking levels."
+              },
+              {
+                "method": "POST",
+                "path": "/v0/management/plugins/ollama/models/refresh",
+                "description": "Reload the Ollama model catalog and re-register changed models."
+              },
+              {
+                "method": "POST",
+                "path": "/v0/management/plugins/ollama/credentials",
+                "description": "Add an Ollama API key. Body: {\"api_key\",\"label\",\"note\",\"models\",\"prefix\",\"proxy_url\"|\"proxy_id\"}."
+              },
+              {
+                "method": "PATCH",
+                "path": "/v0/management/plugins/ollama/credentials",
+                "description": "Edit an Ollama credential. Body: {\"auth_index\",\"label\",\"note\",\"models\",\"prefix\",\"proxy_url\"|\"proxy_id\",\"priority\"}."
+              },
+              {
+                "method": "GET",
+                "path": "/v0/management/plugins/ollama/credentials/quota",
+                "description": "Balance and 24h / 7d / 30d usage of the Ollama account behind one credential (?auth_index=)."
+              },
+              {
+                "method": "GET",
+                "path": "/v0/management/plugins/ollama/logs",
+                "description": "Request log, newest first (?search=\u0026status=all|success|error\u0026from=\u0026to=\u0026request_id=\u0026limit=\u0026offset=), with a summary."
+              },
+              {
+                "method": "DELETE",
+                "path": "/v0/management/plugins/ollama/logs",
+                "description": "Clear the request log."
+              },
+              {
+                "method": "GET",
+                "path": "/v0/management/plugins/ollama/proxies",
+                "description": "Proxy list (URLs redacted) and CPA's global proxy."
+              },
+              {
+                "method": "POST",
+                "path": "/v0/management/plugins/ollama/proxies",
+                "description": "Add a proxy. Body: {\"name\",\"url\"}."
+              },
+              {
+                "method": "PATCH",
+                "path": "/v0/management/plugins/ollama/proxies",
+                "description": "Rename a proxy or change its URL. Body: {\"id\",\"name\",\"url\"}. Credentials using the old URL move to the new one."
+              },
+              {
+                "method": "DELETE",
+                "path": "/v0/management/plugins/ollama/proxies",
+                "description": "Remove a proxy (?id=). Credentials using it keep its URL."
+              },
+              {
+                "method": "POST",
+                "path": "/v0/management/plugins/ollama/proxies/import",
+                "description": "Add the proxies Ollama credentials already use to the list."
+              },
+              {
+                "method": "POST",
+                "path": "/v0/management/plugins/ollama/proxies/order",
+                "description": "Reorder the proxy list. Body: {\"ids\":[...]}."
+              },
+              {
+                "method": "POST",
+                "path": "/v0/management/plugins/ollama/proxies/check",
+                "description": "Look up the exit IP and latency of a proxy. Body: {\"id\"} or {\"target\":\"direct\"|\"inherit\"}."
+              }
+            ],
+            "resources": [
+              {
+                "path": "/manage",
+                "menu": "Ollama",
+                "description": "Manage Ollama API keys, model selection and egress proxies."
+              },
+              {
+                "path": "/logo.svg",
+                "description": "Plugin logo served to the management panel sidebar."
+              },
+              {
+                "path": "/flag.svg",
+                "description": "Country flag icon for egress checks (?cc=\u003cISO 3166-1 alpha-2\u003e)."
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/nope",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 404,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJlcnJvciI6Im5vdF9mb3VuZCIsIm1lc3NhZ2UiOiJwbHVnaW4gcm91dGUgbm90IGZvdW5kIn0="
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "POST",
+          "Path": "/v0/management/plugins/ollama/status",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 405,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJlcnJvciI6Im1ldGhvZF9ub3RfYWxsb3dlZCIsIm1lc3NhZ2UiOiJtZXRob2Qgbm90IGFsbG93ZWQgb24gdGhpcyByb3V0ZSJ9"
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/resource/plugins/ollama/flag.svg",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": {
+            "cc": [
+              "zz"
+            ]
+          },
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 404,
+            "Headers": {
+              "Cache-Control": [
+                "public, max-age=86400"
+              ],
+              "Content-Type": [
+                "text/plain; charset=utf-8"
+              ]
+            },
+            "Body": "dW5rbm93biBjb3VudHJ5IGNvZGU="
+          }
+        }
+      }
+    }
+  ]
+}

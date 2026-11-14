@@ -1,0 +1,222 @@
+{
+  "case": "exec_chat_stream",
+  "description": "Chat Completions stream through the host stream bridge: stream_options.include_usage added, keepalive comment dropped, [DONE] kept",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": [
+      {
+        "name": "k1.json",
+        "fields": {
+          "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+          "type": "ollama"
+        }
+      }
+    ]
+  },
+  "upstream_script": [
+    {
+      "method": "POST",
+      "path": "/v1/chat/completions",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "text/event-stream"
+        ],
+        "X-Request-Id": [
+          "up-stream-1"
+        ]
+      },
+      "body": "",
+      "chunks": [
+        ": keepalive\n\n",
+        "data: {\"id\":\"chatcmpl-snap2\",\"object\":\"chat.completion.chunk\",\"created\":1763107200,\"model\":\"gpt-oss:120b\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}]}\n\n",
+        "data: {\"id\":\"chatcmpl-snap2\",\"object\":\"chat.completion.chunk\",\"created\":1763107200,\"model\":\"gpt-oss:120b\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hel\"},\"finish_reason\":null}]}\n\n",
+        "data: {\"id\":\"chatcmpl-snap2\",\"object\":\"chat.completion.chunk\",\"created\":1763107200,\"model\":\"gpt-oss:120b\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"lo\"},\"finish_reason\":null}]}\n\n",
+        "data: {\"id\":\"chatcmpl-snap2\",\"object\":\"chat.completion.chunk\",\"created\":1763107200,\"model\":\"gpt-oss:120b\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}]}\n\n",
+        "data: {\"id\":\"chatcmpl-snap2\",\"object\":\"chat.completion.chunk\",\"created\":1763107200,\"model\":\"gpt-oss:120b\",\"choices\":[],\"usage\":{\"prompt_tokens\":12,\"completion_tokens\":2,\"total_tokens\":14}}\n\n",
+        "data: [DONE]\n\n"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "rpc": {
+        "method": "executor.execute_stream",
+        "request": {
+          "AuthID": "k1.json",
+          "AuthProvider": "ollama",
+          "Model": "gpt-oss:120b",
+          "Format": "openai",
+          "Stream": true,
+          "Alt": "",
+          "Headers": {
+            "Authorization": [
+              "Bearer sk-client-fake"
+            ],
+            "Content-Type": [
+              "application/json"
+            ],
+            "User-Agent": [
+              "snapshot-client/1.0"
+            ],
+            "X-Ollama-Cpa-Request-Id": [
+              "trace-chat-2"
+            ]
+          },
+          "Query": null,
+          "OriginalRequest": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsInN0cmVhbSI6dHJ1ZSwibWVzc2FnZXMiOlt7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6IkhpIn1dfQ==",
+          "SourceFormat": "openai",
+          "Payload": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsInN0cmVhbSI6dHJ1ZSwibWVzc2FnZXMiOlt7InJvbGUiOiJ1c2VyIiwiY29udGVudCI6IkhpIn1dfQ==",
+          "Metadata": {
+            "request_path": "/v1/chat/completions",
+            "requested_model": "ollama/gpt-oss:120b",
+            "selected_auth_id": "k1.json",
+            "selected_auth_index": "idx-1"
+          },
+          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "AuthMetadata": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
+          "AuthAttributes": null,
+          "stream_id": "stream-chat-1",
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "POST",
+            "path": "/v1/chat/completions",
+            "query": "",
+            "header": {
+              "Accept": [
+                "text/event-stream"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "Content-Length": [
+                "122"
+              ],
+              "Content-Type": [
+                "application/json"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": "{\"stream_options\":{\"include_usage\":true},\"model\":\"gpt-oss:120b\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Hi\"}]}"
+          }
+        ],
+        "host_calls": [
+          {
+            "method": "host.stream.emit",
+            "request": {
+              "stream_id": "stream-chat-1",
+              "payload": "ZGF0YTogeyJpZCI6ImNoYXRjbXBsLXNuYXAyIiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uLmNodW5rIiwiY3JlYXRlZCI6MTc2MzEwNzIwMCwibW9kZWwiOiJncHQtb3NzOjEyMGIiLCJjaG9pY2VzIjpbeyJpbmRleCI6MCwiZGVsdGEiOnsicm9sZSI6ImFzc2lzdGFudCJ9LCJmaW5pc2hfcmVhc29uIjpudWxsfV19Cgo="
+            }
+          },
+          {
+            "method": "host.stream.emit",
+            "request": {
+              "stream_id": "stream-chat-1",
+              "payload": "ZGF0YTogeyJpZCI6ImNoYXRjbXBsLXNuYXAyIiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uLmNodW5rIiwiY3JlYXRlZCI6MTc2MzEwNzIwMCwibW9kZWwiOiJncHQtb3NzOjEyMGIiLCJjaG9pY2VzIjpbeyJpbmRleCI6MCwiZGVsdGEiOnsiY29udGVudCI6IkhlbCJ9LCJmaW5pc2hfcmVhc29uIjpudWxsfV19Cgo="
+            }
+          },
+          {
+            "method": "host.stream.emit",
+            "request": {
+              "stream_id": "stream-chat-1",
+              "payload": "ZGF0YTogeyJpZCI6ImNoYXRjbXBsLXNuYXAyIiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uLmNodW5rIiwiY3JlYXRlZCI6MTc2MzEwNzIwMCwibW9kZWwiOiJncHQtb3NzOjEyMGIiLCJjaG9pY2VzIjpbeyJpbmRleCI6MCwiZGVsdGEiOnsiY29udGVudCI6ImxvIn0sImZpbmlzaF9yZWFzb24iOm51bGx9XX0KCg=="
+            }
+          },
+          {
+            "method": "host.stream.emit",
+            "request": {
+              "stream_id": "stream-chat-1",
+              "payload": "ZGF0YTogeyJpZCI6ImNoYXRjbXBsLXNuYXAyIiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uLmNodW5rIiwiY3JlYXRlZCI6MTc2MzEwNzIwMCwibW9kZWwiOiJncHQtb3NzOjEyMGIiLCJjaG9pY2VzIjpbeyJpbmRleCI6MCwiZGVsdGEiOnt9LCJmaW5pc2hfcmVhc29uIjoic3RvcCJ9XX0KCg=="
+            }
+          },
+          {
+            "method": "host.stream.emit",
+            "request": {
+              "stream_id": "stream-chat-1",
+              "payload": "ZGF0YTogeyJpZCI6ImNoYXRjbXBsLXNuYXAyIiwib2JqZWN0IjoiY2hhdC5jb21wbGV0aW9uLmNodW5rIiwiY3JlYXRlZCI6MTc2MzEwNzIwMCwibW9kZWwiOiJncHQtb3NzOjEyMGIiLCJjaG9pY2VzIjpbXSwidXNhZ2UiOnsicHJvbXB0X3Rva2VucyI6MTIsImNvbXBsZXRpb25fdG9rZW5zIjoyLCJ0b3RhbF90b2tlbnMiOjE0fX0KCg=="
+            }
+          },
+          {
+            "method": "host.stream.emit",
+            "request": {
+              "stream_id": "stream-chat-1",
+              "payload": "ZGF0YTogW0RPTkVdCgo="
+            }
+          },
+          {
+            "method": "host.stream.close",
+            "request": {
+              "stream_id": "stream-chat-1"
+            }
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "headers": {
+              "Content-Type": [
+                "text/event-stream"
+              ],
+              "X-Request-Id": [
+                "up-stream-1"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/logs",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJpdGVtcyI6W3siaWQiOiIxIiwicmVxdWVzdF9pZCI6InRyYWNlLWNoYXQtMiIsInRpbWUiOiI8dm9sYXRpbGU+IiwiZW5kcG9pbnQiOiIvdjEvY2hhdC9jb21wbGV0aW9ucyIsIm1vZGVsIjoib2xsYW1hL2dwdC1vc3M6MTIwYiIsInVwc3RyZWFtX21vZGVsIjoiZ3B0LW9zczoxMjBiIiwic2VydmVkX21vZGVsIjoiZ3B0LW9zczoxMjBiIiwic3RyZWFtIjp0cnVlLCJzdGF0dXMiOiJzdWNjZXNzIiwiaHR0cF9zdGF0dXMiOjIwMCwiY3JlZGVudGlhbCI6Im9sbGFtYeKApmFhYWEiLCJhdXRoX2lkIjoiazEuanNvbiIsImR1cmF0aW9uX21zIjoiPHZvbGF0aWxlPiIsInR0ZnRfbXMiOiI8dm9sYXRpbGU+IiwiaW5wdXRfdG9rZW5zIjoxMiwib3V0cHV0X3Rva2VucyI6MiwiY2FjaGVkX3Rva2VucyI6MCwiY2xpZW50X3BhdGgiOiIvdjEvY2hhdC9jb21wbGV0aW9ucyIsInVzZXJfYWdlbnQiOiJzbmFwc2hvdC1jbGllbnQvMS4wIiwiYXV0aF9pbmRleCI6ImlkeC0xIiwiZWdyZXNzIjoiZW52IiwidXBzdHJlYW1fc3RhdHVzIjoyMDAsInVwc3RyZWFtX3JlcXVlc3RfaWQiOiJ1cC1zdHJlYW0tMSIsImZpbmlzaF9yZWFzb24iOiJzdG9wIiwiZnJhbWVzIjoyLCJsYXN0X2ZyYW1lX21zIjoiPHZvbGF0aWxlPiIsInVzYWdlX3JlcG9ydGVkIjp0cnVlLCJhdHRlbXB0cyI6MX1dLCJ0b3RhbCI6MSwib2Zmc2V0IjowLCJyZXRlbnRpb24iOjEwMDAwMCwicmV0ZW50aW9uX2RheXMiOjMwLCJzdW1tYXJ5Ijp7InJlcXVlc3RzIjoxLCJzdWNjZXNzIjoxLCJmYWlsZWQiOjAsImlucHV0X3Rva2VucyI6MTIsIm91dHB1dF90b2tlbnMiOjIsImNhY2hlZF90b2tlbnMiOjAsImNhY2hlX2hpdF9yYXRlIjowLCJvdXRwdXRfdG9rZW5zX3Blcl9zZWNvbmQiOiI8dm9sYXRpbGU+IiwiZTJlX3Rva2Vuc19wZXJfc2Vjb25kIjoiPHZvbGF0aWxlPiJ9fQ=="
+          }
+        }
+      }
+    }
+  ]
+}

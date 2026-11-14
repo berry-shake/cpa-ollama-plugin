@@ -1,0 +1,213 @@
+{
+  "case": "lifecycle_identifiers",
+  "description": "Identifier and describe RPCs, unsupported operations, unknown method, shutdown",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": []
+  },
+  "upstream_script": [],
+  "steps": [
+    {
+      "rpc": {
+        "method": "auth.identifier",
+        "request": {}
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "identifier": "ollama"
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "executor.identifier",
+        "request": {}
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "identifier": "ollama"
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "quota.identifier",
+        "request": {}
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "identifier": "ollama"
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "quota.describe",
+        "request": {}
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "supported_providers": [
+              "ollama"
+            ],
+            "display_name": "Ollama"
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "plugin.quiesce",
+        "request": {}
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {}
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "auth.login.start",
+        "request": {}
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": false,
+          "error": {
+            "code": "unsupported_login",
+            "message": "Ollama uses API keys: add one on the Ollama plugin page or upload an ollama auth file",
+            "http_status": 400
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "auth.login.poll",
+        "request": {}
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "Status": "error",
+            "Message": "Ollama uses API keys; there is no login flow",
+            "Auth": {
+              "Provider": "",
+              "ID": "",
+              "FileName": "",
+              "Label": "",
+              "Prefix": "",
+              "ProxyURL": "",
+              "Disabled": false,
+              "StorageJSON": null,
+              "Metadata": null,
+              "Attributes": null,
+              "NextRefreshAfter": "0001-01-01T00:00:00Z"
+            },
+            "Auths": null
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "executor.http_request",
+        "request": {}
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": false,
+          "error": {
+            "code": "unsupported_operation",
+            "message": "ollama: raw HTTP requests are not supported",
+            "http_status": 501
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "quota.reset",
+        "request": {}
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": false,
+          "error": {
+            "code": "unsupported_operation",
+            "message": "ollama: quota reset is not supported",
+            "http_status": 501
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "model.register",
+        "request": {}
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": false,
+          "error": {
+            "code": "unknown_method",
+            "message": "unknown method: model.register"
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "plugin.shutdown",
+        "request": {}
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {}
+        }
+      }
+    }
+  ]
+}

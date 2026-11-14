@@ -1,0 +1,163 @@
+{
+  "case": "exec_responses_nonstream",
+  "description": "Responses, buffered, with cached and reasoning token usage",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": [
+      {
+        "name": "k1.json",
+        "fields": {
+          "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+          "type": "ollama"
+        }
+      }
+    ]
+  },
+  "upstream_script": [
+    {
+      "method": "POST",
+      "path": "/v1/responses",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ],
+        "Request-Id": [
+          "up-req-2"
+        ]
+      },
+      "body": "{\"id\":\"resp_snap1\",\"object\":\"response\",\"created_at\":1763107200,\"status\":\"completed\",\"model\":\"gpt-oss:120b\",\"output\":[{\"type\":\"message\",\"id\":\"msg_1\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"Hello!\",\"annotations\":[]}]}],\"usage\":{\"input_tokens\":10,\"output_tokens\":6,\"total_tokens\":16,\"input_tokens_details\":{\"cached_tokens\":4},\"output_tokens_details\":{\"reasoning_tokens\":3}}}",
+      "chunks": []
+    }
+  ],
+  "steps": [
+    {
+      "rpc": {
+        "method": "executor.execute",
+        "request": {
+          "AuthID": "k1.json",
+          "AuthProvider": "ollama",
+          "Model": "gpt-oss:120b",
+          "Format": "openai-response",
+          "Stream": false,
+          "Alt": "",
+          "Headers": {
+            "Authorization": [
+              "Bearer sk-client-fake"
+            ],
+            "Content-Type": [
+              "application/json"
+            ],
+            "User-Agent": [
+              "snapshot-client/1.0"
+            ]
+          },
+          "Query": null,
+          "OriginalRequest": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsImlucHV0IjoiSGkiLCJyZWFzb25pbmciOnsiZWZmb3J0IjoibG93In0sInN0b3JlIjpmYWxzZX0=",
+          "SourceFormat": "openai-response",
+          "Payload": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsImlucHV0IjoiSGkiLCJyZWFzb25pbmciOnsiZWZmb3J0IjoibG93In0sInN0b3JlIjpmYWxzZX0=",
+          "Metadata": {
+            "request_path": "/v1/responses",
+            "requested_model": "ollama/gpt-oss:120b",
+            "selected_auth_id": "k1.json",
+            "selected_auth_index": "idx-1"
+          },
+          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "AuthMetadata": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
+          "AuthAttributes": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "POST",
+            "path": "/v1/responses",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "Content-Length": [
+                "80"
+              ],
+              "Content-Type": [
+                "application/json"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": "{\"model\":\"gpt-oss:120b\",\"input\":\"Hi\",\"reasoning\":{\"effort\":\"low\"},\"store\":false}"
+          }
+        ],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "Payload": "eyJpZCI6InJlc3Bfc25hcDEiLCJvYmplY3QiOiJyZXNwb25zZSIsImNyZWF0ZWRfYXQiOjE3NjMxMDcyMDAsInN0YXR1cyI6ImNvbXBsZXRlZCIsIm1vZGVsIjoiZ3B0LW9zczoxMjBiIiwib3V0cHV0IjpbeyJ0eXBlIjoibWVzc2FnZSIsImlkIjoibXNnXzEiLCJzdGF0dXMiOiJjb21wbGV0ZWQiLCJyb2xlIjoiYXNzaXN0YW50IiwiY29udGVudCI6W3sidHlwZSI6Im91dHB1dF90ZXh0IiwidGV4dCI6IkhlbGxvISIsImFubm90YXRpb25zIjpbXX1dfV0sInVzYWdlIjp7ImlucHV0X3Rva2VucyI6MTAsIm91dHB1dF90b2tlbnMiOjYsInRvdGFsX3Rva2VucyI6MTYsImlucHV0X3Rva2Vuc19kZXRhaWxzIjp7ImNhY2hlZF90b2tlbnMiOjR9LCJvdXRwdXRfdG9rZW5zX2RldGFpbHMiOnsicmVhc29uaW5nX3Rva2VucyI6M319fQ==",
+            "Headers": {
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ],
+              "Request-Id": [
+                "up-req-2"
+              ]
+            },
+            "Metadata": null
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/logs",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJpdGVtcyI6W3siaWQiOiIxIiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9yZXNwb25zZXMiLCJtb2RlbCI6Im9sbGFtYS9ncHQtb3NzOjEyMGIiLCJ1cHN0cmVhbV9tb2RlbCI6ImdwdC1vc3M6MTIwYiIsInNlcnZlZF9tb2RlbCI6ImdwdC1vc3M6MTIwYiIsInJlYXNvbmluZ19lZmZvcnQiOiJsb3ciLCJzdHJlYW0iOmZhbHNlLCJzdGF0dXMiOiJzdWNjZXNzIiwiaHR0cF9zdGF0dXMiOjIwMCwiY3JlZGVudGlhbCI6Im9sbGFtYeKApmFhYWEiLCJhdXRoX2lkIjoiazEuanNvbiIsImR1cmF0aW9uX21zIjoiPHZvbGF0aWxlPiIsImlucHV0X3Rva2VucyI6MTAsIm91dHB1dF90b2tlbnMiOjYsImNhY2hlZF90b2tlbnMiOjQsInJlYXNvbmluZ190b2tlbnMiOjMsImNsaWVudF9wYXRoIjoiL3YxL3Jlc3BvbnNlcyIsInVzZXJfYWdlbnQiOiJzbmFwc2hvdC1jbGllbnQvMS4wIiwiYXV0aF9pbmRleCI6ImlkeC0xIiwiZWdyZXNzIjoiZW52IiwidXBzdHJlYW1fc3RhdHVzIjoyMDAsInVwc3RyZWFtX3JlcXVlc3RfaWQiOiJ1cC1yZXEtMiIsImZpbmlzaF9yZWFzb24iOiJjb21wbGV0ZWQiLCJ1c2FnZV9yZXBvcnRlZCI6dHJ1ZSwiYXR0ZW1wdHMiOjF9XSwidG90YWwiOjEsIm9mZnNldCI6MCwicmV0ZW50aW9uIjoxMDAwMDAsInJldGVudGlvbl9kYXlzIjozMCwic3VtbWFyeSI6eyJyZXF1ZXN0cyI6MSwic3VjY2VzcyI6MSwiZmFpbGVkIjowLCJpbnB1dF90b2tlbnMiOjEwLCJvdXRwdXRfdG9rZW5zIjo2LCJjYWNoZWRfdG9rZW5zIjo0LCJjYWNoZV9oaXRfcmF0ZSI6MC40LCJvdXRwdXRfdG9rZW5zX3Blcl9zZWNvbmQiOiI8dm9sYXRpbGU+IiwiZTJlX3Rva2Vuc19wZXJfc2Vjb25kIjoiPHZvbGF0aWxlPiJ9fQ=="
+          }
+        }
+      }
+    }
+  ]
+}

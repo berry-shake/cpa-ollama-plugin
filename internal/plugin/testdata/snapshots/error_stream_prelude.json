@@ -1,0 +1,179 @@
+{
+  "case": "error_stream_prelude",
+  "description": "Error event inside a 200 stream before any output: nothing is emitted, the host stream is closed with the mapped error",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": [
+      {
+        "name": "k1.json",
+        "fields": {
+          "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+          "type": "ollama"
+        }
+      }
+    ]
+  },
+  "upstream_script": [
+    {
+      "method": "POST",
+      "path": "/v1/chat/completions",
+      "status": 200,
+      "header": {
+        "Content-Type": [
+          "text/event-stream"
+        ],
+        "X-Request-Id": [
+          "up-stream-1"
+        ]
+      },
+      "body": "",
+      "chunks": [
+        "data: {\"id\":\"chatcmpl-snap2\",\"object\":\"chat.completion.chunk\",\"created\":1763107200,\"model\":\"gpt-oss:120b\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}]}\n\n",
+        "data: {\"error\":{\"message\":\"too many requests\",\"type\":\"rate_limit_error\"}}\n\n"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "rpc": {
+        "method": "executor.execute_stream",
+        "request": {
+          "AuthID": "k1.json",
+          "AuthProvider": "ollama",
+          "Model": "gpt-oss:120b",
+          "Format": "openai",
+          "Stream": true,
+          "Alt": "",
+          "Headers": {
+            "Authorization": [
+              "Bearer sk-client-fake"
+            ],
+            "Content-Type": [
+              "application/json"
+            ],
+            "User-Agent": [
+              "snapshot-client/1.0"
+            ]
+          },
+          "Query": null,
+          "OriginalRequest": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1lc3NhZ2VzIjpbeyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJIaSJ9XSwicmVhc29uaW5nX2VmZm9ydCI6ImhpZ2giLCJ0ZW1wZXJhdHVyZSI6MC4yfQ==",
+          "SourceFormat": "openai",
+          "Payload": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1lc3NhZ2VzIjpbeyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJIaSJ9XSwicmVhc29uaW5nX2VmZm9ydCI6ImhpZ2giLCJ0ZW1wZXJhdHVyZSI6MC4yfQ==",
+          "Metadata": {
+            "request_path": "/v1/chat/completions",
+            "requested_model": "ollama/gpt-oss:120b",
+            "selected_auth_id": "k1.json",
+            "selected_auth_index": "idx-1"
+          },
+          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJ0eXBlIjoib2xsYW1hIn0=",
+          "AuthMetadata": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "type": "ollama"
+          },
+          "AuthAttributes": null,
+          "stream_id": "stream-err-2",
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "POST",
+            "path": "/v1/chat/completions",
+            "query": "",
+            "header": {
+              "Accept": [
+                "text/event-stream"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "Content-Length": [
+                "152"
+              ],
+              "Content-Type": [
+                "application/json"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": "{\"stream_options\":{\"include_usage\":true},\"model\":\"gpt-oss:120b\",\"messages\":[{\"role\":\"user\",\"content\":\"Hi\"}],\"reasoning_effort\":\"high\",\"temperature\":0.2}"
+          }
+        ],
+        "host_calls": [
+          {
+            "method": "host.stream.close",
+            "request": {
+              "stream_id": "stream-err-2",
+              "error": "ollama: too many requests",
+              "error_detail": {
+                "code": "rate_limit_error",
+                "message": "ollama: too many requests",
+                "retryable": true,
+                "http_status": 429
+              }
+            }
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "headers": {
+              "Content-Type": [
+                "text/event-stream"
+              ],
+              "X-Request-Id": [
+                "up-stream-1"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/logs",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJpdGVtcyI6W3siaWQiOiIxIiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9jaGF0L2NvbXBsZXRpb25zIiwibW9kZWwiOiJvbGxhbWEvZ3B0LW9zczoxMjBiIiwidXBzdHJlYW1fbW9kZWwiOiJncHQtb3NzOjEyMGIiLCJzZXJ2ZWRfbW9kZWwiOiJncHQtb3NzOjEyMGIiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsInN0cmVhbSI6dHJ1ZSwic3RhdHVzIjoiZXJyb3IiLCJodHRwX3N0YXR1cyI6NDI5LCJjcmVkZW50aWFsIjoib2xsYW1h4oCmYWFhYSIsImF1dGhfaWQiOiJrMS5qc29uIiwiZHVyYXRpb25fbXMiOiI8dm9sYXRpbGU+IiwiaW5wdXRfdG9rZW5zIjowLCJvdXRwdXRfdG9rZW5zIjowLCJjYWNoZWRfdG9rZW5zIjowLCJlcnJvcl9jb2RlIjoicmF0ZV9saW1pdF9lcnJvciIsImVycm9yIjoib2xsYW1hOiB0b28gbWFueSByZXF1ZXN0cyIsImVycm9yX3BoYXNlIjoicmVxdWVzdCIsImNsaWVudF9wYXRoIjoiL3YxL2NoYXQvY29tcGxldGlvbnMiLCJ1c2VyX2FnZW50Ijoic25hcHNob3QtY2xpZW50LzEuMCIsImF1dGhfaW5kZXgiOiJpZHgtMSIsImVncmVzcyI6ImVudiIsInVwc3RyZWFtX3N0YXR1cyI6MjAwLCJ1cHN0cmVhbV9yZXF1ZXN0X2lkIjoidXAtc3RyZWFtLTEiLCJmcmFtZXMiOjAsImF0dGVtcHRzIjoxfV0sInRvdGFsIjoxLCJvZmZzZXQiOjAsInJldGVudGlvbiI6MTAwMDAwLCJyZXRlbnRpb25fZGF5cyI6MzAsInN1bW1hcnkiOnsicmVxdWVzdHMiOjEsInN1Y2Nlc3MiOjAsImZhaWxlZCI6MSwiaW5wdXRfdG9rZW5zIjowLCJvdXRwdXRfdG9rZW5zIjowLCJjYWNoZWRfdG9rZW5zIjowLCJjYWNoZV9oaXRfcmF0ZSI6bnVsbCwib3V0cHV0X3Rva2Vuc19wZXJfc2Vjb25kIjoiPHZvbGF0aWxlPiIsImUyZV90b2tlbnNfcGVyX3NlY29uZCI6Ijx2b2xhdGlsZT4ifX0="
+          }
+        }
+      }
+    }
+  ]
+}

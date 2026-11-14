@@ -1,0 +1,115 @@
+{
+  "case": "error_invalid_proxy",
+  "description": "Credential with an unsupported proxy scheme fails with invalid_proxy",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": [
+      {
+        "name": "k1.json",
+        "fields": {
+          "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+          "proxy_url": "ftp://proxy.invalid:21",
+          "type": "ollama"
+        }
+      }
+    ]
+  },
+  "upstream_script": [],
+  "steps": [
+    {
+      "rpc": {
+        "method": "executor.execute",
+        "request": {
+          "AuthID": "k1.json",
+          "AuthProvider": "ollama",
+          "Model": "gpt-oss:120b",
+          "Format": "openai",
+          "Stream": false,
+          "Alt": "",
+          "Headers": {
+            "Authorization": [
+              "Bearer sk-client-fake"
+            ],
+            "Content-Type": [
+              "application/json"
+            ],
+            "User-Agent": [
+              "snapshot-client/1.0"
+            ]
+          },
+          "Query": null,
+          "OriginalRequest": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1lc3NhZ2VzIjpbeyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJIaSJ9XSwicmVhc29uaW5nX2VmZm9ydCI6ImhpZ2giLCJ0ZW1wZXJhdHVyZSI6MC4yfQ==",
+          "SourceFormat": "openai",
+          "Payload": "eyJtb2RlbCI6ImdwdC1vc3M6MTIwYiIsIm1lc3NhZ2VzIjpbeyJyb2xlIjoidXNlciIsImNvbnRlbnQiOiJIaSJ9XSwicmVhc29uaW5nX2VmZm9ydCI6ImhpZ2giLCJ0ZW1wZXJhdHVyZSI6MC4yfQ==",
+          "Metadata": {
+            "request_path": "/v1/chat/completions",
+            "requested_model": "ollama/gpt-oss:120b",
+            "selected_auth_id": "k1.json",
+            "selected_auth_index": "idx-1"
+          },
+          "StorageJSON": "eyJhcGlfa2V5Ijoib2xsYW1hLXNuYXAta2V5LWFhYWFhYWFhYWFhYWFhYWEiLCJwcm94eV91cmwiOiJmdHA6Ly9wcm94eS5pbnZhbGlkOjIxIiwidHlwZSI6Im9sbGFtYSJ9",
+          "AuthMetadata": {
+            "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+            "proxy_url": "ftp://proxy.invalid:21",
+            "type": "ollama"
+          },
+          "AuthAttributes": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": false,
+          "error": {
+            "code": "invalid_proxy",
+            "message": "ollama: invalid proxy_url: unsupported scheme \"ftp\" (use http, https, socks5 or socks5h)",
+            "http_status": 502
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/logs",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": null,
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [],
+        "host_calls": [],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 200,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJpdGVtcyI6W3siaWQiOiIxIiwidGltZSI6Ijx2b2xhdGlsZT4iLCJlbmRwb2ludCI6Ii92MS9jaGF0L2NvbXBsZXRpb25zIiwibW9kZWwiOiJvbGxhbWEvZ3B0LW9zczoxMjBiIiwic3RyZWFtIjpmYWxzZSwic3RhdHVzIjoiZXJyb3IiLCJodHRwX3N0YXR1cyI6NTAyLCJhdXRoX2lkIjoiazEuanNvbiIsImR1cmF0aW9uX21zIjoiPHZvbGF0aWxlPiIsImlucHV0X3Rva2VucyI6MCwib3V0cHV0X3Rva2VucyI6MCwiY2FjaGVkX3Rva2VucyI6MCwiZXJyb3JfY29kZSI6ImludmFsaWRfcHJveHkiLCJlcnJvciI6Im9sbGFtYTogaW52YWxpZCBwcm94eV91cmw6IHVuc3VwcG9ydGVkIHNjaGVtZSBcImZ0cFwiICh1c2UgaHR0cCwgaHR0cHMsIHNvY2tzNSBvciBzb2NrczVoKSIsImVycm9yX3BoYXNlIjoicmVxdWVzdCIsImNsaWVudF9wYXRoIjoiL3YxL2NoYXQvY29tcGxldGlvbnMiLCJ1c2VyX2FnZW50Ijoic25hcHNob3QtY2xpZW50LzEuMCIsImF1dGhfaW5kZXgiOiJpZHgtMSIsImF0dGVtcHRzIjoxfV0sInRvdGFsIjoxLCJvZmZzZXQiOjAsInJldGVudGlvbiI6MTAwMDAwLCJyZXRlbnRpb25fZGF5cyI6MzAsInN1bW1hcnkiOnsicmVxdWVzdHMiOjEsInN1Y2Nlc3MiOjAsImZhaWxlZCI6MSwiaW5wdXRfdG9rZW5zIjowLCJvdXRwdXRfdG9rZW5zIjowLCJjYWNoZWRfdG9rZW5zIjowLCJjYWNoZV9oaXRfcmF0ZSI6bnVsbCwib3V0cHV0X3Rva2Vuc19wZXJfc2Vjb25kIjoiPHZvbGF0aWxlPiIsImUyZV90b2tlbnNfcGVyX3NlY29uZCI6Ijx2b2xhdGlsZT4ifX0="
+          }
+        }
+      }
+    }
+  ]
+}

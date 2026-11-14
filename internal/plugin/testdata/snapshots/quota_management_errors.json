@@ -1,0 +1,256 @@
+{
+  "case": "quota_management_errors",
+  "description": "Quota page errors: an upstream 4xx is a 400 for the page, all calls failing with 5xx is a 502",
+  "setup": {
+    "version": "9.9.9-snapshot",
+    "config": {
+      "base-url": "{{UPSTREAM}}",
+      "data-dir": "{{DATA_DIR}}",
+      "models-refresh-minutes": 0
+    },
+    "credentials": [
+      {
+        "name": "k1.json",
+        "fields": {
+          "api_key": "ollama-snap-key-aaaaaaaaaaaaaaaa",
+          "type": "ollama"
+        }
+      },
+      {
+        "name": "k2.json",
+        "fields": {
+          "api_key": "ollama-snap-key-bbbbbbbbbbbbbbbb",
+          "type": "ollama"
+        }
+      }
+    ]
+  },
+  "upstream_script": [
+    {
+      "method": "GET",
+      "path": "/api/balance",
+      "status": 401,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"error\":\"unauthorized\"}",
+      "chunks": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/balance",
+      "status": 500,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"error\":\"down\"}",
+      "chunks": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/usage",
+      "status": 500,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"error\":\"down\"}",
+      "chunks": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/usage",
+      "status": 500,
+      "header": {
+        "Content-Type": [
+          "application/json; charset=utf-8"
+        ]
+      },
+      "body": "{\"error\":\"down\"}",
+      "chunks": []
+    }
+  ],
+  "steps": [
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/credentials/quota",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": {
+            "auth_index": [
+              "idx-1"
+            ]
+          },
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "GET",
+            "path": "/api/balance",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-aaaaaaaaaaaaaaaa"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          }
+        ],
+        "host_calls": [
+          {
+            "method": "host.auth.get",
+            "request": {
+              "auth_index": "idx-1"
+            }
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 400,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJlcnJvciI6InVwc3RyZWFtXzQwMSIsIm1lc3NhZ2UiOiJvbGxhbWE6IHVuYXV0aG9yaXplZCJ9"
+          }
+        }
+      }
+    },
+    {
+      "rpc": {
+        "method": "management.handle",
+        "request": {
+          "Method": "GET",
+          "Path": "/v0/management/plugins/ollama/credentials/quota",
+          "Headers": {
+            "Accept": [
+              "application/json"
+            ]
+          },
+          "Query": {
+            "auth_index": [
+              "idx-2"
+            ]
+          },
+          "Body": null,
+          "host_callback_id": "cb-snapshot"
+        }
+      },
+      "output": {
+        "upstream_requests": [
+          {
+            "method": "GET",
+            "path": "/api/balance",
+            "query": "",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-bbbbbbbbbbbbbbbb"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          },
+          {
+            "method": "GET",
+            "path": "/api/usage",
+            "query": "range=30d&group_by=model",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-bbbbbbbbbbbbbbbb"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          },
+          {
+            "method": "GET",
+            "path": "/api/usage",
+            "query": "range=24h",
+            "header": {
+              "Accept": [
+                "application/json"
+              ],
+              "Accept-Encoding": [
+                "gzip"
+              ],
+              "Authorization": [
+                "Bearer ollama-snap-key-bbbbbbbbbbbbbbbb"
+              ],
+              "User-Agent": [
+                "cpa-ollama-plugin/9.9.9-snapshot"
+              ]
+            },
+            "body": ""
+          }
+        ],
+        "host_calls": [
+          {
+            "method": "host.auth.get",
+            "request": {
+              "auth_index": "idx-2"
+            }
+          }
+        ],
+        "response": {
+          "ok": true,
+          "result": {
+            "StatusCode": 502,
+            "Headers": {
+              "Cache-Control": [
+                "no-store"
+              ],
+              "Content-Type": [
+                "application/json; charset=utf-8"
+              ]
+            },
+            "Body": "eyJlcnJvciI6InVwc3RyZWFtXzUwMCIsIm1lc3NhZ2UiOiJvbGxhbWE6IGRvd24ifQ=="
+          }
+        }
+      }
+    }
+  ]
+}
