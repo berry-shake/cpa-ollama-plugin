@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"io"
 	"math"
 	"net/http"
@@ -287,10 +286,9 @@ func QuotaFromAccount(info AccountInfo) pluginapi.QuotaFetchResponse {
 			out.Groups = append(out.Groups, pluginapi.QuotaGroup{
 				DisplayName: "Included credits",
 				Buckets: []pluginapi.QuotaBucket{{
-					Window:            "plan period",
+					Window:            "monthly",
 					RemainingFraction: fraction,
 					ResetTime:         included.PeriodUntil,
-					Description:       fmt.Sprintf("$%.2f of $%.2f left", included.BalanceUSD, included.AllowanceUSD),
 				}},
 			})
 		}
@@ -298,7 +296,7 @@ func QuotaFromAccount(info AccountInfo) pluginapi.QuotaFetchResponse {
 		for _, limit := range []struct {
 			window string
 			value  *PlanLimit
-		}{{"session", balance.Session}, {"weekly", balance.Weekly}} {
+		}{{"session", balance.Session}, {"7d", balance.Weekly}} {
 			if limit.value == nil {
 				continue
 			}
@@ -306,7 +304,6 @@ func QuotaFromAccount(info AccountInfo) pluginapi.QuotaFetchResponse {
 				Window:            limit.window,
 				RemainingFraction: limit.value.RemainingPercent / 100,
 				ResetTime:         limit.value.ResetsAt,
-				Description:       strconv.FormatFloat(limit.value.RemainingPercent, 'f', -1, 64) + "% left",
 			})
 		}
 		if len(limits) > 0 {
