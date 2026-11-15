@@ -481,38 +481,10 @@ func toModelInfo(model Model) pluginapi.ModelInfo {
 	}
 }
 
-// UpstreamID maps the model CPA hands the executor back to Ollama's ID.
-// CPA strips the auth prefix before calling the executor; the prefix is
-// still removed here in case a model arrives with it.
+// UpstreamID maps the model CPA hands the executor back to Ollama's ID
+// (provider.UpstreamID).
 func (c Snapshot) UpstreamID(model, prefix string) string {
-	model = stripThinkingSuffix(strings.TrimSpace(model))
-	if prefix != "" && strings.HasPrefix(model, prefix+"/") {
-		return strings.TrimPrefix(model, prefix+"/")
-	}
-	if _, ok := c.Lookup(model); ok {
-		return model
-	}
-	// A prefix we do not know (for example from a changed config) is dropped
-	// when what follows it is a catalog model.
-	if idx := strings.LastIndex(model, "/"); idx >= 0 && idx < len(model)-1 {
-		if _, ok := c.Lookup(model[idx+1:]); ok {
-			return model[idx+1:]
-		}
-	}
-	return model
-}
-
-// stripThinkingSuffix removes a trailing CPA reasoning suffix such as
-// "(high)" or "(8192)". CPA normally strips it before calling the executor.
-func stripThinkingSuffix(model string) string {
-	if !strings.HasSuffix(model, ")") {
-		return model
-	}
-	open := strings.LastIndex(model, "(")
-	if open <= 0 {
-		return model
-	}
-	return strings.TrimSpace(model[:open])
+	return provider.UpstreamID(model, prefix, c.Has, provider.SlashedIDs)
 }
 
 // modelView is one model of the management page's models view.
